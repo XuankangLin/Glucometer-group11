@@ -4,32 +4,32 @@
 	android:layout_height="fill_parent">
 	<RelativeLayout android:layout_height="match_parent"
 		android:id="@+id/relativeLayout1" android:layout_width="match_parent">
-		<ImageView android:id="@+id/imageView1" android:src="@drawable/glucometer"
+		<ImageView android:id="@+id/meterImage" android:src="@drawable/glucometer"
 			android:layout_width="wrap_content" android:layout_height="match_parent"
 			android:layout_alignParentTop="true" android:minWidth="250dp"
-			android:layout_marginLeft="10dp"></ImageView>
+			android:layout_marginLeft="5dp"></ImageView>
 		<ImageView android:src="@drawable/test_strip_valid"
-			android:layout_width="wrap_content" android:id="@+id/imageButton1"
+			android:layout_width="wrap_content" android:id="@+id/testStripImage"
 			android:layout_height="wrap_content" android:layout_alignParentTop="true"
-			android:layout_alignLeft="@+id/imageView1" android:layout_marginLeft="80dp"></ImageView>
+			android:layout_marginLeft="80dp"></ImageView>
 		<LinearLayout android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/linearLayout1"
 			android:orientation="vertical" android:layout_centerVertical="true"
 			android:layout_alignParentRight="true">
 			<ImageView android:src="@drawable/pen"
-				android:layout_height="20dp" android:id="@+id/imageButton2"
-				android:layout_width="60dp" android:layout_marginBottom="20dp"
+				android:layout_height="20dp" android:id="@+id/resetImage"
+				android:layout_width="60dp" android:layout_marginBottom="30dp"
 				android:layout_gravity="right"></ImageView>
-			<ImageView android:src="@drawable/usb" android:id="@+id/imageButton3"
-				android:layout_marginTop="20dp" android:layout_width="60dp"
+			<ImageView android:src="@drawable/usb" android:id="@+id/usbImage"
+				android:layout_marginTop="30dp" android:layout_width="60dp"
 				android:layout_height="20dp" android:layout_gravity="right"></ImageView>
 		</LinearLayout>
-		<ImageView android:id="@+id/imageView2" android:src="@drawable/ac_plug"
+		<ImageView android:id="@+id/acImage" android:src="@drawable/ac_plug"
 			android:layout_width="wrap_content" android:layout_height="80dp"
 			android:layout_alignParentBottom="true"
 			android:layout_centerHorizontal="true"></ImageView>
-		<ImageView android:id="@+id/imageButton4" android:src="@drawable/button_up"
+		<ImageView android:id="@+id/buttonImage" android:src="@drawable/button_up"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginLeft="100dp" android:layout_marginTop="300dp"></ImageView>
+			android:layout_marginLeft="100dp" android:layout_marginTop="350dp"></ImageView>
 	</RelativeLayout>
 </LinearLayout>

@@ -2,68 +2,98 @@ package com.group11;
 
 import java.util.Random;
 
-import android.R.bool;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class GlucometerActivity extends Activity {
     /** Called when the activity is first created. */
-	ImageView button;
+	ImageView realButtonImage;
 	boolean buttonDown = false;
+	
+	ImageView testStripImage;
+	ImageView resetImage;
+	ImageView usbImage;
+	ImageView acImage;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
         
-        button = (ImageView) findViewById(R.id.imageButton4);
-        button.setOnTouchListener(new OnTouchListener() {
+        realButtonImage = (ImageView) findViewById(R.id.buttonImage);
+        realButtonImage.setOnTouchListener(new OnTouchListener() {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				button.setImageResource(R.drawable.button_down);
+				realButtonImage.setImageResource(R.drawable.button_down);
 				buttonDown = true;
-				// TODO Auto-generated method stub
 				return false;
 			}
 		});
-        
-        ImageButton imageButton = new ImageButton(this);
-        button.setOnClickListener(new OnClickListener() {
+        realButtonImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				button.setImageResource(R.drawable.button_up);
+				realButtonImage.setImageResource(R.drawable.button_up);
 				buttonDown = false;
-//				if (buttonDown) {
-//				}
-//				else {
-//					button.setImageResource(R.drawable.button_down);
-//					buttonDown = true;
-//				}
 			}
 		});
-        
-        ImageView imageView = (ImageView) findViewById(R.id.imageView1);
-        final ImageView button = (ImageView) findViewById(R.id.imageButton1);
-        
-        imageView.setOnClickListener(new OnClickListener() {
+
+        testStripImage = (ImageView) findViewById(R.id.testStripImage);
+        testStripImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				Random random = new Random();
 				if (random.nextBoolean()) {
-					button.setImageResource(R.drawable.test_strip_invalid);					
+					testStripImage.setImageResource(R.drawable.test_strip_invalid);					
 				}
 				else {
-					button.setImageResource(R.drawable.test_strip_valid);
+					testStripImage.setImageResource(R.drawable.test_strip_valid);
 				}
+			}
+		});
+        
+        resetImage = null;
+        resetImage = (ImageView) findViewById(R.id.resetImage);
+        try {
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+        resetImage.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(GlucometerActivity.this, "RESET BUTTON CLICKED", 1000).show();
+			}
+		});
+        
+        usbImage = (ImageView) findViewById(R.id.usbImage);
+        usbImage.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(GlucometerActivity.this, "USB BUTTON CLICKED", 1000).show();
+			}
+		});
+        
+        acImage = (ImageView) findViewById(R.id.acImage);
+        acImage.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(GlucometerActivity.this, "AC BUTTON CLICKED", 1000).show();
 			}
 		});
     }
