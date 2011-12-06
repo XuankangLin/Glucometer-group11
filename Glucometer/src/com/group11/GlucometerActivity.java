@@ -65,12 +65,7 @@ public class GlucometerActivity extends Activity {
 			}
 		});
         
-        resetImage = null;
         resetImage = (ImageView) findViewById(R.id.resetImage);
-        try {
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
         resetImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
