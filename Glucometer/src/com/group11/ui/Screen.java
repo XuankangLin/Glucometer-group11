@@ -1,4 +1,4 @@
-package com.group11;
+package com.group11.ui;
 
 import android.app.Activity;
 

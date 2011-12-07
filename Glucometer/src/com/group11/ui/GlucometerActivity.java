@@ -1,6 +1,8 @@
-package com.group11;
+package com.group11.ui;
 
 import java.util.Random;
+
+import com.group11.R;
 
 import android.app.Activity;
 import android.os.Bundle;
