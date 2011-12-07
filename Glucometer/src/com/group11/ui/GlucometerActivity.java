@@ -3,6 +3,7 @@ package com.group11.ui;
 import java.util.Random;
 
 import com.group11.R;
+import com.group11.hardware.Beeper;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -64,6 +65,8 @@ public class GlucometerActivity extends Activity {
 				else {
 					testStripImage.setImageResource(R.drawable.test_strip_valid);
 				}
+				Beeper.get().doShortLongBeep(GlucometerActivity.this);
+				Toast.makeText(GlucometerActivity.this, "short long beep", 1000).show();				
 			}
 		});
         
@@ -72,7 +75,8 @@ public class GlucometerActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(GlucometerActivity.this, "RESET BUTTON CLICKED", 1000).show();
+				Beeper.get().doDoubleBeep(GlucometerActivity.this);
+				Toast.makeText(GlucometerActivity.this, "double beep", 1000).show();
 			}
 		});
         
@@ -81,7 +85,8 @@ public class GlucometerActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(GlucometerActivity.this, "USB BUTTON CLICKED", 1000).show();
+				Beeper.get().doLongBeep(GlucometerActivity.this);
+				Toast.makeText(GlucometerActivity.this, "Long beep", 1000).show();
 			}
 		});
         
@@ -90,7 +95,8 @@ public class GlucometerActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(GlucometerActivity.this, "AC BUTTON CLICKED", 1000).show();
+				Beeper.get().doShortBeep(GlucometerActivity.this);
+				Toast.makeText(GlucometerActivity.this, "short beep", 1000).show();
 			}
 		});
     }
