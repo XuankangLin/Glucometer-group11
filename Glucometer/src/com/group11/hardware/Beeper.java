@@ -12,6 +12,8 @@ import android.media.MediaPlayer;
  * Beeper only controls the beeping sound.
  * It's a singleton that is invoked by outside classes
  * 
+ * Just use the 4 doXXBeep() methods
+ * 
  * @author Andriy_Lin
  */
 public class Beeper {
@@ -58,7 +60,6 @@ public class Beeper {
 	/**
 	 * keep playing the beep sound for X milliseconds
 	 * this is the only way in Beeper to start playing.
-	 * @param context
 	 */
 	private void playXms(Context context, int milliseconds) {
 		this.release();
@@ -77,9 +78,9 @@ public class Beeper {
 	}
 	
 	/**
-	 * a short-beep lasts 0.2 second
+	 * a short-beep lasts 0.2 seconds
 	 * also called remind-beep
-	 * @param context
+	 * @param context  passing in the Activity instance is OK
 	 */
 	public void doShortBeep(Context context) {
 		this.playXms(context, SHORT_DURATION);
@@ -88,16 +89,16 @@ public class Beeper {
 	/**
 	 * a long-beep lasts 0.5 seconds
 	 * also called turn-off-beep
-	 * @param context
+	 * @param context  passing in the Activity instance is OK
 	 */
 	public void doLongBeep(Context context) {
 		this.playXms(context, LONG_DURATION);
 	}
 
 	/**
-	 * a double-beep is two consecutive short-beep with 0.2 second of interval
+	 * a double-beep is two consecutive short-beep with 0.2 seconds of interval
 	 * also called warning beep
-	 * @param context
+	 * @param context  passing in the Activity instance is OK
 	 */
 	public void doDoubleBeep(final Context context) {
 		this.doShortBeep(context);
@@ -114,9 +115,9 @@ public class Beeper {
 	
 	/**
 	 * a short-long-beep is a short beep followed by a long beep 
-	 * with interval less than 0.2 second
+	 * with interval less than 0.2 seconds
 	 * also called error-beep
-	 * @param context
+	 * @param context  passing in the Activity instance is OK
 	 */
 	public void doShortLongBeep(final Context context) {
 		this.doShortBeep(context);
