@@ -21,7 +21,9 @@ public enum Interrupt {
 	TIME_TICK("Every second of the timer"),
 	
 	//===========NEWLY defined interrupts for implementing==========
-	BUTTON_CLICKED("several button_down & button_up has happened");
+	BUTTON_CLICKED("several button_down & button_up has happened"),
+	BEEP_START("when start beeping, the beeper image will change"),
+	BEEP_STOP("when stop beeping, the beeper image will change");
 	
 	private String info;
 	private Interrupt(String info) {

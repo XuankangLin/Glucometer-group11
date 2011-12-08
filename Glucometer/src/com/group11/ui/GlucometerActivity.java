@@ -56,6 +56,8 @@ public class GlucometerActivity extends Activity {
         acImage = (ImageView) findViewById(R.id.acImage);
         
         this.setOnClickListeners();
+        
+        Beeper.get().attachHandler(this.handler);
     }
     
     private void setOnClickListeners() {
@@ -180,6 +182,20 @@ public class GlucometerActivity extends Activity {
 		Log.i("CLICK_STYLE", style.toString());
 		Toast.makeText(this, style.toString(), 50).show();
 	}
+	
+	/**
+	 * change the beeper's image, since it's contained in the glucometer image
+	 * @param beeping true: set beeping glucometer image
+	 * 								false: set not beeping glucometer image
+	 */
+	private void setBeeperImage(boolean beeping) {
+		if (beeping) {
+			this.glucometerImage.setImageResource(R.drawable.glucometer_beeping);
+		}
+		else {
+			this.glucometerImage.setImageResource(R.drawable.glucometer_not_beeping);
+		}
+	}
 
     /**
      * the callback to deal with Messages in the Handler 
@@ -192,7 +208,6 @@ public class GlucometerActivity extends Activity {
 				doStripInserted();
 				return true;
 			}
-			
 			if (STRIP_PULLED_OUT.ordinal() == msg.what) {
 				doStripPulledOut();
 				return true;
@@ -202,7 +217,6 @@ public class GlucometerActivity extends Activity {
 				doUSBConnected();
 				return true;
 			}
-			
 			if (USB_DISCONNECTED.ordinal() == msg.what) {
 				doUSBDisconnected();
 				return true;
@@ -212,7 +226,6 @@ public class GlucometerActivity extends Activity {
 				doStripValid();
 				return true;
 			}
-			
 			if (STRIP_INVALID.ordinal() == msg.what) {
 				doStripInvalid();
 				return true;
@@ -222,7 +235,6 @@ public class GlucometerActivity extends Activity {
 				doBloodSufficient();
 				return true;
 			}
-			
 			if (BLOOD_INSUFFICIENT.ordinal() == msg.what) {
 				doBloodInsufficient();
 				return true;
@@ -237,7 +249,6 @@ public class GlucometerActivity extends Activity {
 				doAcOn();
 				return true;
 			}
-			
 			if (AC_OFF.ordinal() == msg.what) {
 				doAcOff();
 				return true;
@@ -250,6 +261,15 @@ public class GlucometerActivity extends Activity {
 			
 			if (BUTTON_CLICKED.ordinal() == msg.what) {
 				doButtonClicked(msg);
+				return true;
+			}
+			
+			if (BEEP_START.ordinal() == msg.what) {
+				setBeeperImage(true);
+				return true;
+			}
+			if (BEEP_STOP.ordinal() == msg.what) {
+				setBeeperImage(false);
 				return true;
 			}
 			

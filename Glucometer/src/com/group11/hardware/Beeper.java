@@ -4,9 +4,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.group11.R;
+import com.group11.base.Interrupt;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Message;
 
 /**
  * Beeper only controls the beeping sound.
@@ -27,6 +30,11 @@ public class Beeper {
 	}
 	
 	private Beeper() {	}
+	
+	private Handler handler = null;
+	public void attachHandler(Handler handler) {
+		this.handler = handler;
+	}
 	
 	/**
 	 * the duration of a short beep in milliseconds
@@ -53,6 +61,7 @@ public class Beeper {
 		} catch (IllegalStateException e) {
 			System.err.println(e);
 		}
+		this.sendBeepStartStop(false);
 		player.release();
 		player = null;
 	}
@@ -66,6 +75,7 @@ public class Beeper {
 		
 		player = MediaPlayer.create(context, R.raw.beep);
 		player.start();
+		this.sendBeepStartStop(true);
 		
 		new Timer().schedule(new TimerTask() {
 			
@@ -127,5 +137,13 @@ public class Beeper {
 				doLongBeep(context);
 			}
 		}, SHORT_DURATION + 150);
+		
+		sendBeepStartStop(true);
+	}
+	
+	private synchronized void sendBeepStartStop(boolean start) {
+		Message message = Message.obtain(handler, 
+				start ? Interrupt.BEEP_START.ordinal() : Interrupt.BEEP_STOP.ordinal());
+		message.sendToTarget();
 	}
 }
