@@ -43,7 +43,7 @@ public class Beeper {
 	/**
 	 * called every time when it wants to play something new or finishes playing 
 	 */
-	private void release() {
+	private synchronized void release() {
 		if (player == null) {
 			return;
 		}
@@ -61,14 +61,13 @@ public class Beeper {
 	 * keep playing the beep sound for X milliseconds
 	 * this is the only way in Beeper to start playing.
 	 */
-	private void playXms(Context context, int milliseconds) {
+	private synchronized void playXms(Context context, int milliseconds) {
 		this.release();
 		
 		player = MediaPlayer.create(context, R.raw.beep);
 		player.start();
 		
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
+		new Timer().schedule(new TimerTask() {
 			
 			@Override
 			public void run() {
@@ -103,8 +102,7 @@ public class Beeper {
 	public void doDoubleBeep(final Context context) {
 		this.doShortBeep(context);
 		
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
+		new Timer().schedule(new TimerTask() {
 			
 			@Override
 			public void run() {
@@ -122,8 +120,7 @@ public class Beeper {
 	public void doShortLongBeep(final Context context) {
 		this.doShortBeep(context);
 		
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
+		new Timer().schedule(new TimerTask() {
 			
 			@Override
 			public void run() {
