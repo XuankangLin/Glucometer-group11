@@ -1,5 +1,7 @@
 package com.group11.util;
 
+import java.util.LinkedList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,9 +13,40 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class HistoryManager {
 
-	public HistoryManager() {
+	public static final int MAX_RESULTS = 30;
+	
+	public synchronized void addTestResult(Context context, TestResult result) {
+		LinkedList<TestResult> list = this.getTestResults(context);
+		list.addLast(result);
+
+		if (list.size() > MAX_RESULTS) {
+			list.removeFirst();
+		}
 		
+		DBHelper helper = new DBHelper(context);
+		helper.onUpgrade(helper.getWritableDatabase(), 1, 1);
+
+		for (TestResult tr : list) {
+			helper.insert(tr.getValue(), tr.getUnit().ordinal(), tr.getTime().getTime());
+		}
 	}
+	
+	public LinkedList<TestResult> getTestResults(Context context) {
+		DBHelper helper = new DBHelper(context);
+		
+		Cursor cursor = helper.selectAll();
+		cursor.moveToFirst();
+
+		LinkedList<TestResult> resultList = new LinkedList<TestResult>();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			TestResult info = new TestResult(cursor.getDouble(1),
+					cursor.getInt(2), cursor.getLong(3));
+			resultList.add(info);
+			cursor.moveToNext();
+		}
+		return resultList;
+	}
+	
 	
 	private static class DBHelper extends SQLiteOpenHelper {
 		private static final String DB_NAME = "glucometer_db";
