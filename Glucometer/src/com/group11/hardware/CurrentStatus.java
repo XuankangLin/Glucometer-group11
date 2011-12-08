@@ -41,6 +41,9 @@ public class CurrentStatus extends Activity {
 	}
 
 	public void setCurrentTime(Date time) {
+		if (time == null) {
+			throw new IllegalArgumentException("@param time should not be null");
+		}
 		preferences.edit().putLong(CURRENT_TIME, time.getTime());
 	}
 	

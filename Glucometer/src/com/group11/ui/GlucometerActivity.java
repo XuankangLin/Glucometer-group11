@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Random;
 
 import com.group11.R;
+import com.group11.base.ClickStyle;
 import com.group11.hardware.Beeper;
 import com.group11.util.ClickJudger;
 
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -167,8 +169,11 @@ public class GlucometerActivity extends Activity {
 		//TODO
 	}
 	
-	private void doButtonClicked() {
+	private void doButtonClicked(Message msg) {
 		//TODO
+		ClickStyle style = ClickStyle.get(msg.arg1);
+		Log.i("CLICK_STYLE", style.toString());
+		Toast.makeText(this, style.toString(), 50).show();
 	}
 
     /**
@@ -239,7 +244,7 @@ public class GlucometerActivity extends Activity {
 			}
 			
 			if (BUTTON_CLICKED.ordinal() == msg.what) {
-				doButtonClicked();
+				doButtonClicked(msg);
 				return true;
 			}
 			
