@@ -16,8 +16,9 @@ public class Glucometer {
 	}
 	
 	private Glucometer() {
-		
+		//TODO get status from DATASTORE
 	}
 	
 	private boolean poweredOn = false;
+	
 }
