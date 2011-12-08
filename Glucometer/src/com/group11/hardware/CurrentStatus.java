@@ -5,18 +5,18 @@ package com.group11.hardware;
  * &&
  * manage the history records 
  */
-public class Glucometer {
+public class CurrentStatus {
 
-	private static Glucometer instance = null;
-	public static Glucometer get() {
+	private static CurrentStatus instance = null;
+	public static CurrentStatus get() {
 		if (instance == null) {
-			instance = new Glucometer();
+			instance = new CurrentStatus();
 		}
 		instance.restoreFromDB();
 		return instance;
 	}
 	
-	private Glucometer() {
+	private CurrentStatus() {
 		//TODO get status from DATASTORE
 	}
 
@@ -26,8 +26,6 @@ public class Glucometer {
 	private void restoreFromDB() {
 		//TODO
 	}
-
-	private ButtonClickJudger judger = new ButtonClickJudger();
 	
 	private boolean powerOn = false;
 	
