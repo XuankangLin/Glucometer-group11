@@ -4,7 +4,7 @@
 	android:layout_height="fill_parent">
 	<RelativeLayout android:layout_height="match_parent"
 		android:id="@+id/relativeLayout1" android:layout_width="match_parent">
-		<ImageView android:id="@+id/meterImage" android:src="@drawable/glucometer"
+		<ImageView android:id="@+id/meterImage" android:src="@drawable/glucometer_not_beeping"
 			android:layout_width="wrap_content" android:layout_height="match_parent"
 			android:layout_alignParentTop="true" android:minWidth="250dp"
 			android:layout_marginLeft="5dp"></ImageView>
@@ -18,10 +18,10 @@
 			android:layout_alignParentRight="true">
 			<ImageView android:src="@drawable/pen"
 				android:layout_height="20dp" android:id="@+id/resetImage"
-				android:layout_width="60dp" android:layout_marginBottom="30dp"
+				android:layout_width="60dp" android:layout_marginBottom="50dp"
 				android:layout_gravity="right"></ImageView>
 			<ImageView android:src="@drawable/usb" android:id="@+id/usbImage"
-				android:layout_marginTop="30dp" android:layout_width="60dp"
+				android:layout_marginTop="50dp" android:layout_width="60dp"
 				android:layout_height="20dp" android:layout_gravity="right"></ImageView>
 		</LinearLayout>
 		<ImageView android:id="@+id/acImage" android:src="@drawable/ac_plug"

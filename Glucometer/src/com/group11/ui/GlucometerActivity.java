@@ -28,15 +28,16 @@ import static com.group11.base.Interrupt.*;
 
 public class GlucometerActivity extends Activity {
 
-	ImageView realButtonImage;
-	ImageView testStripImage;
-	ImageView resetImage;
-	ImageView usbImage;
-	ImageView acImage;
+	private ImageView glucometerImage;
+	private ImageView realButtonImage;
+	private ImageView testStripImage;
+	private ImageView resetImage;
+	private ImageView usbImage;
+	private ImageView acImage;
 	
 	
-	private ClickJudger judger = null;
 	private Handler handler = new Handler(new GlucometerHandlerCallback());
+	private ClickJudger judger = new ClickJudger(handler);;
 	
 	
     @Override
@@ -47,7 +48,17 @@ public class GlucometerActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
         
+        glucometerImage = (ImageView) findViewById(R.id.meterImage);
         realButtonImage = (ImageView) findViewById(R.id.buttonImage);
+        testStripImage = (ImageView) findViewById(R.id.testStripImage);
+        resetImage = (ImageView) findViewById(R.id.resetImage);
+        usbImage = (ImageView) findViewById(R.id.usbImage);
+        acImage = (ImageView) findViewById(R.id.acImage);
+        
+        this.setOnClickListeners();
+    }
+    
+    private void setOnClickListeners() {
         realButtonImage.setOnTouchListener(new OnTouchListener() {
 			
 			@Override
@@ -70,8 +81,7 @@ public class GlucometerActivity extends Activity {
 				return false;
 			}
 		});
-
-        testStripImage = (ImageView) findViewById(R.id.testStripImage);
+        
         testStripImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -88,7 +98,6 @@ public class GlucometerActivity extends Activity {
 			}
 		});
         
-        resetImage = (ImageView) findViewById(R.id.resetImage);
         resetImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -98,7 +107,6 @@ public class GlucometerActivity extends Activity {
 			}
 		});
         
-        usbImage = (ImageView) findViewById(R.id.usbImage);
         usbImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -107,8 +115,7 @@ public class GlucometerActivity extends Activity {
 				Toast.makeText(GlucometerActivity.this, "Long beep", 1000).show();
 			}
 		});
-        
-        acImage = (ImageView) findViewById(R.id.acImage);
+
         acImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -117,8 +124,6 @@ public class GlucometerActivity extends Activity {
 				Toast.makeText(GlucometerActivity.this, "short beep", 1000).show();
 			}
 		});
-        
-        judger = new ClickJudger(handler);
     }
     
     private void doStripInserted() {
@@ -251,4 +256,5 @@ public class GlucometerActivity extends Activity {
 			return false;
 		}
 	}
+    
 }
