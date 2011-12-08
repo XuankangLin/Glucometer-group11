@@ -27,8 +27,6 @@ import static com.group11.base.Interrupt.*;
 public class GlucometerActivity extends Activity {
 
 	ImageView realButtonImage;
-	boolean buttonDown = false;
-	
 	ImageView testStripImage;
 	ImageView resetImage;
 	ImageView usbImage;
@@ -55,24 +53,19 @@ public class GlucometerActivity extends Activity {
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN: {
 					realButtonImage.setImageResource(R.drawable.button_down);
-					buttonDown = true;
 					judger.buttonDown(new Date());
+					return true;
 				}
-
-				case MotionEvent.ACTION_MOVE: {
-					break;
-				}
-				
 				case MotionEvent.ACTION_UP: {
 					realButtonImage.setImageResource(R.drawable.button_up);
-					buttonDown = false;
 					judger.buttonUp(new Date());
+					return true;
 				}
 				
 				default:
 					break;
 				}
-				return true;
+				return false;
 			}
 		});
 
