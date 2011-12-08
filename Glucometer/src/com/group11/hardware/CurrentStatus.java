@@ -2,50 +2,46 @@ package com.group11.hardware;
 
 import java.util.Date;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
+
 /**
  * stores the state of this glucometer
  * &&
  * manage the history records 
  */
-public class CurrentStatus {
+public class CurrentStatus extends Activity {
 
 	private static CurrentStatus instance = null;
 	public static CurrentStatus get() {
 		if (instance == null) {
 			instance = new CurrentStatus();
 		}
-		instance.restoreFromDB();
 		return instance;
 	}
 	
-	private CurrentStatus() {
-		//TODO get status from DATASTORE
-	}
+	private CurrentStatus() {}
 
-	/**
-	 * restore the status from Database
-	 */
-	private void restoreFromDB() {
-		//TODO
-	}
 	
-	private boolean powerOn = false;
-	private Date currentTime = new Date();
+	private static final String POWER_ON = "powerOn";
+	private static final String CURRENT_TIME = "currentTime";
+
+	private SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 	
 	public boolean isPowerOn() {
-		return powerOn;
+		return preferences.getBoolean(POWER_ON, false);
 	}
 
 	public void setPowerOn(boolean powerOn) {
-		this.powerOn = powerOn;
+		preferences.edit().putBoolean(POWER_ON, powerOn);
 	}
 
 	public Date getCurrentTime() {
-		return currentTime;
+		return new Date(preferences.getLong(CURRENT_TIME, 0));
 	}
 
-	public void setCurrentTime(Date currentTime) {
-		this.currentTime = currentTime;
+	public void setCurrentTime(Date time) {
+		preferences.edit().putLong(CURRENT_TIME, time.getTime());
 	}
 	
 	/**
