@@ -21,11 +21,11 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import static com.group11.util.Interrupt.*;
+import static com.group11.base.Interrupt.*;
 
 
 public class GlucometerActivity extends Activity {
-    /** Called when the activity is first created. */
+
 	ImageView realButtonImage;
 	boolean buttonDown = false;
 	

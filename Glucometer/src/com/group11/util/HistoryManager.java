@@ -2,6 +2,8 @@ package com.group11.util;
 
 import java.util.LinkedList;
 
+import com.group11.base.TestResult;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

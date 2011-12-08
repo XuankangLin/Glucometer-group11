@@ -1,6 +1,6 @@
 package com.group11.util;
 
-import com.group11.util.TestResult.Unit;
+import com.group11.base.Unit;
 
 /**
  * unit conversion between L & dL 

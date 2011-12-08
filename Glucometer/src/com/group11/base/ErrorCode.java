@@ -1,4 +1,4 @@
-package com.group11.util;
+package com.group11.base;
 
 public enum ErrorCode {
 	ERROR1("blabla"),

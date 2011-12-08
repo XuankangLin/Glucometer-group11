@@ -1,4 +1,4 @@
-package com.group11.util;
+package com.group11.base;
 
 import java.util.Date;
 
@@ -34,18 +34,5 @@ public class TestResult {
 	public Date getTime() {
 		return time;
 	}
-	
-	public static enum Unit {
-		L,
-		DL;
 
-		public static Unit get(int ordinal) {
-			for (Unit unit : Unit.values()) {
-				if (unit.ordinal() == ordinal) {
-					return unit;
-				}
-			}
-			return null;
-		}
-	}
 }
