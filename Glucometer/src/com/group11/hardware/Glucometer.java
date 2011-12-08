@@ -12,11 +12,19 @@ public class Glucometer {
 		if (instance == null) {
 			instance = new Glucometer();
 		}
+		instance.restoreFromDB();
 		return instance;
 	}
 	
 	private Glucometer() {
 		//TODO get status from DATASTORE
+	}
+
+	/**
+	 * restore the status from Database
+	 */
+	private void restoreFromDB() {
+		//TODO
 	}
 
 	private ButtonClickJudger judger = new ButtonClickJudger();
