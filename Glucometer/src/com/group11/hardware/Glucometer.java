@@ -18,7 +18,16 @@ public class Glucometer {
 	private Glucometer() {
 		//TODO get status from DATASTORE
 	}
+
+	private ButtonClickJudger judger = new ButtonClickJudger();
 	
-	private boolean poweredOn = false;
+	private boolean powerOn = false;
 	
+	public boolean isPowerOn() {
+		return powerOn;
+	}
+
+	public void setPowerOn(boolean powerOn) {
+		this.powerOn = powerOn;
+	}
 }
