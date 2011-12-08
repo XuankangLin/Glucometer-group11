@@ -1,5 +1,7 @@
 package com.group11.hardware;
 
+import java.util.Date;
+
 /**
  * stores the state of this glucometer
  * &&
@@ -28,6 +30,7 @@ public class CurrentStatus {
 	}
 	
 	private boolean powerOn = false;
+	private Date currentTime = new Date();
 	
 	public boolean isPowerOn() {
 		return powerOn;
@@ -35,5 +38,20 @@ public class CurrentStatus {
 
 	public void setPowerOn(boolean powerOn) {
 		this.powerOn = powerOn;
+	}
+
+	public Date getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(Date currentTime) {
+		this.currentTime = currentTime;
+	}
+	
+	/**
+	 * the current time is increased by one second
+	 */
+	public void nextSecond() {
+		//TODO
 	}
 }
