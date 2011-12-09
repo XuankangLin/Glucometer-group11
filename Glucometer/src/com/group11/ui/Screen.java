@@ -8,6 +8,8 @@ import android.os.Bundle;
 /**
  * This class is contained in the glucometer image 
  * and is responsible for displaying data & status
+ * 
+ * may be deprecated
  */
 public class Screen extends Activity {
 
