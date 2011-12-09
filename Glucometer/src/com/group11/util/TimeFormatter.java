@@ -30,6 +30,6 @@ public class TimeFormatter {
 			return null;
 		}
 		
-		return new SimpleDateFormat("hh:mm").format(time);
+		return new SimpleDateFormat("HH:mm").format(time);
 	}
 }
