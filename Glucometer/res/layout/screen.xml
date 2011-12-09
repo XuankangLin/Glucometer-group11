@@ -30,16 +30,16 @@
 		android:layout_centerInParent="true" android:layout_marginLeft="100dp">
 		<LinearLayout android:layout_width="wrap_content"
 			android:id="@+id/dataLayout" android:layout_height="match_parent">
-			<ImageView android:src="@drawable/number0" android:id="@+id/imageView1"
+			<ImageView android:src="@drawable/number0" android:id="@+id/firstNumberImage"
 				android:layout_width="20dp" android:layout_height="match_parent"></ImageView>
 			<ImageView android:src="@drawable/point" android:id="@+id/placeHolderImage"
 				android:layout_width="10dp" android:layout_height="match_parent"
 				android:visibility="invisible"></ImageView>
-			<ImageView android:src="@drawable/number0" android:id="@+id/imageView2"
+			<ImageView android:src="@drawable/number0" android:id="@+id/secondNumberImage"
 				android:layout_width="20dp" android:layout_height="match_parent"></ImageView>
-			<ImageView android:src="@drawable/point" android:id="@+id/imageView3"
+			<ImageView android:src="@drawable/point" android:id="@+id/pointImage"
 				android:layout_width="10dp" android:layout_height="match_parent"></ImageView>
-			<ImageView android:src="@drawable/number0" android:id="@+id/imageView4"
+			<ImageView android:src="@drawable/number0" android:id="@+id/thirdNumberImage"
 				android:layout_width="20dp" android:layout_height="match_parent"></ImageView>
 		</LinearLayout>
 		<ImageView android:src="@drawable/dl" android:id="@+id/unitImage"

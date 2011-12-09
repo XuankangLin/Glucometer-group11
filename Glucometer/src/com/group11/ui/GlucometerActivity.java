@@ -44,6 +44,7 @@ public class GlucometerActivity extends Activity {
 	private ImageView errorModeImage;
 	private LinearLayout topPanel;
 
+	private ResultArea resultArea;
 	private LinearLayout resultPanel;
 
 	private ImageView progressBarImage;
@@ -65,6 +66,7 @@ public class GlucometerActivity extends Activity {
 //				WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
         
+        //==========global pictures==========
         glucometerImage = (ImageView) findViewById(R.id.meterImage);
         realButtonImage = (ImageView) findViewById(R.id.buttonImage);
         testStripImage = (ImageView) findViewById(R.id.testStripImage);
@@ -72,6 +74,7 @@ public class GlucometerActivity extends Activity {
         usbImage = (ImageView) findViewById(R.id.usbImage);
         acPlugImage = (ImageView) findViewById(R.id.acPlugImage);
         
+        //==========screen's top panel==========
         batteryImage = (ImageView) findViewById(R.id.batteryImage);
         acImage = (ImageView) findViewById(R.id.acImage);
         testingModeImage = (ImageView) findViewById(R.id.testingModeImage);
@@ -80,10 +83,18 @@ public class GlucometerActivity extends Activity {
         errorModeImage = (ImageView) findViewById(R.id.errorModeImage);
         topPanel = (LinearLayout) findViewById(R.id.topPanel);
         
+        //==========screen's result area==========
+		resultArea = new ResultArea(
+				(ImageView) findViewById(R.id.firstNumberImage),
+				(ImageView) findViewById(R.id.secondNumberImage),
+				(ImageView) findViewById(R.id.pointImage),
+				(ImageView) findViewById(R.id.thirdNumberImage));
         resultPanel = (LinearLayout) findViewById(R.id.resultPanel);
         
+        //==========screen's progress bar==========
         progressBarImage = (ImageView) findViewById(R.id.progressBarImage);
         
+        //==========screen's date panel==========
         dateText = (TextView) findViewById(R.id.dateText);
         timeText = (TextView) findViewById(R.id.timeText);
         datePanel = (LinearLayout) findViewById(R.id.datePanel);
@@ -97,6 +108,7 @@ public class GlucometerActivity extends Activity {
         errorModeImage.setVisibility(View.VISIBLE);
         dateText.setText(TimeFormatter.formatDate(new Date()));
         timeText.setText(TimeFormatter.formatTime(new Date()));
+        progressBarImage.setVisibility(View.INVISIBLE);
         
         this.setOnClickListeners();
         
