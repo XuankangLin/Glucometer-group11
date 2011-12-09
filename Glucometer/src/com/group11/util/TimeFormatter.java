@@ -4,11 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * formats date into Month/day/year
+ * formats date into month/day/year
  * formats time into hour:minute 
  */
 public class TimeFormatter {
 
+	/**
+	 * @param date
+	 * @return a month/day/year string
+	 */
 	public static String formatDate(Date date) {
 		if (date == null) {
 			return null;
@@ -16,7 +20,11 @@ public class TimeFormatter {
 		
 		return new SimpleDateFormat("MM/dd/yy").format(date);
 	}
-	
+
+	/**
+	 * @param time
+	 * @return a hour:minute
+	 */
 	public static String formatTime(Date time) {
 		if (time == null) {
 			return null;
