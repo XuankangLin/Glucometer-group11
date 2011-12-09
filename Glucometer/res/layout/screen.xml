@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="match_parent"
-	android:layout_height="match_parent">
-    <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/editText1" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" android:layout_marginTop="96dp">
-        <requestFocus></requestFocus>
-    </EditText>
-    <ImageView android:layout_width="wrap_content" android:src="@drawable/number0" android:layout_height="wrap_content" android:id="@+id/imageView1" android:layout_below="@+id/editText1" android:layout_alignLeft="@+id/editText1" android:layout_marginTop="59dp"></ImageView>
+	android:layout_height="match_parent" android:id="@+id/screenLayout">
+	<LinearLayout android:layout_width="match_parent"
+		android:id="@+id/topPanel" android:layout_height="20dp"
+		android:layout_alignParentTop="true" android:layout_centerHorizontal="true">
+		<ImageView android:layout_width="60dp"
+			android:src="@drawable/battery_100percent" android:id="@+id/batteryImage"
+			android:layout_height="match_parent" android:layout_marginLeft="10dp"></ImageView>
+		<ImageView android:layout_width="wrap_content" android:src="@drawable/acing"
+			android:id="@+id/acImage" android:layout_height="match_parent"
+			android:layout_marginRight="20dp" android:visibility="invisible"></ImageView>
+		<ImageView android:layout_width="wrap_content" android:src="@drawable/testing_mode"
+			android:id="@+id/testingModeImage" android:layout_height="match_parent"
+			android:layout_marginRight="10dp"></ImageView>
+		<ImageView android:layout_width="wrap_content" android:src="@drawable/browsing_mode"
+			android:id="@+id/browsingModeImage" android:layout_height="match_parent"
+			android:layout_marginRight="10dp" android:visibility="invisible"></ImageView>
+		<ImageView android:layout_width="wrap_content" android:src="@drawable/uploading_mode"
+			android:id="@+id/uploadingModeImage" android:layout_height="match_parent"
+			android:layout_marginRight="10dp" android:visibility="invisible"></ImageView>
+		<ImageView android:layout_width="wrap_content" android:src="@drawable/error_mode"
+			android:id="@+id/errorModeImage" android:layout_height="match_parent"
+			android:layout_marginRight="10dp" android:visibility="invisible"></ImageView>
+	</LinearLayout>
+	<LinearLayout android:layout_width="match_parent"
+		android:id="@+id/resultPanel" android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true">
+	</LinearLayout>
+	<ImageView android:layout_width="120dp" android:src="@drawable/progress_bar_10"
+		android:id="@+id/progressBarImage" android:layout_height="20dp"
+		android:layout_centerHorizontal="true" android:layout_above="@+id/datePanel"></ImageView>
+	<LinearLayout android:layout_width="match_parent"
+		android:id="@+id/datePanel" android:layout_height="20dp"
+		android:layout_centerHorizontal="true"
+		android:layout_alignParentBottom="true" android:orientation="horizontal">
+		<TextView android:text="TextView" android:id="@+id/dateText"
+			android:layout_width="wrap_content" android:layout_height="match_parent"
+			android:layout_marginLeft="40dp" android:textColor="@android:color/black"></TextView>
+		<TextView android:text="TextView" android:id="@+id/timeText"
+			android:layout_width="wrap_content" android:layout_height="match_parent"
+			android:layout_marginLeft="40dp" android:textColor="@android:color/black"></TextView>
+	</LinearLayout>
 
 </RelativeLayout>
