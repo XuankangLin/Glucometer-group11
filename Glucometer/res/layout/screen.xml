@@ -24,12 +24,31 @@
 			android:id="@+id/errorModeImage" android:layout_height="match_parent"
 			android:layout_marginRight="10dp" android:visibility="invisible"></ImageView>
 	</LinearLayout>
+	
 	<LinearLayout android:layout_width="match_parent"
 		android:id="@+id/resultPanel" android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true">
+		android:layout_centerInParent="true" android:layout_marginLeft="100dp">
+		<LinearLayout android:layout_width="wrap_content"
+			android:id="@+id/dataLayout" android:layout_height="match_parent">
+			<ImageView android:src="@drawable/number0" android:id="@+id/imageView1"
+				android:layout_width="20dp" android:layout_height="match_parent"></ImageView>
+			<ImageView android:src="@drawable/point" android:id="@+id/placeHolderImage"
+				android:layout_width="10dp" android:layout_height="match_parent"
+				android:visibility="invisible"></ImageView>
+			<ImageView android:src="@drawable/number0" android:id="@+id/imageView2"
+				android:layout_width="20dp" android:layout_height="match_parent"></ImageView>
+			<ImageView android:src="@drawable/point" android:id="@+id/imageView3"
+				android:layout_width="10dp" android:layout_height="match_parent"></ImageView>
+			<ImageView android:src="@drawable/number0" android:id="@+id/imageView4"
+				android:layout_width="20dp" android:layout_height="match_parent"></ImageView>
+		</LinearLayout>
+		<ImageView android:src="@drawable/dl" android:id="@+id/unitImage"
+			android:layout_width="30dp" android:layout_height="wrap_content"
+			android:layout_marginLeft="10dp"></ImageView>
 	</LinearLayout>
+	
 	<ImageView android:layout_width="120dp" android:src="@drawable/progress_bar_10"
-		android:id="@+id/progressBarImage" android:layout_height="20dp"
+		android:id="@+id/progressBarImage" android:layout_height="15dp"
 		android:layout_centerHorizontal="true" android:layout_above="@+id/datePanel"></ImageView>
 	<LinearLayout android:layout_width="match_parent"
 		android:id="@+id/datePanel" android:layout_height="20dp"
