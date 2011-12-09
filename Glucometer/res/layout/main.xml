@@ -24,12 +24,15 @@
 				android:layout_marginTop="50dp" android:layout_width="60dp"
 				android:layout_height="20dp" android:layout_gravity="right"></ImageView>
 		</LinearLayout>
-		<ImageView android:id="@+id/acImage" android:src="@drawable/ac_plug"
+		<ImageView android:id="@+id/acPlugImage" android:src="@drawable/ac_plug"
 			android:layout_width="wrap_content" android:layout_height="80dp"
 			android:layout_alignParentBottom="true"
 			android:layout_centerHorizontal="true"></ImageView>
 		<ImageView android:id="@+id/buttonImage" android:src="@drawable/button_up"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_marginLeft="100dp" android:layout_marginTop="350dp"></ImageView>
+		<include android:layout_width="220dp" layout="@layout/screen"
+			android:layout_height="120dp" android:id="@+id/include1"
+			android:layout_marginTop="200dp" android:layout_marginLeft="20dp"></include>
 	</RelativeLayout>
 </LinearLayout>
