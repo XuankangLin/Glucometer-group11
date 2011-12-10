@@ -13,7 +13,6 @@ import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
 import com.group11.util.ClickJudger;
 import com.group11.util.HistoryManager;
-import com.group11.util.TimeFormatter;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -45,10 +44,7 @@ public class GlucometerActivity extends Activity {
 	private StatusArea statusArea;
 	private ResultArea resultArea;
 	private ProgressBarArea progressBarArea;
-
-	private TextView dateText;
-	private TextView timeText;
-	private LinearLayout datePanel;
+	private DateArea dateArea;
 	
 	
 	private Handler handler = new Handler(new GlucometerHandlerCallback());
@@ -95,9 +91,10 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.progressBarImage));
         
         //==========screen's date panel==========
-        dateText = (TextView) findViewById(R.id.dateText);
-        timeText = (TextView) findViewById(R.id.timeText);
-        datePanel = (LinearLayout) findViewById(R.id.datePanel);
+		dateArea = new DateArea(
+				(TextView) findViewById(R.id.dateText),
+				(TextView) findViewById(R.id.timeText),
+				(LinearLayout) findViewById(R.id.datePanel));
         
         this.setOnClickListeners();
         
@@ -110,13 +107,12 @@ public class GlucometerActivity extends Activity {
         statusArea.setACing(true);
         statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
 
+        resultArea.display(123.1459972, Unit.L);
+
         progressBarArea.setVisible(true);
         progressBarArea.setProgress(6);
         
-        dateText.setText(TimeFormatter.formatDate(new Date()));
-        timeText.setText(TimeFormatter.formatTime(new Date()));
-
-        resultArea.display(123.1459972, Unit.L);
+        dateArea.setDateTime(new Date());
     }
     
     private void setOnClickListeners() {
@@ -195,13 +191,7 @@ public class GlucometerActivity extends Activity {
 		statusArea.setVisibility(visible);
 		resultArea.setVisible(visible);
 		progressBarArea.setVisible(visible);
-		
-    	if (visible) {
-			datePanel.setVisibility(View.VISIBLE);
-		}
-    	else {
-			datePanel.setVisibility(View.INVISIBLE);
-		}
+		dateArea.setVisible(visible);
     }
     
     private void doStripInserted() {
