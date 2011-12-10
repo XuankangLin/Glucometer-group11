@@ -26,4 +26,38 @@ public final class Converter {
 		
 		return value;
 	}
+	
+	/**
+	 * @param value
+	 * @return XY.Z:  [0]-X, [1]-Y, [2]-Z
+	 */
+	public static int[] toLNumbers(double value) {
+		int[] numbers = new int[3];
+		
+		int v = (int) value;
+		numbers[1] = v % 10;
+		v /= 10;
+		numbers[0] = v % 10;
+		
+		value *= 10;
+		numbers[2] = (int) (value % 10);
+		
+		return numbers;
+	}
+
+	/**
+	 * @param value
+	 * @return XYZ:  [0]-X, [1]-Y, [2]-Z
+	 */
+	public static int[] toDLNumbers(double value) {
+		int[] numbers = new int[3];
+		
+		numbers[2] = (int) (value % 10);
+		value /= 10;
+		numbers[1] = (int) (value % 10);
+		value /= 10;
+		numbers[0] = (int) (value % 10);
+
+		return numbers;
+	}
 }

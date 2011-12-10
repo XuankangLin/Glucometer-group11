@@ -7,6 +7,7 @@ import java.util.Random;
 import com.group11.R;
 import com.group11.base.ClickStyle;
 import com.group11.base.TestResult;
+import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
 import com.group11.util.ClickJudger;
 import com.group11.util.HistoryManager;
@@ -91,7 +92,8 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.firstNumberImage),
 				(ImageView) findViewById(R.id.secondNumberImage),
 				(ImageView) findViewById(R.id.pointImage),
-				(ImageView) findViewById(R.id.thirdNumberImage));
+				(ImageView) findViewById(R.id.thirdNumberImage),
+				(ImageView) findViewById(R.id.unitImage));
         resultPanel = (LinearLayout) findViewById(R.id.resultPanel);
         
         //==========screen's progress bar==========
@@ -101,6 +103,11 @@ public class GlucometerActivity extends Activity {
         dateText = (TextView) findViewById(R.id.dateText);
         timeText = (TextView) findViewById(R.id.timeText);
         datePanel = (LinearLayout) findViewById(R.id.datePanel);
+        
+        this.setOnClickListeners();
+        
+        Beeper.get().attachHandler(this.handler);
+        
         
         //TODO testing code, to be deleted
         batteryImage.setVisibility(View.VISIBLE);
@@ -112,10 +119,8 @@ public class GlucometerActivity extends Activity {
         dateText.setText(TimeFormatter.formatDate(new Date()));
         timeText.setText(TimeFormatter.formatTime(new Date()));
         progressBarImage.setVisibility(View.INVISIBLE);
-        
-        this.setOnClickListeners();
-        
-        Beeper.get().attachHandler(this.handler);
+
+        resultArea.display(123.1459972, Unit.L);
     }
     
     private void setOnClickListeners() {
@@ -295,6 +300,7 @@ public class GlucometerActivity extends Activity {
 		}
 	}
 
+	
     /**
      * the callback to deal with Messages in the Handler 
      */
