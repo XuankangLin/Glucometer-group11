@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.group11.R;
+import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
+import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
@@ -40,16 +42,8 @@ public class GlucometerActivity extends Activity {
 	private ImageView usbImage;
 	private ImageView acPlugImage;
 
-	private ImageView batteryImage;
-	private ImageView acImage;
-	private ImageView testingModeImage;
-	private ImageView browsingModeImage;
-	private ImageView uploadingModeImage;
-	private ImageView errorModeImage;
-	private LinearLayout topPanel;
-
+	private StatusArea statusArea;
 	private ResultArea resultArea;
-	private LinearLayout resultPanel;
 
 	private ImageView progressBarImage;
 
@@ -79,13 +73,14 @@ public class GlucometerActivity extends Activity {
         acPlugImage = (ImageView) findViewById(R.id.acPlugImage);
         
         //==========screen's top panel==========
-        batteryImage = (ImageView) findViewById(R.id.batteryImage);
-        acImage = (ImageView) findViewById(R.id.acImage);
-        testingModeImage = (ImageView) findViewById(R.id.testingModeImage);
-        browsingModeImage = (ImageView) findViewById(R.id.browsingModeImage);
-        uploadingModeImage = (ImageView) findViewById(R.id.uploadingModeImage);
-        errorModeImage = (ImageView) findViewById(R.id.errorModeImage);
-        topPanel = (LinearLayout) findViewById(R.id.topPanel);
+		statusArea = new StatusArea(
+				(ImageView) findViewById(R.id.batteryImage),
+				(ImageView) findViewById(R.id.acImage),
+				(ImageView) findViewById(R.id.testingModeImage),
+				(ImageView) findViewById(R.id.browsingModeImage),
+				(ImageView) findViewById(R.id.uploadingModeImage),
+				(ImageView) findViewById(R.id.errorModeImage),
+				(LinearLayout) findViewById(R.id.topPanel));
         
         //==========screen's result area==========
 		resultArea = new ResultArea(
@@ -93,8 +88,8 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.secondNumberImage),
 				(ImageView) findViewById(R.id.pointImage),
 				(ImageView) findViewById(R.id.thirdNumberImage),
-				(ImageView) findViewById(R.id.unitImage));
-        resultPanel = (LinearLayout) findViewById(R.id.resultPanel);
+				(ImageView) findViewById(R.id.unitImage),
+				(LinearLayout) findViewById(R.id.resultPanel));
         
         //==========screen's progress bar==========
         progressBarImage = (ImageView) findViewById(R.id.progressBarImage);
@@ -110,12 +105,10 @@ public class GlucometerActivity extends Activity {
         
         
         //TODO testing code, to be deleted
-        batteryImage.setVisibility(View.VISIBLE);
-        acImage.setVisibility(View.VISIBLE);
-        testingModeImage.setVisibility(View.VISIBLE);
-        browsingModeImage.setVisibility(View.VISIBLE);
-        uploadingModeImage.setVisibility(View.VISIBLE);
-        errorModeImage.setVisibility(View.VISIBLE);
+        statusArea.setCurrentMode(Mode.BROWSING);
+        statusArea.setErroring(true);
+        statusArea.setACing(true);
+        statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
         dateText.setText(TimeFormatter.formatDate(new Date()));
         timeText.setText(TimeFormatter.formatTime(new Date()));
         progressBarImage.setVisibility(View.INVISIBLE);
@@ -196,15 +189,14 @@ public class GlucometerActivity extends Activity {
      * @param visible
      */
     private void setScreenVisible(boolean visible) {
+		statusArea.setVisibility(visible);
+		resultArea.setVisible(visible);
+		
     	if (visible) {
-			topPanel.setVisibility(View.VISIBLE);
-			resultPanel.setVisibility(View.VISIBLE);
 			progressBarImage.setVisibility(View.VISIBLE);
 			datePanel.setVisibility(View.VISIBLE);
 		}
     	else {
-			topPanel.setVisibility(View.INVISIBLE);
-			resultPanel.setVisibility(View.INVISIBLE);
 			progressBarImage.setVisibility(View.INVISIBLE);
 			datePanel.setVisibility(View.INVISIBLE);
 		}
