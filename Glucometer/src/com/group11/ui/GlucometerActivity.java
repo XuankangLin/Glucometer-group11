@@ -44,8 +44,7 @@ public class GlucometerActivity extends Activity {
 
 	private StatusArea statusArea;
 	private ResultArea resultArea;
-
-	private ImageView progressBarImage;
+	private ProgressBarArea progressBarArea;
 
 	private TextView dateText;
 	private TextView timeText;
@@ -92,7 +91,8 @@ public class GlucometerActivity extends Activity {
 				(LinearLayout) findViewById(R.id.resultPanel));
         
         //==========screen's progress bar==========
-        progressBarImage = (ImageView) findViewById(R.id.progressBarImage);
+		progressBarArea = new ProgressBarArea(
+				(ImageView) findViewById(R.id.progressBarImage));
         
         //==========screen's date panel==========
         dateText = (TextView) findViewById(R.id.dateText);
@@ -109,9 +109,12 @@ public class GlucometerActivity extends Activity {
         statusArea.setErroring(true);
         statusArea.setACing(true);
         statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
+
+        progressBarArea.setVisible(true);
+        progressBarArea.setProgress(6);
+        
         dateText.setText(TimeFormatter.formatDate(new Date()));
         timeText.setText(TimeFormatter.formatTime(new Date()));
-        progressBarImage.setVisibility(View.INVISIBLE);
 
         resultArea.display(123.1459972, Unit.L);
     }
@@ -191,13 +194,12 @@ public class GlucometerActivity extends Activity {
     private void setScreenVisible(boolean visible) {
 		statusArea.setVisibility(visible);
 		resultArea.setVisible(visible);
+		progressBarArea.setVisible(visible);
 		
     	if (visible) {
-			progressBarImage.setVisibility(View.VISIBLE);
 			datePanel.setVisibility(View.VISIBLE);
 		}
     	else {
-			progressBarImage.setVisibility(View.INVISIBLE);
 			datePanel.setVisibility(View.INVISIBLE);
 		}
     }
