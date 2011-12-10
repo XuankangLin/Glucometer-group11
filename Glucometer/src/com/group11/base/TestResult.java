@@ -35,4 +35,8 @@ public class TestResult {
 		return time;
 	}
 
+	@Override
+	public String toString() {
+		return "RESULT: " + value + unit.toString() + "    " + time;
+	}
 }

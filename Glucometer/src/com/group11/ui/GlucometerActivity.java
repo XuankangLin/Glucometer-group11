@@ -1,12 +1,15 @@
 package com.group11.ui;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import com.group11.R;
 import com.group11.base.ClickStyle;
+import com.group11.base.TestResult;
 import com.group11.hardware.Beeper;
 import com.group11.util.ClickJudger;
+import com.group11.util.HistoryManager;
 import com.group11.util.TimeFormatter;
 
 import android.app.Activity;
@@ -257,10 +260,24 @@ public class GlucometerActivity extends Activity {
 		Toast.makeText(this, style.toString(), 50).show();
 		
 		if (style == ClickStyle.DOUBLE_CLICK) {
-			setScreenVisible(true);
+			Random random = new Random();
+			TestResult result = new TestResult(random.nextDouble(), random.nextInt(2), random.nextLong());
+			HistoryManager historyManager = new HistoryManager();
+			historyManager.addTestResult(this, result);
 		}
 		else if (style == ClickStyle.SHORT_CLICK) {
-			setScreenVisible(false);
+			HistoryManager historyManager = new HistoryManager();
+			List<TestResult> list = historyManager.getTestResults(this);
+			Log.i("TEST_RESULT", "size: " + list.size());
+			for (int i = 0; i < list.size(); i++) {
+				Log.i("TEST_RESULT", i + " : " + list.get(i).toString());				
+			}
+		}
+		else {
+			HistoryManager historyManager = new HistoryManager();
+			historyManager.deleteAllTestResults(this);
+			
+			setScreenVisible(new Random().nextBoolean());
 		}
 	}
 	

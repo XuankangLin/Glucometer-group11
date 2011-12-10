@@ -49,6 +49,11 @@ public class HistoryManager {
 		return resultList;
 	}
 	
+	public synchronized void deleteAllTestResults(Context context) {
+		DBHelper helper = new DBHelper(context);
+		helper.onUpgrade(helper.getWritableDatabase(), 1, 1);
+	}
+	
 	
 	private static class DBHelper extends SQLiteOpenHelper {
 		private static final String DB_NAME = "glucometer_db";
@@ -70,7 +75,6 @@ public class HistoryManager {
 					+ " INTEGER primary key autoincrement,  " + FIELD_VALUE
 					+ " real,  " + FIELD_UNIT + " smallint,  " + FIELD_TIME
 					+ " int)";
-			//TODO to change text into long/double/...
 			db.execSQL(sql);
 		}
 
@@ -99,6 +103,7 @@ public class HistoryManager {
 			return cursor;
 		}
 		
+		@SuppressWarnings("unused")
 		public void delete(int id) {
 			SQLiteDatabase db = this.getWritableDatabase();
 			String where = FIELD_ID + " = ?";
@@ -107,6 +112,7 @@ public class HistoryManager {
 			db.delete(TABLE_NAME, where, whereValue);
 		}
 		
+		@SuppressWarnings("unused")
 		public void update (int id, double value, int unit, long time) {
 			SQLiteDatabase db = this.getWritableDatabase();
 			String where = FIELD_ID + " = ?";
