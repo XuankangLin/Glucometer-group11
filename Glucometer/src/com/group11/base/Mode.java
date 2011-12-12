@@ -5,4 +5,8 @@ public enum Mode {
 	BROWSING,
 	UPLOADING,
 	SETUP;
+	
+	public static Mode get(int ordinal) {
+		return values()[ordinal];
+	}
 }

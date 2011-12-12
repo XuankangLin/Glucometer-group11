@@ -5,11 +5,6 @@ public enum Unit {
 	DL;
 
 	public static Unit get(int ordinal) {
-		for (Unit unit : Unit.values()) {
-			if (unit.ordinal() == ordinal) {
-				return unit;
-			}
-		}
-		return null;
+		return Unit.values()[ordinal];
 	}
 }

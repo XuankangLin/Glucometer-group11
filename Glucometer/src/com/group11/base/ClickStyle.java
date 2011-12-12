@@ -16,11 +16,6 @@ public enum ClickStyle {
 	}
 	
 	public static ClickStyle get(int ordinal) {
-		for (ClickStyle style : ClickStyle.values()) {
-			if (style.ordinal() == ordinal) {
-				return style;
-			}
-		}
-		return null;
+		return ClickStyle.values()[ordinal];
 	}
 }
