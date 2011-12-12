@@ -11,6 +11,7 @@ import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
+import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
 import com.group11.util.HistoryManager;
 
@@ -50,6 +51,7 @@ public class GlucometerActivity extends Activity {
 	private Handler handler = new Handler(new GlucometerHandlerCallback());
 	private ClickJudger judger = new ClickJudger(handler);;
 	
+	private ModeLogic currentModeLogic = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
