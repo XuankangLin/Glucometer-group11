@@ -5,6 +5,9 @@ import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
 import com.group11.ui.StatusArea;
 
+/**
+ * the logical controller in Testing Mode, it judges what to do
+ */
 public class TestingModeLogic extends ModeLogic {
 	
 	public TestingModeLogic(StatusArea status, ResultArea result,

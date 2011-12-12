@@ -5,6 +5,9 @@ import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
 import com.group11.ui.StatusArea;
 
+/**
+ * a abstract class standardizing the interface of logical controllers
+ */
 public abstract class ModeLogic {
 
 	protected final StatusArea statusArea;
