@@ -242,27 +242,35 @@ public class GlucometerActivity extends Activity {
 	}
 	
 	private void doButtonClicked(Message msg) {
-		CurrentStatus currentStatus = CurrentStatus.get();
-		if (!currentStatus.isPowerOn()) {
-			return;
-		}
-		
 		/*
 		 * provided that this.currentModeLogic
 		 * is NOT null when it's power on
 		 */
+		CurrentStatus currentStatus = CurrentStatus.get();
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
-			currentModeLogic.onShortClick();
-			break;
+			if (currentStatus.isPowerOn()) {
+				currentModeLogic.onShortClick();				
+			}
+			return;
 		}
 		case DOUBLE_CLICK: {
-			currentModeLogic.onDoubleClick();
-			break;
+			if (currentStatus.isPowerOn()) {
+				currentModeLogic.onDoubleClick();				
+			}
+			else {
+				//TODO go into Setup Mode
+			}
+			return;
 		}
 		case LONG_CLICK: {
-			currentModeLogic.onLongClick();
-			break;
+			if (currentStatus.isPowerOn()) {
+				currentModeLogic.onLongClick();				
+			}
+			else {
+				//TODO go into Browsing Mode
+			}
+			return;
 		}
 
 		default:
