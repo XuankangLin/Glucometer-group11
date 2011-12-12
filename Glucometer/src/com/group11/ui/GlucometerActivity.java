@@ -183,7 +183,7 @@ public class GlucometerActivity extends Activity {
     }
     
     /**
-     * set the screen parts to be visible or not
+     * set the screen parts's layout to be visible or not
      * @param visible
      */
     private void setScreenVisible(boolean visible) {
@@ -366,6 +366,16 @@ public class GlucometerActivity extends Activity {
 			}
 			if (BEEP_STOP.ordinal() == msg.what) {
 				setBeeperImage(false);
+				return true;
+			}
+			
+			if (POWER_ON.ordinal() == msg.what) {
+				setScreenVisible(true);
+				return true;
+			}
+			if (POWER_OFF.ordinal() == msg.what) {
+				setScreenVisible(false);
+				currentModeLogic = null;
 				return true;
 			}
 			
