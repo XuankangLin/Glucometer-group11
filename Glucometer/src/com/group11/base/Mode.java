@@ -4,4 +4,5 @@ public enum Mode {
 	TESTING,
 	BROWSING,
 	UPLOADING,
+	SETUP;
 }
