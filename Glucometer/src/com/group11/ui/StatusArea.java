@@ -55,6 +55,12 @@ public class StatusArea {
 			this.uploadingModeImage.setVisibility(View.VISIBLE);
 			return;
 		}
+		case SETUP: {
+			this.testingModeImage.setVisibility(View.INVISIBLE);
+			this.browsingModeImage.setVisibility(View.INVISIBLE);
+			this.uploadingModeImage.setVisibility(View.INVISIBLE);
+			return;
+		}
 
 		default:
 			break;
