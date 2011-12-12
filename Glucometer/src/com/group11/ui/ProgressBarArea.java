@@ -4,24 +4,27 @@ import com.group11.R;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 public class ProgressBarArea {
 
 	private final ImageView progressBarImage;
+	private final LinearLayout progressBarPanel;
 	
-	public ProgressBarArea(ImageView progressBar) {
+	public ProgressBarArea(ImageView progressBar, LinearLayout panel) {
 		this.progressBarImage = progressBar;
+		this.progressBarPanel = panel;
 	}
 	
 	/**
-	 * set visibility according to @param visible
+	 * set the layout's visibility according to @param visible
 	 */
 	public void setVisible(boolean visible) {
 		if (visible) {
-			this.progressBarImage.setVisibility(View.VISIBLE);
+			this.progressBarPanel.setVisibility(View.VISIBLE);
 		}
 		else {
-			this.progressBarImage.setVisibility(View.INVISIBLE);
+			this.progressBarPanel.setVisibility(View.INVISIBLE);
 		}
 	}
 
