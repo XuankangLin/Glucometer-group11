@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.group11.base.Mode;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 
 /**
@@ -12,24 +11,20 @@ import android.content.SharedPreferences;
  * &&
  * manage the history records 
  */
-public class CurrentStatus extends Activity {
-
-	private static CurrentStatus instance = null;
-	public static CurrentStatus get() {
-		if (instance == null) {
-			instance = new CurrentStatus();
-		}
-		return instance;
+public class CurrentStatus {
+	
+	/**
+	 * @param preferences, use the preferences created after onCreate()
+	 */
+	public CurrentStatus(SharedPreferences preferences) {
+		this.preferences = preferences;
 	}
-	
-	private CurrentStatus() {}
 
-	
 	private static final String POWER_ON = "powerOn";
 	private static final String CURRENT_TIME = "currentTime";
 	private static final String CURRENT_MODE = "currentMode";
 
-	private SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+	private SharedPreferences preferences;
 	
 	public boolean isPowerOn() {
 		return preferences.getBoolean(POWER_ON, false);

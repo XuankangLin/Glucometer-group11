@@ -14,6 +14,7 @@ import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -44,6 +45,7 @@ public class GlucometerActivity extends Activity {
 	private ProgressBarArea progressBarArea;
 	private DateArea dateArea;
 	
+	private SharedPreferences preferences;
 	
 	private Handler handler = new Handler(new GlucometerHandlerCallback());
 	private ClickJudger judger = new ClickJudger(handler);;
@@ -57,6 +59,8 @@ public class GlucometerActivity extends Activity {
 //		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //				WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
+        
+        preferences = getPreferences(MODE_PRIVATE);
         
         //==========global pictures==========
         glucometerImage = (ImageView) findViewById(R.id.meterImage);
@@ -247,7 +251,7 @@ public class GlucometerActivity extends Activity {
 		 * provided that this.currentModeLogic
 		 * is NOT null when it's power on
 		 */
-		CurrentStatus currentStatus = CurrentStatus.get();
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
 			if (currentStatus.isPowerOn()) {
