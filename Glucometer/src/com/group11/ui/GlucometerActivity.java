@@ -1,26 +1,23 @@
 package com.group11.ui;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
 import com.group11.base.Mode;
-import com.group11.base.TestResult;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
+import com.group11.hardware.CurrentStatus;
 import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
-import com.group11.util.HistoryManager;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -245,30 +242,31 @@ public class GlucometerActivity extends Activity {
 	}
 	
 	private void doButtonClicked(Message msg) {
-		//TODO testing code, to be deleted
-		ClickStyle style = ClickStyle.get(msg.arg1);
-		Log.i("CLICK_STYLE", style.toString());
-		Toast.makeText(this, style.toString(), 50).show();
+		CurrentStatus currentStatus = CurrentStatus.get();
+		if (!currentStatus.isPowerOn()) {
+			return;
+		}
 		
-		if (style == ClickStyle.DOUBLE_CLICK) {
-			Random random = new Random();
-			TestResult result = new TestResult(random.nextDouble(), random.nextInt(2), random.nextLong());
-			HistoryManager historyManager = new HistoryManager();
-			historyManager.addTestResult(this, result);
+		/*
+		 * provided that this.currentModeLogic
+		 * is NOT null when it's power on
+		 */
+		switch (ClickStyle.get(msg.arg1)) {
+		case SHORT_CLICK: {
+			currentModeLogic.onShortClick();
+			break;
 		}
-		else if (style == ClickStyle.SHORT_CLICK) {
-			HistoryManager historyManager = new HistoryManager();
-			List<TestResult> list = historyManager.getTestResults(this);
-			Log.i("TEST_RESULT", "size: " + list.size());
-			for (int i = 0; i < list.size(); i++) {
-				Log.i("TEST_RESULT", i + " : " + list.get(i).toString());				
-			}
+		case DOUBLE_CLICK: {
+			currentModeLogic.onDoubleClick();
+			break;
 		}
-		else {
-			HistoryManager historyManager = new HistoryManager();
-			historyManager.deleteAllTestResults(this);
-			
-			setScreenVisible(new Random().nextBoolean());
+		case LONG_CLICK: {
+			currentModeLogic.onLongClick();
+			break;
+		}
+
+		default:
+			break;
 		}
 	}
 	
