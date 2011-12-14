@@ -31,7 +31,7 @@ public class CurrentStatus {
 	}
 
 	public synchronized void setPowerOn(boolean powerOn) {
-		preferences.edit().putBoolean(POWER_ON, powerOn);
+		preferences.edit().putBoolean(POWER_ON, powerOn).commit();
 	}
 
 	public Date getCurrentTime() {
@@ -42,7 +42,7 @@ public class CurrentStatus {
 		if (time == null) {
 			throw new IllegalArgumentException("@param time should not be null");
 		}
-		preferences.edit().putLong(CURRENT_TIME, time.getTime());
+		preferences.edit().putLong(CURRENT_TIME, time.getTime()).commit();
 	}
 	
 	public Mode getCurrentMode() {
@@ -54,7 +54,7 @@ public class CurrentStatus {
 		if (mode == null) {
 			throw new IllegalArgumentException("@param mode should not be null");
 		}
-		preferences.edit().putInt(CURRENT_MODE, mode.ordinal());
+		preferences.edit().putInt(CURRENT_MODE, mode.ordinal()).commit();
 	}
 	
 	/**
