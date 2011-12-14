@@ -20,11 +20,13 @@ public class CurrentStatus {
 		this.preferences = preferences;
 	}
 
+	private final SharedPreferences preferences;
+
+
 	private static final String POWER_ON = "powerOn";
 	private static final String CURRENT_TIME = "currentTime";
 	private static final String CURRENT_MODE = "currentMode";
 
-	private final SharedPreferences preferences;
 	
 	public boolean isPowerOn() {
 		return preferences.getBoolean(POWER_ON, false);
@@ -44,7 +46,16 @@ public class CurrentStatus {
 		}
 		preferences.edit().putLong(CURRENT_TIME, time.getTime()).commit();
 	}
-	
+
+	/**
+	 * the current time is increased by one second
+	 */
+	public synchronized void nextSecond() {
+		long time = preferences.getLong(CURRENT_TIME, 0);
+		time += 1000;
+		preferences.edit().putLong(CURRENT_TIME, time).commit();
+	}
+
 	public Mode getCurrentMode() {
 		int ordinal = preferences.getInt(CURRENT_MODE, -1);
 		return ordinal == -1 ? null : Mode.get(ordinal);
@@ -57,10 +68,4 @@ public class CurrentStatus {
 		preferences.edit().putInt(CURRENT_MODE, mode.ordinal()).commit();
 	}
 	
-	/**
-	 * the current time is increased by one second
-	 */
-	public void nextSecond() {
-		//TODO
-	}
 }
