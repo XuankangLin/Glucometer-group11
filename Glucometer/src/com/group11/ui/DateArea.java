@@ -1,15 +1,21 @@
 package com.group11.ui;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.group11.util.TimeFormatter;
 
+import android.app.Activity;
 import android.util.Pair;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DateArea extends UIArea {
 
+	private final Activity activity;
+	
 	private final TextView monthText1;
 	private final TextView monthText2;
 	private final TextView dayText1;
@@ -23,11 +29,15 @@ public class DateArea extends UIArea {
 	private final TextView minuteText1;
 	private final TextView minuteText2;
 	
-	public DateArea(LinearLayout panel, TextView month1, TextView month2,
+	private TimerTask colonBlinkingTask = null;
+	
+	public DateArea(LinearLayout panel, Activity activity, TextView month1, TextView month2,
 			TextView day1, TextView day2, TextView year1, TextView year2,
 			TextView hour1, TextView hour2, TextView colon, TextView minute1, TextView minute2) {
 		super(panel);
 
+		this.activity = activity;
+		
 		this.monthText1 = month1;
 		this.monthText2 = month2;
 		this.dayText1 = day1;
@@ -68,6 +78,27 @@ public class DateArea extends UIArea {
 		this.minuteText1.setText(pair.first);
 		this.minuteText2.setText(pair.second);
 	}
+	
+	private void resetColonBlinkingTask() {
+		colonBlinkingTask = new TimerTask() {
+
+			@Override
+			public void run() {
+				activity.runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						if (colonText.getVisibility() == View.VISIBLE) {
+							colonText.setVisibility(View.INVISIBLE);
+						} 
+						else {
+							colonText.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+			}
+		};
+	}
 
 	/**
 	 * set if the colon is blinking
@@ -75,10 +106,17 @@ public class DateArea extends UIArea {
 	 */
 	public void setColonBlinking(boolean blinking) {
 		if (blinking) {
-			
+			if (colonBlinkingTask != null) {
+				colonBlinkingTask.cancel();
+			}
+			this.resetColonBlinkingTask();
+			new Timer().schedule(colonBlinkingTask, 0, 1000);
 		}
 		else {
-			
+			if (colonBlinkingTask != null) {
+				colonBlinkingTask.cancel();
+				colonBlinkingTask = null;				
+			}
 		}
 	}
 }

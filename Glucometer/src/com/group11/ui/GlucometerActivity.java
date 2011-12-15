@@ -97,6 +97,7 @@ public class GlucometerActivity extends Activity {
         //==========screen's date panel==========
 		dateArea = new DateArea(
 				(LinearLayout) findViewById(R.id.datePanel),
+				this,
 				(TextView) findViewById(R.id.monthText1),
 				(TextView) findViewById(R.id.monthText2),
 				(TextView) findViewById(R.id.dayText1),
@@ -126,6 +127,7 @@ public class GlucometerActivity extends Activity {
         progressBarArea.setProgress(6);
         
         dateArea.setDateTime(new Date());
+        dateArea.setColonBlinking(true);
     }
     
     private void setOnClickListeners() {
