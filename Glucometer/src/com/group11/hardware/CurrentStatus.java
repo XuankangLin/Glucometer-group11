@@ -62,10 +62,7 @@ public class CurrentStatus {
 	}
 	
 	public synchronized void setCurrentMode(Mode mode) {
-		if (mode == null) {
-			throw new IllegalArgumentException("@param mode should not be null");
-		}
-		preferences.edit().putInt(CURRENT_MODE, mode.ordinal()).commit();
+		preferences.edit().putInt(CURRENT_MODE, mode == null ? -1 : mode.ordinal()).commit();
 	}
 	
 }
