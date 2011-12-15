@@ -58,12 +58,53 @@
 		android:id="@+id/datePanel" android:layout_height="20dp"
 		android:layout_centerHorizontal="true"
 		android:layout_alignParentBottom="true" android:orientation="horizontal">
-		<TextView android:text="TextView" android:id="@+id/dateText"
-			android:layout_width="wrap_content" android:layout_height="match_parent"
-			android:layout_marginLeft="40dp" android:textColor="@android:color/black"></TextView>
-		<TextView android:text="TextView" android:id="@+id/timeText"
-			android:layout_width="wrap_content" android:layout_height="match_parent"
-			android:layout_marginLeft="40dp" android:textColor="@android:color/black"></TextView>
+		<LinearLayout android:layout_width="wrap_content"
+			android:layout_height="match_parent" android:layout_marginLeft="40dp">
+			<TextView android:text="TextView" android:id="@+id/monthText1"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+			<TextView android:text="TextView" android:id="@+id/monthText2"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+
+			<TextView android:text="/" android:layout_width="wrap_content"
+				android:layout_height="match_parent" android:textColor="@android:color/black">/</TextView>
+
+			<TextView android:text="TextView" android:id="@+id/dayText1"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+			<TextView android:text="TextView" android:id="@+id/dayText2"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+
+			<TextView android:text="/" android:layout_width="wrap_content"
+				android:layout_height="match_parent" android:textColor="@android:color/black">/</TextView>
+
+			<TextView android:text="TextView" android:id="@+id/yearText1"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+			<TextView android:text="TextView" android:id="@+id/yearText2"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+		</LinearLayout>
+		<LinearLayout android:layout_width="wrap_content"
+			android:layout_height="match_parent" android:layout_marginLeft="40dp">
+			<TextView android:text="TextView" android:id="@+id/hourText1"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+			<TextView android:text="TextView" android:id="@+id/hourText2"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+			<TextView android:text=":" android:layout_width="wrap_content"
+				android:id="@+id/colonText" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+			<TextView android:text="TextView" android:id="@+id/minuteText1"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+			<TextView android:text="TextView" android:id="@+id/minuteText2"
+				android:layout_width="wrap_content" android:layout_height="match_parent"
+				android:textColor="@android:color/black"></TextView>
+		</LinearLayout>
 	</LinearLayout>
 
 </RelativeLayout>

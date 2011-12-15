@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class StatusArea {
+public class StatusArea extends UIArea {
 
 	private final ImageView batteryImage;
 	private final ImageView acImage;
@@ -17,18 +17,16 @@ public class StatusArea {
 	private final ImageView uploadingModeImage;
 	private final ImageView errorModeImage;
 
-	private final LinearLayout topPanel;
-
-	public StatusArea(ImageView battery, ImageView ac, ImageView tMode,
-			ImageView bMode, ImageView uMode, ImageView eMode,
-			LinearLayout panel) {
+	public StatusArea(LinearLayout panel, ImageView battery, ImageView ac,
+			ImageView tMode, ImageView bMode, ImageView uMode, ImageView eMode) {
+		super(panel);
+		
 		this.batteryImage = battery;
 		this.acImage = ac;
 		this.testingModeImage = tMode;
 		this.browsingModeImage = bMode;
 		this.uploadingModeImage = uMode;
 		this.errorModeImage = eMode;
-		this.topPanel = panel;
 	}
 	
 	/**
@@ -88,18 +86,6 @@ public class StatusArea {
 		}
 		else {
 			this.acImage.setVisibility(View.INVISIBLE);
-		}
-	}
-	
-	/**
-	 * if @param visible, the whole layout is visible
-	 */
-	public void setVisibility(boolean visible) {
-		if (visible) {
-			topPanel.setVisibility(View.VISIBLE);
-		}
-		else {
-			topPanel.setVisibility(View.INVISIBLE);
 		}
 	}
 	

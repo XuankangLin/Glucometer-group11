@@ -12,35 +12,23 @@ import android.widget.LinearLayout;
  * a class containing 3 number images and 1 point image plus the unit image
  * for displaying testing results on the screen
  */
-public class ResultArea {
+public class ResultArea extends UIArea {
 
 	private final ImageView firstImage;
 	private final ImageView secondImage;
 	private final ImageView pointImage;
 	private final ImageView thirdImage;
 	private final ImageView unitImage;
-	private final LinearLayout resultPanel;
 	
-	public ResultArea(ImageView first, ImageView second, ImageView point,
-			ImageView third, ImageView unit, LinearLayout panel) {
+	public ResultArea(LinearLayout panel, ImageView first, ImageView second, ImageView point,
+			ImageView third, ImageView unit) {
+		super(panel);
+
 		this.firstImage = first;
 		this.secondImage = second;
 		this.pointImage = point;
 		this.thirdImage = third;
 		this.unitImage = unit;
-		this.resultPanel = panel;
-	}
-
-	/**
-	 * if @param visible, the whole layout is visible
-	 */
-	public void setVisible(boolean visible) {
-		if (visible) {
-			this.resultPanel.setVisibility(View.VISIBLE);
-		}
-		else {
-			this.resultPanel.setVisibility(View.INVISIBLE);
-		}
 	}
 	
 	/**

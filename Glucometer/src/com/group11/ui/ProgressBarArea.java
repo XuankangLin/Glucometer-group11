@@ -2,30 +2,17 @@ package com.group11.ui;
 
 import com.group11.R;
 
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class ProgressBarArea {
+public class ProgressBarArea extends UIArea {
 
 	private final ImageView progressBarImage;
-	private final LinearLayout progressBarPanel;
 	
-	public ProgressBarArea(ImageView progressBar, LinearLayout panel) {
+	public ProgressBarArea(LinearLayout panel, ImageView progressBar) {
+		super(panel);
+
 		this.progressBarImage = progressBar;
-		this.progressBarPanel = panel;
-	}
-	
-	/**
-	 * set the layout's visibility according to @param visible
-	 */
-	public void setVisible(boolean visible) {
-		if (visible) {
-			this.progressBarPanel.setVisibility(View.VISIBLE);
-		}
-		else {
-			this.progressBarPanel.setVisibility(View.INVISIBLE);
-		}
 	}
 
 	/**

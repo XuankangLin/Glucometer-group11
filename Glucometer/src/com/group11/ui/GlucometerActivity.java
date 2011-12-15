@@ -72,33 +72,42 @@ public class GlucometerActivity extends Activity {
         
         //==========screen's top panel==========
 		statusArea = new StatusArea(
+				(LinearLayout) findViewById(R.id.topPanel),
 				(ImageView) findViewById(R.id.batteryImage),
 				(ImageView) findViewById(R.id.acImage),
 				(ImageView) findViewById(R.id.testingModeImage),
 				(ImageView) findViewById(R.id.browsingModeImage),
 				(ImageView) findViewById(R.id.uploadingModeImage),
-				(ImageView) findViewById(R.id.errorModeImage),
-				(LinearLayout) findViewById(R.id.topPanel));
-        
+				(ImageView) findViewById(R.id.errorModeImage));
+		
         //==========screen's result area==========
 		resultArea = new ResultArea(
+				(LinearLayout) findViewById(R.id.resultPanel),
 				(ImageView) findViewById(R.id.firstNumberImage),
 				(ImageView) findViewById(R.id.secondNumberImage),
 				(ImageView) findViewById(R.id.pointImage),
 				(ImageView) findViewById(R.id.thirdNumberImage),
-				(ImageView) findViewById(R.id.unitImage),
-				(LinearLayout) findViewById(R.id.resultPanel));
+				(ImageView) findViewById(R.id.unitImage));
         
         //==========screen's progress bar==========
 		progressBarArea = new ProgressBarArea(
-				(ImageView) findViewById(R.id.progressBarImage),
-				(LinearLayout) findViewById(R.id.progressBarPanel));
+				(LinearLayout) findViewById(R.id.progressBarPanel),
+				(ImageView) findViewById(R.id.progressBarImage));
         
         //==========screen's date panel==========
 		dateArea = new DateArea(
-				(TextView) findViewById(R.id.dateText),
-				(TextView) findViewById(R.id.timeText),
-				(LinearLayout) findViewById(R.id.datePanel));
+				(LinearLayout) findViewById(R.id.datePanel),
+				(TextView) findViewById(R.id.monthText1),
+				(TextView) findViewById(R.id.monthText2),
+				(TextView) findViewById(R.id.dayText1),
+				(TextView) findViewById(R.id.dayText2),
+				(TextView) findViewById(R.id.yearText1),
+				(TextView) findViewById(R.id.yearText2),
+				(TextView) findViewById(R.id.hourText1),
+				(TextView) findViewById(R.id.hourText2),
+				(TextView) findViewById(R.id.colonText),
+				(TextView) findViewById(R.id.minuteText1),
+				(TextView) findViewById(R.id.minuteText2));
         
         this.setOnClickListeners();
         
@@ -192,7 +201,7 @@ public class GlucometerActivity extends Activity {
      * @param visible
      */
     private void setScreenVisible(boolean visible) {
-		statusArea.setVisibility(visible);
+		statusArea.setVisible(visible);
 		resultArea.setVisible(visible);
 		progressBarArea.setVisible(visible);
 		dateArea.setVisible(visible);
