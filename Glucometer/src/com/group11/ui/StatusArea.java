@@ -1,14 +1,23 @@
 package com.group11.ui;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.Mode;
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class StatusArea extends UIArea {
+	
+	/**
+	 * for doing periodically operations on UI thread
+	 */
+	private final Activity activity;
 
 	private final ImageView batteryImage;
 	private final ImageView acImage;
@@ -16,10 +25,14 @@ public class StatusArea extends UIArea {
 	private final ImageView browsingModeImage;
 	private final ImageView uploadingModeImage;
 	private final ImageView errorModeImage;
+	
+	private TimerTask batteryBlinkingTask = null;
 
-	public StatusArea(LinearLayout panel, ImageView battery, ImageView ac,
+	public StatusArea(LinearLayout panel, Activity activity, ImageView battery, ImageView ac,
 			ImageView tMode, ImageView bMode, ImageView uMode, ImageView eMode) {
 		super(panel);
+		
+		this.activity = activity;
 		
 		this.batteryImage = battery;
 		this.acImage = ac;
@@ -112,6 +125,42 @@ public class StatusArea extends UIArea {
 
 		default:
 			break;
+		}
+	}
+	
+	private void initBatteryBlinkingTask() {
+		batteryBlinkingTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				activity.runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (batteryImage.getVisibility() == View.VISIBLE) {
+							batteryImage.setVisibility(View.INVISIBLE);
+						} 
+						else {
+							batteryImage.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+			}
+		};
+	}
+	
+	private void clearBatteryBlinkingTask() {
+		if (batteryBlinkingTask != null) {
+			batteryBlinkingTask.cancel();
+			batteryBlinkingTask = null;
+		}		
+	}
+	
+	public void setBatteryBlinking(boolean blinking) {
+		this.clearBatteryBlinkingTask();
+		if (blinking) {
+			this.initBatteryBlinkingTask();
+			new Timer().scheduleAtFixedRate(batteryBlinkingTask, 0, 1000);
 		}
 	}
 }

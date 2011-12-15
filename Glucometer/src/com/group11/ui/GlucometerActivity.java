@@ -82,6 +82,7 @@ public class GlucometerActivity extends Activity {
         //==========screen's top panel==========
 		statusArea = new StatusArea(
 				(LinearLayout) findViewById(R.id.topPanel),
+				this,
 				(ImageView) findViewById(R.id.batteryImage),
 				(ImageView) findViewById(R.id.acImage),
 				(ImageView) findViewById(R.id.testingModeImage),
@@ -131,7 +132,7 @@ public class GlucometerActivity extends Activity {
         statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
         
         CurrentStatus currentStatus = new CurrentStatus(preferences);
-        currentStatus.setBatteryLevel(72);
+        currentStatus.setBatteryLevel(13);
         this.resetBatteryUpdaterTask();
 
         resultArea.display(123.1459972, Unit.L);
@@ -160,8 +161,9 @@ public class GlucometerActivity extends Activity {
 					
 					@Override
 					public void run() {
-						CurrentStatus status = new CurrentStatus(preferences);
-						statusArea.setBatteryLevel(status.getBatteryLevel());
+						BatteryLevel level = new CurrentStatus(preferences).getBatteryLevel();
+						statusArea.setBatteryLevel(level);
+						statusArea.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT);
 					}
 				});
 			}

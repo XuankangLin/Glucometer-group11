@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 public class DateArea extends UIArea {
 
+	/**
+	 * for doing periodically operations on UI thread
+	 */
 	private final Activity activity;
 	
 	private final TextView monthText1;
@@ -79,7 +82,7 @@ public class DateArea extends UIArea {
 		this.minuteText2.setText(pair.second);
 	}
 	
-	private void resetColonBlinkingTask() {
+	private void initColonBlinkingTask() {
 		colonBlinkingTask = new TimerTask() {
 
 			@Override
@@ -99,24 +102,23 @@ public class DateArea extends UIArea {
 			}
 		};
 	}
+	
+	private void clearColonBlinkingTask() {
+		if (colonBlinkingTask != null) {
+			colonBlinkingTask.cancel();
+			colonBlinkingTask = null;
+		}
+	}
 
 	/**
 	 * set if the colon is blinking
 	 * @param blinking
 	 */
 	public void setColonBlinking(boolean blinking) {
+		this.clearColonBlinkingTask();
 		if (blinking) {
-			if (colonBlinkingTask != null) {
-				colonBlinkingTask.cancel();
-			}
-			this.resetColonBlinkingTask();
-			new Timer().schedule(colonBlinkingTask, 0, 1000);
-		}
-		else {
-			if (colonBlinkingTask != null) {
-				colonBlinkingTask.cancel();
-				colonBlinkingTask = null;				
-			}
+			this.initColonBlinkingTask();
+			new Timer().scheduleAtFixedRate(colonBlinkingTask, 0, 1000);
 		}
 	}
 }
