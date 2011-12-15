@@ -2,6 +2,8 @@ package com.group11.ui;
 
 import java.util.Date;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.group11.R;
 import com.group11.base.BatteryLevel;
@@ -32,6 +34,11 @@ import static com.group11.base.Interrupt.*;
 
 
 public class GlucometerActivity extends Activity {
+	
+	/**
+	 * update the battery level every ** milliseconds
+	 */
+	private static final int BATTERY_UPDATE_PERIOD = 1000;
 
 	private ImageView glucometerImage;
 	private ImageView realButtonImage;
@@ -51,6 +58,8 @@ public class GlucometerActivity extends Activity {
 	private ClickJudger judger = new ClickJudger(handler);;
 	
 	private ModeLogic currentModeLogic = null;
+	
+	private TimerTask batteryUpdaterTask = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,6 +129,10 @@ public class GlucometerActivity extends Activity {
         statusArea.setErroring(true);
         statusArea.setACing(true);
         statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
+        
+        CurrentStatus currentStatus = new CurrentStatus(preferences);
+        currentStatus.setBatteryLevel(72);
+        this.resetBatteryUpdaterTask();
 
         resultArea.display(123.1459972, Unit.L);
 
@@ -128,6 +141,32 @@ public class GlucometerActivity extends Activity {
         
         dateArea.setDateTime(new Date());
         dateArea.setColonBlinking(true);
+    }
+    
+    /**
+     * periodically update the battery level according to the status in "hardware"
+     */
+    private void resetBatteryUpdaterTask() {
+    	if (batteryUpdaterTask != null) {
+			batteryUpdaterTask.cancel();
+			batteryUpdaterTask = null;
+		}
+    	
+    	batteryUpdaterTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						CurrentStatus status = new CurrentStatus(preferences);
+						statusArea.setBatteryLevel(status.getBatteryLevel());
+					}
+				});
+			}
+		};
+		new Timer().schedule(batteryUpdaterTask, 0, BATTERY_UPDATE_PERIOD);
     }
     
     private void setOnClickListeners() {

@@ -2,6 +2,7 @@ package com.group11.hardware;
 
 import java.util.Date;
 
+import com.group11.base.BatteryLevel;
 import com.group11.base.Mode;
 
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ public class CurrentStatus {
 	private static final String POWER_ON = "powerOn";
 	private static final String CURRENT_TIME = "currentTime";
 	private static final String CURRENT_MODE = "currentMode";
+	private static final String BATTERY_LEVEL = "batteryLevel";
 
 	
 	public boolean isPowerOn() {
@@ -65,4 +67,12 @@ public class CurrentStatus {
 		preferences.edit().putInt(CURRENT_MODE, mode == null ? -1 : mode.ordinal()).commit();
 	}
 	
+	public BatteryLevel getBatteryLevel() {
+		return BatteryLevel.getByValue(preferences.getInt(BATTERY_LEVEL, 100));
+	}
+	
+	public synchronized void setBatteryLevel(int value) {
+		value %= 101;
+		preferences.edit().putInt(BATTERY_LEVEL, value).commit();
+	}
 }
