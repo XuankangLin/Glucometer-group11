@@ -31,9 +31,9 @@ public class BrowsingModeLogic extends ModeLogic {
 		super(status, result, progressBar, date, context, preferences, handler);
 	}
 
-	HistoryManager historyManager = new HistoryManager(context);
-	LinkedList<TestResult> resultList = historyManager.getTestResults();
-	int position = resultList.size() - 1;
+	private HistoryManager historyManager = new HistoryManager(context);
+	private LinkedList<TestResult> resultList = historyManager.getTestResults();
+	private int position = resultList.size() - 1;
 
 	@Override
 	public void onShortClick() {
@@ -98,5 +98,8 @@ public class BrowsingModeLogic extends ModeLogic {
 		statusArea.setCurrentMode(Mode.BROWSING);
 		statusArea.setErroring(false);
 	}
-	//CurrentStatus currentStatus= new CurrentStatus(preferences);
+	
+	public LinkedList<TestResult> getTestResults() {
+		return this.resultList;
+	}
 }

@@ -54,7 +54,7 @@ public class HistoryManager {
 		return resultList;
 	}
 	
-	public synchronized void deleteAllTestResults(Context context) {
+	public synchronized void deleteAllTestResults() {
 		DBHelper helper = new DBHelper(context);
 		helper.onUpgrade(helper.getWritableDatabase(), 1, 1);
 	}

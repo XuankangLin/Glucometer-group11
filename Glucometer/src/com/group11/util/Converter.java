@@ -7,11 +7,11 @@ import com.group11.base.Unit;
  */
 public final class Converter {
 
-	public static double toDL(double l) {
+	private static double toDL(double l) {
 		return l * 18;
 	}
 	
-	public static double toL(double dl) {
+	private static double toL(double dl) {
 		return dl / 18;
 	}
 	

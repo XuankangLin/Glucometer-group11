@@ -431,24 +431,26 @@ public class GlucometerActivity extends Activity {
 				currentModeLogic.onLongClick();
 			} else {
 				// TODO go into Browsing Mode
-				// for testing
-				{
-					HistoryManager historymanager = new HistoryManager(this);
+//				{
+//					//for testing
+//					HistoryManager historymanager = new HistoryManager(this);
+//
+//					historymanager.addTestResult(new TestResult(222.1459972,
+//							Unit.L, new Date()));
+//					historymanager.addTestResult(new TestResult(999.1459972,
+//							Unit.L, new Date()));
+//					historymanager.addTestResult(new TestResult(666.1459972,
+//							Unit.L, new Date()));
+//				}
 
-					historymanager.addTestResult(new TestResult(222.1459972,
-							Unit.L, new Date()));
-					historymanager.addTestResult(new TestResult(999.1459972,
-							Unit.L, new Date()));
-					historymanager.addTestResult(new TestResult(666.1459972,
-							Unit.L, new Date()));
-				}
+				BrowsingModeLogic modeLogic = new BrowsingModeLogic(statusArea,
+						resultArea, progressBarArea, dateArea, this,
+						preferences, handler);
+				currentModeLogic = modeLogic;
 
-				LinkedList<TestResult> resultList = new HistoryManager(this).getTestResults();
+				LinkedList<TestResult> resultList = modeLogic.getTestResults();
 
 				if (resultList.size() != 0) {
-					currentModeLogic = new BrowsingModeLogic(statusArea,
-							resultArea, progressBarArea, dateArea,
-							GlucometerActivity.this, preferences, handler);
 					currentStatus.setPowerOn(true);
 					currentStatus.setCurrentMode(Mode.BROWSING);
 					currentStatus.setRefreshingTime(false);
