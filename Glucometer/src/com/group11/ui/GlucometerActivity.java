@@ -457,15 +457,17 @@ public class GlucometerActivity extends Activity {
 					currentStatus.commit();
 
 					statusArea.setVisible(true);
-					resultArea.setVisible(true);
-					dateArea.setVisible(true);
-					progressBarArea.setVisible(false);
-					
 					statusArea.setCurrentMode(Mode.BROWSING);
 
+					resultArea.setVisible(true);
 					resultArea.display(Converter.to(resultList.getLast()
 							.getValue(), resultList.getLast().getUnit(),
 							Unit.DL), Unit.DL);
+
+					progressBarArea.setVisible(false);
+
+					dateArea.setVisible(true);
+					dateArea.setColonBlinking(false);
 					dateArea.setDateTime(resultList.getLast().getTime());
 				} else {
 					// TODO auto ending
