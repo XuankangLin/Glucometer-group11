@@ -1,6 +1,8 @@
 package com.group11.hardware;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import com.group11.base.BatteryLevel;
 import com.group11.base.Mode;
@@ -14,6 +16,20 @@ import android.content.SharedPreferences.Editor;
  * manage the history records 
  */
 public class CurrentStatus {
+	
+	private final static int DEFAULT_YEAR = 2000;
+	private final static int DEFAULT_MONTH = 0;
+	private final static int DEFAULT_DAY = 1;
+	private final static int DEFAULT_HOUR = 0;
+	private final static int DEFAULT_MINUTE = 0;
+	
+	public static long getDefaultTime() {
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(DEFAULT_YEAR, DEFAULT_MONTH, DEFAULT_DAY, DEFAULT_HOUR,
+				DEFAULT_MINUTE);
+		return calendar.getTimeInMillis();
+	}
+	
 	
 	/**
 	 * @param preferences, use the preferences created after onCreate()
@@ -52,7 +68,7 @@ public class CurrentStatus {
 	}
 
 	public Date getCurrentTime() {
-		return new Date(preferences.getLong(CURRENT_TIME, 0));
+		return new Date(preferences.getLong(CURRENT_TIME, getDefaultTime()));
 	}
 
 	/**

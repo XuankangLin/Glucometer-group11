@@ -34,7 +34,7 @@ public class DateArea extends UIArea {
 	
 	private TimerTask colonBlinkingTask = null;
 	
-	public DateArea(LinearLayout panel, Activity activity, TextView month1, TextView month2,
+	public DateArea(Activity activity, LinearLayout panel, TextView month1, TextView month2,
 			TextView day1, TextView day2, TextView year1, TextView year2,
 			TextView hour1, TextView hour2, TextView colon, TextView minute1, TextView minute2) {
 		super(panel);

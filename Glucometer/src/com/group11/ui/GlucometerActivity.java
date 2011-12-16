@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
+import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
@@ -68,6 +69,7 @@ public class GlucometerActivity extends Activity {
 	private ModeLogic currentModeLogic = null;
 	
 	private TimerTask batteryUpdaterTask = null;
+	private TimerTask timeUpdaterTask = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,9 +90,8 @@ public class GlucometerActivity extends Activity {
         acPlugImage = (ImageView) findViewById(R.id.acPlugImage);
         
         //==========screen's top panel==========
-		statusArea = new StatusArea(
+		statusArea = new StatusArea(this,
 				(LinearLayout) findViewById(R.id.topPanel),
-				this,
 				(ImageView) findViewById(R.id.batteryImage),
 				(ImageView) findViewById(R.id.acImage),
 				(ImageView) findViewById(R.id.testingModeImage),
@@ -113,9 +114,8 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.progressBarImage));
         
         //==========screen's date panel==========
-		dateArea = new DateArea(
+		dateArea = new DateArea(this,
 				(LinearLayout) findViewById(R.id.datePanel),
-				this,
 				(TextView) findViewById(R.id.monthText1),
 				(TextView) findViewById(R.id.monthText2),
 				(TextView) findViewById(R.id.dayText1),
@@ -130,6 +130,9 @@ public class GlucometerActivity extends Activity {
         
         this.setOnClickListeners();
         
+        this.resetBatteryUpdaterTask();
+        this.resetTimeUpdaterTask();
+        
         Beeper.get().attachHandler(this.handler);
         
         
@@ -137,12 +140,10 @@ public class GlucometerActivity extends Activity {
         statusArea.setCurrentMode(Mode.BROWSING);
         statusArea.setErroring(true);
         statusArea.setACing(true);
-        statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
         
         CurrentStatus currentStatus = new CurrentStatus(preferences);
         currentStatus.setBatteryLevel(13);
         currentStatus.commit();
-        this.resetBatteryUpdaterTask();
 
         resultArea.display(123.1459972, Unit.L);
 
@@ -151,6 +152,28 @@ public class GlucometerActivity extends Activity {
         
         dateArea.setDateTime(new Date());
         dateArea.setColonBlinking(true);
+    }
+    
+    /**
+     * periodically update the time according
+     */
+    private void resetTimeUpdaterTask() {
+    	if (timeUpdaterTask != null) {
+			timeUpdaterTask.cancel();
+			timeUpdaterTask = null;
+		}
+    	
+    	timeUpdaterTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				CurrentStatus status = new CurrentStatus(preferences);
+				status.nextSecond();
+				Message message = Message.obtain(handler, Interrupt.TIME_TICK.ordinal());
+				message.sendToTarget();
+			}
+		};
+		new Timer().scheduleAtFixedRate(timeUpdaterTask, 0, 1000);
     }
     
     /**
@@ -302,11 +325,7 @@ public class GlucometerActivity extends Activity {
 	private void doAcOff() {
 		//TODO fulfill this method
 	}
-	
-	private void doTimeTick() {
-		//TODO fulfill this method
-	}
-	
+		
 	private void doButtonClicked(Message msg) {
 		/*
 		 * provided that this.currentModeLogic
@@ -494,7 +513,8 @@ public class GlucometerActivity extends Activity {
 			}
 			
 			if (TIME_TICK.ordinal() == msg.what) {
-				doTimeTick();
+				CurrentStatus status = new CurrentStatus(preferences);
+				dateArea.setDateTime(status.getCurrentTime());
 				return true;
 			}
 			

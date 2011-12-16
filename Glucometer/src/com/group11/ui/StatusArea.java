@@ -28,7 +28,7 @@ public class StatusArea extends UIArea {
 	
 	private TimerTask batteryBlinkingTask = null;
 
-	public StatusArea(LinearLayout panel, Activity activity, ImageView battery, ImageView ac,
+	public StatusArea(Activity activity, LinearLayout panel, ImageView battery, ImageView ac,
 			ImageView tMode, ImageView bMode, ImageView uMode, ImageView eMode) {
 		super(panel);
 		
