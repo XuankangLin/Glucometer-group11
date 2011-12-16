@@ -21,6 +21,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -348,9 +351,32 @@ public class GlucometerActivity extends Activity {
 			this.glucometerImage.setImageResource(R.drawable.glucometer_not_beeping);
 		}
 	}
-
 	
-    /**
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.option_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_about:
+			Toast.makeText(this, "about", 1000).show();
+			break;
+		case R.id.menu_setting:
+			Toast.makeText(this, "setting", 1000).show();
+			break;
+
+		default:
+			break;
+		}
+		
+		return true;
+	}
+
+	/**
      * the callback to deal with Messages in the Handler 
      */
     private class GlucometerHandlerCallback implements Callback {
