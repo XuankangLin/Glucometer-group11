@@ -48,6 +48,7 @@ public class CurrentStatus {
 	private static final String TIME_INTERVAL = "timeInterval";
 	private static final String CURRENT_MODE = "currentMode";
 	private static final String BATTERY_LEVEL = "batteryLevel";
+	private static final String INITIALIZATION_ERROR = "initializationError";
 
 	/**
 	 * write in all the changes that have been made
@@ -133,5 +134,13 @@ public class CurrentStatus {
 	public synchronized void setBatteryLevel(int value) {
 		value %= 101;
 		this.editor.putInt(BATTERY_LEVEL, value);
+	}
+	
+	public boolean isInitializationErrorNextTime() {
+		return preferences.getBoolean(INITIALIZATION_ERROR, false);
+	}
+	
+	public void setInitializationErrorNextTime(boolean error) {
+		this.editor.putBoolean(INITIALIZATION_ERROR, error);
 	}
 }

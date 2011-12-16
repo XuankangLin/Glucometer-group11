@@ -34,6 +34,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -144,9 +147,8 @@ public class GlucometerActivity extends Activity {
         statusArea.setACing(true);
         
         CurrentStatus currentStatus = new CurrentStatus(preferences);
-        currentStatus.setBatteryLevel(13);
 //        currentStatus.setCurrentTime(new Date(CurrentStatus.getDefaultTime()));
-        currentStatus.commit();
+//        currentStatus.commit();
         currentStatus.syncCurrentTime();
 
         resultArea.display(123.1459972, Unit.L);
@@ -412,13 +414,10 @@ public class GlucometerActivity extends Activity {
 	 * display Setting info on a new dialog
 	 */
 	private void doSetting() {
-		AlertDialog.Builder builder = new Builder(this);
-		builder.setTitle("Setting");
 		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.setting_info, null);
-
 		final CurrentStatus status = new CurrentStatus(preferences);
-
+		
 		{
 			final TextView batteryTextView = (TextView) view.findViewById(R.id.batteryText);
 			SeekBar batterySeekBar = (SeekBar) view.findViewById(R.id.batterySeekBar);
@@ -440,8 +439,20 @@ public class GlucometerActivity extends Activity {
 				}
 			});
 			batterySeekBar.setProgress(status.getBattery());
+		} {
+			CheckBox initializationBox = (CheckBox) view.findViewById(R.id.initializationErrorCheckbox);
+			initializationBox.setChecked(status.isInitializationErrorNextTime());
+			initializationBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					status.setInitializationErrorNextTime(isChecked);
+				}
+			});
 		}
-		
+
+		AlertDialog.Builder builder = new Builder(this);
+		builder.setTitle("Setting");
 		builder.setView(view);
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			
