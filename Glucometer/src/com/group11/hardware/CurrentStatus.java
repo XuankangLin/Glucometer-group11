@@ -48,6 +48,7 @@ public class CurrentStatus {
 	private static final String TIME_INTERVAL = "timeInterval";
 	private static final String CURRENT_MODE = "currentMode";
 	private static final String BATTERY_LEVEL = "batteryLevel";
+	private static final String REFRESH_TIME = "refreshTime";
 	private static final String INITIALIZATION_ERROR = "initializationError";
 
 	/**
@@ -142,5 +143,20 @@ public class CurrentStatus {
 	
 	public void setInitializationErrorNextTime(boolean error) {
 		this.editor.putBoolean(INITIALIZATION_ERROR, error);
+	}
+	
+	/**
+	 * @return whether should refresh the Time every second
+	 */
+	public boolean isRefreshTime() {
+		return preferences.getBoolean(REFRESH_TIME, true);
+	}
+	
+	/**
+	 * set whether should refresh the Time every second
+	 * @param refresh
+	 */
+	public void setRefreshTime(boolean refresh) {
+		this.editor.putBoolean(REFRESH_TIME, refresh);
 	}
 }

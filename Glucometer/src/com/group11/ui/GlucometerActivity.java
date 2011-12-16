@@ -157,6 +157,7 @@ public class GlucometerActivity extends Activity {
 //        currentStatus.commit();
         currentStatus.syncCurrentTime();
         currentStatus.setPowerOn(false);
+        currentStatus.setRefreshTime(true);
         currentStatus.commit();
 
 //        resultArea.display(123.1459972, Unit.L);
@@ -183,17 +184,19 @@ public class GlucometerActivity extends Activity {
 		if (timeUpdaterTask != null) {
 			timeUpdaterTask.cancel();
 			timeUpdaterTask = null;
-		}
-
+		}		
+		
 		timeUpdaterTask = new TimerTask() {
 
 			@Override
 			public void run() {
 				CurrentStatus status = new CurrentStatus(preferences);
 				status.nextSecond();
-				Message message = Message.obtain(handler,
-						Interrupt.TIME_TICK.ordinal());
-				message.sendToTarget();
+				if (status.isRefreshTime()) {
+					Message message = Message.obtain(handler,
+							Interrupt.TIME_TICK.ordinal());
+					message.sendToTarget();					
+				}
 			}
 		};
 		new Timer().scheduleAtFixedRate(timeUpdaterTask, 0, 1000);
@@ -451,6 +454,7 @@ public class GlucometerActivity extends Activity {
 							GlucometerActivity.this, preferences);
 					currentStatus.setPowerOn(true);
 					currentStatus.setCurrentMode(Mode.BROWSING);
+					currentStatus.setRefreshTime(false);
 					currentStatus.commit();
 
 					setScreenVisible(true);
