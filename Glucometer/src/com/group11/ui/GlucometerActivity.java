@@ -12,13 +12,17 @@ import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
+import com.group11.util.HistoryManager;
 
 import android.app.Activity;
+
 import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -104,17 +108,21 @@ public class GlucometerActivity extends Activity {
         
         Beeper.get().attachHandler(this.handler);
         
-        
+       
         //TODO testing code, to be deleted
-        statusArea.setCurrentMode(Mode.BROWSING);
-        statusArea.setErroring(true);
-        statusArea.setACing(true);
-        statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
+        //statusArea.setCurrentMode(Mode.BROWSING);
+        //statusArea.setErroring(true);
+        //statusArea.setACing(true);
+        //statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
+        statusArea.setVisibility(false);
+        
 
-        resultArea.display(123.1459972, Unit.L);
+        //resultArea.display(123.1459972, Unit.L);
+        resultArea.setVisible(false);
 
-        progressBarArea.setVisible(true);
-        progressBarArea.setProgress(6);
+        //progressBarArea.setVisible(true);
+        //progressBarArea.setProgress(6);
+        progressBarArea.setVisible(false);
         
         dateArea.setDateTime(new Date());
     }
@@ -172,8 +180,27 @@ public class GlucometerActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Beeper.get().doLongBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "Long beep", 1000).show();
+				//Beeper.get().doLongBeep(GlucometerActivity.this);
+				//Toast.makeText(GlucometerActivity.this, "Long beep", 1000).show();
+				CurrentStatus currentStatus = new CurrentStatus(preferences);
+				if(currentStatus.isPowerOn()==false ){
+					Message message = Message.obtain(handler, USB_CONNECTED.ordinal());
+				    message.sendToTarget();
+				}
+				else {
+				switch(currentStatus.getCurrentMode()){
+				case SETUP:
+					break;
+				case BROWSING:
+					break;
+				case TESTING:
+					break;
+				case UPLOADING:
+					Message message = Message.obtain(handler, USB_DISCONNECTED.ordinal());
+					message.sendToTarget();
+					break;
+				}
+				}
 			}
 		});
 
@@ -208,10 +235,37 @@ public class GlucometerActivity extends Activity {
     
     private void doUSBConnected() {
     	//TODO fulfill this method
+    	CurrentStatus currentStatus = new CurrentStatus(preferences);
+    	currentStatus.setPowerOn(true);
+    	currentStatus.setCurrentMode(Mode.UPLOADING);
+    	statusArea.setCurrentMode(Mode.UPLOADING);
+    	dateArea.setDateTime(new Date());
+    	statusArea.setVisibility(true);
+    	dateArea.setVisible(true);
+    	Beeper.get().doShortBeep(GlucometerActivity.this);
+    	/*HistoryManager historyManager = new HistoryManager();
+    	if(!historyManager.getTestResults(GlucometerActivity.this).isEmpty()){
+    		//TODO Blinking wait 5s
+    		Beeper.get().doShortLongBeep(GlucometerActivity.this);
+    	    currentStatus.setPowerOn(false);
+    	}
+    	else {
+    		//wait for shortclick
+    		historyManager.deleteAllTestResults(GlucometerActivity.this);
+    		currentStatus.setCurrentMode(null);
+        	currentStatus.setPowerOn(false);
+        	//wait 5s
+		}*/
     }
 
 	private void doUSBDisconnected() {
 		//TODO fulfill this method
+		statusArea.setVisibility(false);
+		dateArea.setVisible(false);
+		Beeper.get().doShortLongBeep(GlucometerActivity.this);
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		//currentStatus.setCurrentMode(null);
+    	currentStatus.setPowerOn(false);
 	}
 	
 	private void doStripValid() {

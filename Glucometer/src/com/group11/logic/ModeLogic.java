@@ -1,5 +1,7 @@
 package com.group11.logic;
 
+import android.content.SharedPreferences;
+
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;

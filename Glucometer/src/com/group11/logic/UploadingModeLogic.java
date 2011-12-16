@@ -24,7 +24,6 @@ public class UploadingModeLogic extends ModeLogic {
 	@Override
 	public void onLongClick() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
