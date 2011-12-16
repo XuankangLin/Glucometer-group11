@@ -81,16 +81,4 @@ public class TimeFormatter {
 		return new Pair<String, String>(new String(string.substring(0, 1)),
 				new String(string.substring(1, 2)));
 	}
-
-	/**
-	 * @param time
-	 * @return a hour:minute
-	 */
-	public static String formatTime(Date time) {
-		if (time == null) {
-			return null;
-		}
-		
-		return new SimpleDateFormat("HH:mm").format(time);
-	}
 }

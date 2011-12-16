@@ -368,6 +368,7 @@ public class GlucometerActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_setting: {
+			//TODO
 			Toast.makeText(this, "setting", 1000).show();
 			return true;			
 		}
