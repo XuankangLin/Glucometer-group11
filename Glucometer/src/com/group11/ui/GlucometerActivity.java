@@ -140,7 +140,7 @@ public class GlucometerActivity extends Activity {
         
         Beeper.get().attachHandler(this.handler);
         
-        
+        //test pushing to upstream
         //TODO testing code, to be deleted
         statusArea.setCurrentMode(Mode.BROWSING);
         statusArea.setErroring(true);
