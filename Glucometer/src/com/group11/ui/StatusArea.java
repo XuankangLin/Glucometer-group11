@@ -162,5 +162,8 @@ public class StatusArea extends UIArea {
 			this.initBatteryBlinkingTask();
 			new Timer().scheduleAtFixedRate(batteryBlinkingTask, 0, 1000);
 		}
+		else {
+			this.batteryImage.setVisibility(View.VISIBLE);
+		}
 	}
 }

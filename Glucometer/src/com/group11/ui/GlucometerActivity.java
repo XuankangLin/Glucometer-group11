@@ -141,6 +141,7 @@ public class GlucometerActivity extends Activity {
         
         CurrentStatus currentStatus = new CurrentStatus(preferences);
         currentStatus.setBatteryLevel(13);
+        currentStatus.commit();
         this.resetBatteryUpdaterTask();
 
         resultArea.display(123.1459972, Unit.L);
@@ -176,7 +177,7 @@ public class GlucometerActivity extends Activity {
 				});
 			}
 		};
-		new Timer().schedule(batteryUpdaterTask, 0, BATTERY_UPDATE_PERIOD);
+		new Timer().scheduleAtFixedRate(batteryUpdaterTask, 0, BATTERY_UPDATE_PERIOD);
     }
     
     private void setOnClickListeners() {
@@ -392,11 +393,22 @@ public class GlucometerActivity extends Activity {
 		builder.setTitle("Setting");
 		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.setting_info, null);
+
 		//TODO fulfill the view's objects' listener
 		final CurrentStatus status = new CurrentStatus(preferences);
-
+		//TODO delete next line
+		status.setBatteryLevel(55);
+		
 		builder.setView(view);
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				status.commit();
+				dialog.dismiss();
+			}
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
