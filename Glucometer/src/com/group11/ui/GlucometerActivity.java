@@ -16,11 +16,16 @@ import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -362,18 +367,41 @@ public class GlucometerActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_about:
-			Toast.makeText(this, "about", 1000).show();
-			break;
-		case R.id.menu_setting:
+		case R.id.menu_setting: {
 			Toast.makeText(this, "setting", 1000).show();
-			break;
+			return true;			
+		}
+			
+		case R.id.menu_about: {
+			this.doAbout();
+			return true;
+		}
+
+		case R.id.menu_exit:
+			this.finish();
+			return true;
 
 		default:
-			break;
+			return false;
 		}
-		
-		return true;
+	}
+	
+	/**
+	 * display About info on a new dialog
+	 */
+	private void doAbout() {
+		AlertDialog.Builder builder = new Builder(this);
+		builder.setTitle("About");
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		builder.setView(inflater.inflate(R.layout.about_info, null));
+		builder.setPositiveButton("Good", new AlertDialog.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.create().show();
 	}
 
 	/**

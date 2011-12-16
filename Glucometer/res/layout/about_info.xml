@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<TextView android:text="Implemented by: " android:id="@+id/textView1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+	<TextView android:text="林玄康 092837 " android:id="@+id/textView2"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+	<TextView android:text="高嘉尧 092870 " android:id="@+id/textView3"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+	<TextView android:text="徐震之 092916 " android:id="@+id/textView4"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+	<TextView android:text="Charles Edmond Bihr 11115732 "
+		android:id="@+id/textView4" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+</LinearLayout>
