@@ -17,8 +17,13 @@ public class HistoryManager {
 
 	public static final int MAX_RESULTS = 30;
 	
-	public synchronized void addTestResult(Context context, TestResult result) {
-		LinkedList<TestResult> list = this.getTestResults(context);
+	private final Context context;
+	public HistoryManager(Context context) {
+		this.context = context;
+	}
+	
+	public synchronized void addTestResult(TestResult result) {
+		LinkedList<TestResult> list = this.getTestResults();
 		list.addLast(result);
 
 		if (list.size() > MAX_RESULTS) {
@@ -33,7 +38,7 @@ public class HistoryManager {
 		}
 	}
 	
-	public LinkedList<TestResult> getTestResults(Context context) {
+	public LinkedList<TestResult> getTestResults() {
 		DBHelper helper = new DBHelper(context);
 		
 		Cursor cursor = helper.selectAll();

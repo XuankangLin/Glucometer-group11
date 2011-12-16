@@ -29,8 +29,8 @@ public class BrowsingModeLogic extends ModeLogic {
 		super(status, result, progressBar, date, context, preferences);
 	}
 
-	HistoryManager historyManager = new HistoryManager();
-	LinkedList<TestResult> resultList = historyManager.getTestResults(context);
+	HistoryManager historyManager = new HistoryManager(context);
+	LinkedList<TestResult> resultList = historyManager.getTestResults();
 	int position = resultList.size() - 1;
 
 	@Override

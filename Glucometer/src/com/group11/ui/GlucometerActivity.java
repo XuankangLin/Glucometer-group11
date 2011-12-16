@@ -58,6 +58,10 @@ public class GlucometerActivity extends Activity {
 	 * update the battery level every ** milliseconds
 	 */
 	private static final int BATTERY_UPDATE_PERIOD = 1000;
+	/**
+	 * update the current time every ** milliseconds
+	 */
+	private static final int TIME_UPDATE_PERIOD = 1000;
 
 	private ImageView glucometerImage;
 	private ImageView realButtonImage;
@@ -82,24 +86,21 @@ public class GlucometerActivity extends Activity {
 	private TimerTask timeUpdaterTask = null;
 
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.main);
-        
-        preferences = getPreferences(MODE_PRIVATE);
-        
-        //==========global pictures==========
-        glucometerImage = (ImageView) findViewById(R.id.meterImage);
-        realButtonImage = (ImageView) findViewById(R.id.buttonImage);
-        testStripImage = (ImageView) findViewById(R.id.testStripImage);
-        resetImage = (ImageView) findViewById(R.id.resetImage);
-        usbImage = (ImageView) findViewById(R.id.usbImage);
-        acPlugImage = (ImageView) findViewById(R.id.acPlugImage);
-        
-        //==========screen's top panel==========
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		preferences = getPreferences(MODE_PRIVATE);
+
+		// ==========global pictures==========
+		glucometerImage = (ImageView) findViewById(R.id.meterImage);
+		realButtonImage = (ImageView) findViewById(R.id.buttonImage);
+		testStripImage = (ImageView) findViewById(R.id.testStripImage);
+		resetImage = (ImageView) findViewById(R.id.resetImage);
+		usbImage = (ImageView) findViewById(R.id.usbImage);
+		acPlugImage = (ImageView) findViewById(R.id.acPlugImage);
+
+		// ==========screen's top panel==========
 		statusArea = new StatusArea(this,
 				(LinearLayout) findViewById(R.id.topPanel),
 				(ImageView) findViewById(R.id.batteryImage),
@@ -108,8 +109,8 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.browsingModeImage),
 				(ImageView) findViewById(R.id.uploadingModeImage),
 				(ImageView) findViewById(R.id.errorModeImage));
-		
-        //==========screen's result area==========
+
+		// ==========screen's result area==========
 		resultArea = new ResultArea(
 				(LinearLayout) findViewById(R.id.resultPanel),
 				(ImageView) findViewById(R.id.firstNumberImage),
@@ -117,13 +118,13 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.pointImage),
 				(ImageView) findViewById(R.id.thirdNumberImage),
 				(ImageView) findViewById(R.id.unitImage));
-        
-        //==========screen's progress bar==========
+
+		// ==========screen's progress bar==========
 		progressBarArea = new ProgressBarArea(
 				(LinearLayout) findViewById(R.id.progressBarPanel),
 				(ImageView) findViewById(R.id.progressBarImage));
-        
-        //==========screen's date panel==========
+
+		// ==========screen's date panel==========
 		dateArea = new DateArea(this,
 				(LinearLayout) findViewById(R.id.datePanel),
 				(TextView) findViewById(R.id.monthText1),
@@ -137,44 +138,32 @@ public class GlucometerActivity extends Activity {
 				(TextView) findViewById(R.id.colonText),
 				(TextView) findViewById(R.id.minuteText1),
 				(TextView) findViewById(R.id.minuteText2));
-        
-        this.setOnClickListeners();
-        
-        this.resetBatteryUpdaterTask();
-        this.resetTimeUpdaterTask();
-        
-        Beeper.get().attachHandler(this.handler);
 
-        this.reinstate();
-        
-        //TODO testing code, to be deleted
-        statusArea.setVisible(false);
-        resultArea.setVisible(false);
-        progressBarArea.setVisible(false);
-        
-        CurrentStatus currentStatus = new CurrentStatus(preferences);
-//        currentStatus.setCurrentTime(new Date(CurrentStatus.getDefaultTime()));
-//        currentStatus.commit();
-        currentStatus.syncCurrentTime();
-        currentStatus.setPowerOn(false);
-        currentStatus.setRefreshTime(true);
-        currentStatus.commit();
+		this.setOnClickListeners();
 
-//        resultArea.display(123.1459972, Unit.L);
-//
-//        progressBarArea.setVisible(true);
-//        progressBarArea.setProgress(6);
-//        
-//        dateArea.setDateTime(new Date());
-//        dateArea.setColonBlinking(true);
-//        dateArea.setDateTime(new Date());
-    }
+		Beeper.get().attachHandler(this.handler);
+
+		this.resetStatus();
+
+		this.resetBatteryUpdaterTask();
+		this.resetTimeUpdaterTask();
+	}
 
 	/**
-	 * reinstate according to the status after repower on
+	 * reset the status stored in Memory our glucometer program could not
+	 * recover from its last break down at present.
 	 */
-	private void reinstate() {
+	private void resetStatus() {
+		this.setScreenInvisible();
 
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		currentStatus.syncCurrentTime();
+		currentStatus.setPowerOn(false);
+		currentStatus.setCurrentMode(null);
+		currentStatus.setRefreshingTime(true);
+		// TODO add other status here!
+
+		currentStatus.commit();
 	}
 
 	/**
@@ -184,22 +173,22 @@ public class GlucometerActivity extends Activity {
 		if (timeUpdaterTask != null) {
 			timeUpdaterTask.cancel();
 			timeUpdaterTask = null;
-		}		
-		
+		}
+
 		timeUpdaterTask = new TimerTask() {
 
 			@Override
 			public void run() {
 				CurrentStatus status = new CurrentStatus(preferences);
 				status.nextSecond();
-				if (status.isRefreshTime()) {
+				if (status.isRefreshingTime()) {
 					Message message = Message.obtain(handler,
 							Interrupt.TIME_TICK.ordinal());
-					message.sendToTarget();					
+					message.sendToTarget();
 				}
 			}
 		};
-		new Timer().scheduleAtFixedRate(timeUpdaterTask, 0, 1000);
+		new Timer().scheduleAtFixedRate(timeUpdaterTask, 0, TIME_UPDATE_PERIOD);
 	}
 
 	/**
@@ -233,6 +222,9 @@ public class GlucometerActivity extends Activity {
 				BATTERY_UPDATE_PERIOD);
 	}
 
+	/**
+	 * set the click listeners of all the global pictures
+	 */
 	private void setOnClickListeners() {
 		realButtonImage.setOnTouchListener(new OnTouchListener() {
 
@@ -322,15 +314,13 @@ public class GlucometerActivity extends Activity {
 	}
 
 	/**
-	 * set the screen parts's layout to be visible or not
-	 * 
-	 * @param visible
+	 * set all the screen parts's layout to be invisible
 	 */
-	private void setScreenVisible(boolean visible) {
-		statusArea.setVisible(visible);
-		resultArea.setVisible(visible);
-		progressBarArea.setVisible(visible);
-		dateArea.setVisible(visible);
+	private void setScreenInvisible() {
+		statusArea.setVisible(false);
+		resultArea.setVisible(false);
+		progressBarArea.setVisible(false);
+		dateArea.setVisible(false);
 	}
 
 	private void doStripInserted() {
@@ -346,8 +336,8 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.UPLOADING);
 		currentStatus.commit();
+		
 		statusArea.setCurrentMode(Mode.UPLOADING);
-		dateArea.setDateTime(new Date());
 		statusArea.setVisible(true);
 		dateArea.setVisible(true);
 		Beeper.get().doShortBeep(GlucometerActivity.this);
@@ -406,8 +396,6 @@ public class GlucometerActivity extends Activity {
 		 * provided that this.currentModeLogic is NOT null when it's power on
 		 */
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		// for test
-		// currentStatus.setPowerOn(false);
 
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
@@ -427,26 +415,21 @@ public class GlucometerActivity extends Activity {
 		case LONG_CLICK: {
 			if (currentStatus.isPowerOn()) {
 				currentModeLogic.onLongClick();
-				// for testing i have problem for preferences
-				// currentStatus.setPowerOn(false);
 			} else {
 				// TODO go into Browsing Mode
 				// for testing
-				HistoryManager historymanager = new HistoryManager();
+				{
+					HistoryManager historymanager = new HistoryManager(this);
 
-				TestResult result1 = new TestResult(222.1459972, Unit.L,
-						new Date());
-				historymanager.addTestResult(this, result1);
-				TestResult result2 = new TestResult(999.1459972, Unit.L,
-						new Date());
-				historymanager.addTestResult(this, result2);
-				TestResult result3 = new TestResult(666.1459972, Unit.L,
-						new Date());
-				historymanager.addTestResult(this, result3);
+					historymanager.addTestResult(new TestResult(222.1459972,
+							Unit.L, new Date()));
+					historymanager.addTestResult(new TestResult(999.1459972,
+							Unit.L, new Date()));
+					historymanager.addTestResult(new TestResult(666.1459972,
+							Unit.L, new Date()));
+				}
 
-				LinkedList<TestResult> resultList = new LinkedList<TestResult>();
-				resultList = historymanager
-						.getTestResults(GlucometerActivity.this);
+				LinkedList<TestResult> resultList = new HistoryManager(this).getTestResults();
 
 				if (resultList.size() != 0) {
 					currentModeLogic = new BrowsingModeLogic(statusArea,
@@ -454,22 +437,24 @@ public class GlucometerActivity extends Activity {
 							GlucometerActivity.this, preferences);
 					currentStatus.setPowerOn(true);
 					currentStatus.setCurrentMode(Mode.BROWSING);
-					currentStatus.setRefreshTime(false);
+					currentStatus.setRefreshingTime(false);
 					currentStatus.commit();
 
-					setScreenVisible(true);
+					statusArea.setVisible(true);
+					resultArea.setVisible(true);
+					dateArea.setVisible(true);
+					progressBarArea.setVisible(false);
+					
 					statusArea.setCurrentMode(Mode.BROWSING);
 
 					resultArea.display(Converter.to(resultList.getLast()
 							.getValue(), resultList.getLast().getUnit(),
 							Unit.DL), Unit.DL);
-
-					progressBarArea.setVisible(false);
 					dateArea.setDateTime(resultList.getLast().getTime());
 				} else {
 					// TODO auto ending
 					currentStatus.setPowerOn(false);
-					setScreenVisible(false);
+					setScreenInvisible();
 				}
 			}
 			return;
@@ -696,11 +681,12 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (POWER_ON.ordinal() == msg.what) {
-				setScreenVisible(true);
+				statusArea.setVisible(true);
+				dateArea.setVisible(true);
 				return true;
 			}
 			if (POWER_OFF.ordinal() == msg.what) {
-				setScreenVisible(false);
+				setScreenInvisible();
 				currentModeLogic = null;
 				return true;
 			}

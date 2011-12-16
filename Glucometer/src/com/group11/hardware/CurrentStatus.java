@@ -148,7 +148,7 @@ public class CurrentStatus {
 	/**
 	 * @return whether should refresh the Time every second
 	 */
-	public boolean isRefreshTime() {
+	public boolean isRefreshingTime() {
 		return preferences.getBoolean(REFRESH_TIME, true);
 	}
 	
@@ -156,7 +156,7 @@ public class CurrentStatus {
 	 * set whether should refresh the Time every second
 	 * @param refresh
 	 */
-	public void setRefreshTime(boolean refresh) {
+	public void setRefreshingTime(boolean refresh) {
 		this.editor.putBoolean(REFRESH_TIME, refresh);
 	}
 }
