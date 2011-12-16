@@ -36,6 +36,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -415,10 +417,30 @@ public class GlucometerActivity extends Activity {
 		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.setting_info, null);
 
-		//TODO fulfill the view's objects' listener
 		final CurrentStatus status = new CurrentStatus(preferences);
-		//TODO delete next line
-		status.setBatteryLevel(55);
+
+		{
+			final TextView batteryTextView = (TextView) view.findViewById(R.id.batteryText);
+			SeekBar batterySeekBar = (SeekBar) view.findViewById(R.id.batterySeekBar);
+			batterySeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {}
+				
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {}
+				
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					if (fromUser) {
+						status.setBatteryLevel(progress);
+					}
+					batteryTextView.setText(Integer.toString(progress) + "%");
+				}
+			});
+			batterySeekBar.setProgress(status.getBattery());
+		}
 		
 		builder.setView(view);
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {

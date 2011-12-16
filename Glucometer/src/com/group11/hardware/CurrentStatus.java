@@ -118,6 +118,10 @@ public class CurrentStatus {
 		this.editor.putInt(CURRENT_MODE, mode == null ? -1 : mode.ordinal());
 	}
 	
+	public int getBattery() {
+		return preferences.getInt(BATTERY_LEVEL, 100);
+	}
+	
 	public BatteryLevel getBatteryLevel() {
 		return BatteryLevel.getByValue(preferences.getInt(BATTERY_LEVEL, 100));
 	}
