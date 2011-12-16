@@ -390,6 +390,20 @@ public class GlucometerActivity extends Activity {
 	private void doAcOff() {
 		// TODO fulfill this method
 	}
+	
+	/**
+	 * do some cleaning when power off 
+	 */
+	private void doPowerOff() {
+		setScreenInvisible();
+		currentModeLogic = null;
+		
+		CurrentStatus status = new CurrentStatus(preferences);
+		status.setCurrentMode(null);
+		status.setPowerOn(false);
+		status.setRefreshingTime(true);
+		status.commit();
+	}
 
 	private void doButtonClicked(Message msg) {
 		/*
@@ -686,14 +700,7 @@ public class GlucometerActivity extends Activity {
 				return true;
 			}
 			if (POWER_OFF.ordinal() == msg.what) {
-				setScreenInvisible();
-				currentModeLogic = null;
-				
-				CurrentStatus status = new CurrentStatus(preferences);
-				status.setCurrentMode(null);
-				status.setPowerOn(false);
-				status.setRefreshingTime(true);
-				status.commit();
+				doPowerOff();
 				return true;
 			}
 
