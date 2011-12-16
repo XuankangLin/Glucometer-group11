@@ -45,6 +45,7 @@ public class CurrentStatus {
 
 	private static final String POWER_ON = "powerOn";
 	private static final String CURRENT_TIME = "currentTime";
+	private static final String TIME_INTERVAL = "timeInterval";
 	private static final String CURRENT_MODE = "currentMode";
 	private static final String BATTERY_LEVEL = "batteryLevel";
 
@@ -80,6 +81,19 @@ public class CurrentStatus {
 			throw new IllegalArgumentException("@param time should not be null");
 		}
 		this.editor.putLong(CURRENT_TIME, time.getTime());
+		preferences.edit().putLong(TIME_INTERVAL, new Date().getTime() - time.getTime()).commit();
+	}
+
+	/**
+	 * since the nextSecond() won't be called when the glucometer is off,
+	 * we store the interval between the time set and the real time.
+	 * this time when the glucometer powers on, reinstate the time according to new real time.
+	 * 
+	 * TODO should be called every time the glucometer is powered on
+	 */
+	public synchronized void syncCurrentTime() {
+		long interval = preferences.getLong(TIME_INTERVAL, 0);
+		preferences.edit().putLong(CURRENT_TIME, new Date().getTime() - interval).commit();
 	}
 
 	/**

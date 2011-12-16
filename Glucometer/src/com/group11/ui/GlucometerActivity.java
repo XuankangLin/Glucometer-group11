@@ -143,7 +143,9 @@ public class GlucometerActivity extends Activity {
         
         CurrentStatus currentStatus = new CurrentStatus(preferences);
         currentStatus.setBatteryLevel(13);
+//        currentStatus.setCurrentTime(new Date(CurrentStatus.getDefaultTime()));
         currentStatus.commit();
+        currentStatus.syncCurrentTime();
 
         resultArea.display(123.1459972, Unit.L);
 
