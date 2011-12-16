@@ -2,6 +2,7 @@ package com.group11.logic;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
@@ -15,8 +16,8 @@ public class UploadingModeLogic extends ModeLogic {
 
 	public UploadingModeLogic(StatusArea status, ResultArea result,
 			ProgressBarArea progressBar, DateArea date, Context context,
-			SharedPreferences preferences) {
-		super(status, result, progressBar, date, context, preferences);
+			SharedPreferences preferences, Handler handler) {
+		super(status, result, progressBar, date, context, preferences, handler);
 	}
 
 	@Override

@@ -434,7 +434,7 @@ public class GlucometerActivity extends Activity {
 				if (resultList.size() != 0) {
 					currentModeLogic = new BrowsingModeLogic(statusArea,
 							resultArea, progressBarArea, dateArea,
-							GlucometerActivity.this, preferences);
+							GlucometerActivity.this, preferences, handler);
 					currentStatus.setPowerOn(true);
 					currentStatus.setCurrentMode(Mode.BROWSING);
 					currentStatus.setRefreshingTime(false);
@@ -688,6 +688,12 @@ public class GlucometerActivity extends Activity {
 			if (POWER_OFF.ordinal() == msg.what) {
 				setScreenInvisible();
 				currentModeLogic = null;
+				
+				CurrentStatus status = new CurrentStatus(preferences);
+				status.setCurrentMode(null);
+				status.setPowerOn(false);
+				status.setRefreshingTime(true);
+				status.commit();
 				return true;
 			}
 

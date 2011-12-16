@@ -4,7 +4,10 @@ import java.util.LinkedList;
 
 import android.content.SharedPreferences;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 
+import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
@@ -25,8 +28,8 @@ public class BrowsingModeLogic extends ModeLogic {
 
 	public BrowsingModeLogic(StatusArea status, ResultArea result,
 			ProgressBarArea progressBar, DateArea date, Context context,
-			SharedPreferences preferences) {
-		super(status, result, progressBar, date, context, preferences);
+			SharedPreferences preferences, Handler handler) {
+		super(status, result, progressBar, date, context, preferences, handler);
 	}
 
 	HistoryManager historyManager = new HistoryManager(context);
@@ -64,12 +67,8 @@ public class BrowsingModeLogic extends ModeLogic {
 
 	@Override
 	public void onLongClick() {
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		currentStatus.setPowerOn(false);
-		statusArea.setVisible(false);
-		resultArea.setVisible(false);
-		progressBarArea.setVisible(false);
-		dateArea.setVisible(false);
+		Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+		message.sendToTarget();
 	}
 
 	@Override
