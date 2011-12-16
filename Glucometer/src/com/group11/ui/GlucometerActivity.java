@@ -367,16 +367,13 @@ public class GlucometerActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_setting: {
-			//TODO
-			Toast.makeText(this, "setting", 1000).show();
+		case R.id.menu_setting: 
+			this.doSetting();
 			return true;			
-		}
-			
-		case R.id.menu_about: {
+
+		case R.id.menu_about: 
 			this.doAbout();
 			return true;
-		}
 
 		case R.id.menu_exit:
 			this.finish();
@@ -388,6 +385,28 @@ public class GlucometerActivity extends Activity {
 	}
 	
 	/**
+	 * display Setting info on a new dialog
+	 */
+	private void doSetting() {
+		AlertDialog.Builder builder = new Builder(this);
+		builder.setTitle("Setting");
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = inflater.inflate(R.layout.setting_info, null);
+		//TODO fulfill the view's objects' listener
+		final CurrentStatus status = new CurrentStatus(preferences);
+
+		builder.setView(view);
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.create().show();
+	}
+	
+	/**
 	 * display About info on a new dialog
 	 */
 	private void doAbout() {
@@ -395,7 +414,7 @@ public class GlucometerActivity extends Activity {
 		builder.setTitle("About");
 		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		builder.setView(inflater.inflate(R.layout.about_info, null));
-		builder.setPositiveButton("Good", new AlertDialog.OnClickListener() {
+		builder.setPositiveButton("Excellent", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
