@@ -8,7 +8,7 @@
 			android:layout_height="wrap_content" android:text="Battery: "
 			android:layout_gravity="center_vertical"></TextView>
 		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="100"
+			android:layout_height="wrap_content" android:text="0%"
 			android:layout_gravity="center_vertical" android:id="@+id/batteryText"></TextView>
 		<SeekBar android:layout_height="wrap_content" android:id="@+id/batterySeekBar"
 			android:layout_gravity="center_vertical" android:layout_width="match_parent"
