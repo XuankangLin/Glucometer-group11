@@ -8,6 +8,7 @@ import android.content.Context;
 import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
+
 import com.group11.hardware.CurrentStatus;
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
@@ -19,6 +20,7 @@ import com.group11.util.HistoryManager;
 /**
  * the logical controller in Browsing Mode, it judges what to do
  */
+
 public class BrowsingModeLogic extends ModeLogic {
 
 	public BrowsingModeLogic(StatusArea status, ResultArea result,
@@ -98,5 +100,5 @@ public class BrowsingModeLogic extends ModeLogic {
 		statusArea.setCurrentMode(Mode.BROWSING);
 		statusArea.setErroring(false);
 	}
-
+	//CurrentStatus currentStatus= new CurrentStatus(preferences);
 }

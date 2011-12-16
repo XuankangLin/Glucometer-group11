@@ -17,7 +17,7 @@ public abstract class ModeLogic {
 	protected final ResultArea resultArea;
 	protected final ProgressBarArea progressBarArea;
 	protected final DateArea dateArea;
-	public Context context;
+	protected Context context;
 	protected SharedPreferences preferences;
 
 	public ModeLogic(StatusArea status, ResultArea result,
@@ -43,8 +43,6 @@ public abstract class ModeLogic {
 
 	/**
 	 * when double-clicked, what should be done?
-	 * 
-	 * @param glucometerActivity
 	 */
 	public abstract void onDoubleClick();
 }

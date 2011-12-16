@@ -27,6 +27,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -51,9 +52,8 @@ import android.widget.Toast;
 
 import static com.group11.base.Interrupt.*;
 
-
 public class GlucometerActivity extends Activity {
-	
+
 	/**
 	 * update the battery level every ** milliseconds
 	 */
@@ -70,18 +70,18 @@ public class GlucometerActivity extends Activity {
 	private ResultArea resultArea;
 	private ProgressBarArea progressBarArea;
 	private DateArea dateArea;
-	
+
 	private SharedPreferences preferences;
-	
+
 	private Handler handler = new Handler(new GlucometerHandlerCallback());
 	private ClickJudger judger = new ClickJudger(handler);;
-	
+
 	private ModeLogic currentModeLogic = null;
-	
+
 	private TimerTask batteryUpdaterTask = null;
 	private TimerTask timeUpdaterTask = null;
-	
-    @Override
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -147,11 +147,10 @@ public class GlucometerActivity extends Activity {
 
         this.reinstate();
         
-        //test pushing to upstream
         //TODO testing code, to be deleted
-//        statusArea.setCurrentMode(Mode.BROWSING);
-//        statusArea.setErroring(true);
-//        statusArea.setACing(true);
+        statusArea.setVisible(false);
+        resultArea.setVisible(false);
+        progressBarArea.setVisible(false);
         
         CurrentStatus currentStatus = new CurrentStatus(preferences);
 //        currentStatus.setCurrentTime(new Date(CurrentStatus.getDefaultTime()));
@@ -169,66 +168,71 @@ public class GlucometerActivity extends Activity {
 //        dateArea.setColonBlinking(true);
 //        dateArea.setDateTime(new Date());
     }
-    
-    /**
-     * reinstate according to the status after repower on
-     */
-    private void reinstate() {
-    	
-    }
-    
-    /**
-     * periodically update the time according
-     */
-    private void resetTimeUpdaterTask() {
-    	if (timeUpdaterTask != null) {
+
+	/**
+	 * reinstate according to the status after repower on
+	 */
+	private void reinstate() {
+
+	}
+
+	/**
+	 * periodically update the time according
+	 */
+	private void resetTimeUpdaterTask() {
+		if (timeUpdaterTask != null) {
 			timeUpdaterTask.cancel();
 			timeUpdaterTask = null;
 		}
-    	
-    	timeUpdaterTask = new TimerTask() {
-			
+
+		timeUpdaterTask = new TimerTask() {
+
 			@Override
 			public void run() {
 				CurrentStatus status = new CurrentStatus(preferences);
 				status.nextSecond();
-				Message message = Message.obtain(handler, Interrupt.TIME_TICK.ordinal());
+				Message message = Message.obtain(handler,
+						Interrupt.TIME_TICK.ordinal());
 				message.sendToTarget();
 			}
 		};
 		new Timer().scheduleAtFixedRate(timeUpdaterTask, 0, 1000);
-    }
-    
-    /**
-     * periodically update the battery level according to the status in "hardware"
-     */
-    private void resetBatteryUpdaterTask() {
-    	if (batteryUpdaterTask != null) {
+	}
+
+	/**
+	 * periodically update the battery level according to the status in
+	 * "hardware"
+	 */
+	private void resetBatteryUpdaterTask() {
+		if (batteryUpdaterTask != null) {
 			batteryUpdaterTask.cancel();
 			batteryUpdaterTask = null;
 		}
-    	
-    	batteryUpdaterTask = new TimerTask() {
-			
+
+		batteryUpdaterTask = new TimerTask() {
+
 			@Override
 			public void run() {
 				runOnUiThread(new Runnable() {
-					
+
 					@Override
 					public void run() {
-						BatteryLevel level = new CurrentStatus(preferences).getBatteryLevel();
+						BatteryLevel level = new CurrentStatus(preferences)
+								.getBatteryLevel();
 						statusArea.setBatteryLevel(level);
-						statusArea.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT);
+						statusArea
+								.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT);
 					}
 				});
 			}
 		};
-		new Timer().scheduleAtFixedRate(batteryUpdaterTask, 0, BATTERY_UPDATE_PERIOD);
-    }
-    
-    private void setOnClickListeners() {
-        realButtonImage.setOnTouchListener(new OnTouchListener() {
-			
+		new Timer().scheduleAtFixedRate(batteryUpdaterTask, 0,
+				BATTERY_UPDATE_PERIOD);
+	}
+
+	private void setOnClickListeners() {
+		realButtonImage.setOnTouchListener(new OnTouchListener() {
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				switch (event.getAction()) {
@@ -242,202 +246,253 @@ public class GlucometerActivity extends Activity {
 					judger.buttonUp(new Date());
 					return true;
 				}
-				
+
 				default:
 					break;
 				}
 				return false;
 			}
 		});
-        
-        testStripImage.setOnClickListener(new OnClickListener() {
-			
+
+		testStripImage.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				Random random = new Random();
 				if (random.nextBoolean()) {
-					testStripImage.setImageResource(R.drawable.test_strip_invalid);					
-				}
-				else {
-					testStripImage.setImageResource(R.drawable.test_strip_valid);
+					testStripImage
+							.setImageResource(R.drawable.test_strip_invalid);
+				} else {
+					testStripImage
+							.setImageResource(R.drawable.test_strip_valid);
 				}
 				Beeper.get().doShortLongBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "short long beep", 1000).show();				
-			}
-		});
-        
-        resetImage.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Beeper.get().doDoubleBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "double beep", 1000).show();
-			}
-		});
-        
-        usbImage.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Beeper.get().doLongBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "Long beep", 1000).show();
+				Toast.makeText(GlucometerActivity.this, "short long beep", 1000)
+						.show();
 			}
 		});
 
-        acPlugImage.setOnClickListener(new OnClickListener() {
-			
+		resetImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Beeper.get().doDoubleBeep(GlucometerActivity.this);
+				Toast.makeText(GlucometerActivity.this, "double beep", 1000)
+						.show();
+			}
+		});
+
+		usbImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				CurrentStatus currentStatus = new CurrentStatus(preferences);
+				if (currentStatus.isPowerOn() == false) {
+					Message message = Message.obtain(handler,
+							USB_CONNECTED.ordinal());
+					message.sendToTarget();
+				} else {
+					switch (currentStatus.getCurrentMode()) {
+					case SETUP:
+					case BROWSING:
+					case TESTING:
+						break;
+					case UPLOADING:
+						Message message = Message.obtain(handler,
+								USB_DISCONNECTED.ordinal());
+						message.sendToTarget();
+						break;
+					}
+				}
+			}
+		});
+
+		acPlugImage.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				Beeper.get().doShortBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "short beep", 1000).show();
+				Toast.makeText(GlucometerActivity.this, "short beep", 1000)
+						.show();
 			}
 		});
-    }
-    
-    /**
-     * set the screen parts's layout to be visible or not
-     * @param visible
-     */
-    private void setScreenVisible(boolean visible) {
+	}
+
+	/**
+	 * set the screen parts's layout to be visible or not
+	 * 
+	 * @param visible
+	 */
+	private void setScreenVisible(boolean visible) {
 		statusArea.setVisible(visible);
 		resultArea.setVisible(visible);
 		progressBarArea.setVisible(visible);
 		dateArea.setVisible(visible);
-    }
-    
-    private void doStripInserted() {
-    	//TODO fulfill this method
-    }
-    
-    private void doStripPulledOut() {
-    	//TODO fulfill this method
-    }
-    
-    private void doUSBConnected() {
-    	//TODO fulfill this method
-    }
+	}
+
+	private void doStripInserted() {
+		// TODO fulfill this method
+	}
+
+	private void doStripPulledOut() {
+		// TODO fulfill this method
+	}
+
+	private void doUSBConnected() {
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		currentStatus.setPowerOn(true);
+		currentStatus.setCurrentMode(Mode.UPLOADING);
+		currentStatus.commit();
+		statusArea.setCurrentMode(Mode.UPLOADING);
+		dateArea.setDateTime(new Date());
+		statusArea.setVisible(true);
+		dateArea.setVisible(true);
+		Beeper.get().doShortBeep(GlucometerActivity.this);
+		/*
+		 * HistoryManager historyManager = new HistoryManager();
+		 * if(!historyManager
+		 * .getTestResults(GlucometerActivity.this).isEmpty()){ //TODO Blinking
+		 * wait 5s Beeper.get().doShortLongBeep(GlucometerActivity.this);
+		 * currentStatus.setPowerOn(false); } else { //wait for shortclick
+		 * historyManager.deleteAllTestResults(GlucometerActivity.this);
+		 * currentStatus.setCurrentMode(null); currentStatus.setPowerOn(false);
+		 * //wait 5s }
+		 */
+	}
 
 	private void doUSBDisconnected() {
-		//TODO fulfill this method
+		statusArea.setVisible(false);
+		dateArea.setVisible(false);
+		Beeper.get().doShortLongBeep(GlucometerActivity.this);
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		// currentStatus.setCurrentMode(null);
+		currentStatus.setPowerOn(false);
+		currentStatus.commit();
 	}
-	
+
 	private void doStripValid() {
-		//TODO fulfill this method
+		// TODO fulfill this method
 	}
-	
+
 	private void doStripInvalid() {
-		//TODO fulfill this method
+		// TODO fulfill this method
 	}
-	
+
 	private void doBloodSufficient() {
-		//TODO fulfill this method
+		// TODO fulfill this method
 	}
-	
+
 	private void doBloodInsufficient() {
-		//TODO fulfill this method
+		// TODO fulfill this method
 	}
-	
+
 	private void doResultReady() {
-		//TODO fulfill this method
+		// TODO fulfill this method
 	}
-	
+
 	private void doAcOn() {
-		//TODO fulfill this method
+		// TODO fulfill this method
 	}
-	
+
 	private void doAcOff() {
-		//TODO fulfill this method
+		// TODO fulfill this method
 	}
-		
+
 	private void doButtonClicked(Message msg) {
 		/*
-		 * provided that this.currentModeLogic
-		 * is NOT null when it's power on
+		 * provided that this.currentModeLogic is NOT null when it's power on
 		 */
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		//for test
-		//currentStatus.setPowerOn(false);
+		// for test
+		// currentStatus.setPowerOn(false);
 
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
 			if (currentStatus.isPowerOn()) {
-				currentModeLogic.onShortClick();	
+				currentModeLogic.onShortClick();
 			}
 			return;
 		}
 		case DOUBLE_CLICK: {
 			if (currentStatus.isPowerOn()) {
-				currentModeLogic.onDoubleClick();				
-			}
-			else {
-				//TODO go into Setup Mode
+				currentModeLogic.onDoubleClick();
+			} else {
+				// TODO go into Setup Mode
 			}
 			return;
 		}
 		case LONG_CLICK: {
 			if (currentStatus.isPowerOn()) {
-				currentModeLogic.onLongClick();	
-				//for testing i have problem for preferences
-				//currentStatus.setPowerOn(false);
-			}
-			else {
-				//TODO go into Browsing Mode
-				//for testing
-				HistoryManager historymanager=new HistoryManager();
+				currentModeLogic.onLongClick();
+				// for testing i have problem for preferences
+				// currentStatus.setPowerOn(false);
+			} else {
+				// TODO go into Browsing Mode
+				// for testing
+				HistoryManager historymanager = new HistoryManager();
 
-				TestResult result1 = new TestResult(222.1459972, Unit.L, new Date());
-				historymanager.addTestResult(this,result1);
-				TestResult result2 = new TestResult(999.1459972, Unit.L, new Date());
-				historymanager.addTestResult(this,result2);
-				TestResult result3 = new TestResult(666.1459972, Unit.L, new Date());
-				historymanager.addTestResult(this,result3);
+				TestResult result1 = new TestResult(222.1459972, Unit.L,
+						new Date());
+				historymanager.addTestResult(this, result1);
+				TestResult result2 = new TestResult(999.1459972, Unit.L,
+						new Date());
+				historymanager.addTestResult(this, result2);
+				TestResult result3 = new TestResult(666.1459972, Unit.L,
+						new Date());
+				historymanager.addTestResult(this, result3);
 
 				LinkedList<TestResult> resultList = new LinkedList<TestResult>();
-				resultList = historymanager.getTestResults(GlucometerActivity.this);
-				
-				if(resultList.size() != 0){
-					currentModeLogic = new BrowsingModeLogic(statusArea, resultArea,
-							progressBarArea , dateArea, GlucometerActivity.this, preferences);
+				resultList = historymanager
+						.getTestResults(GlucometerActivity.this);
+
+				if (resultList.size() != 0) {
+					currentModeLogic = new BrowsingModeLogic(statusArea,
+							resultArea, progressBarArea, dateArea,
+							GlucometerActivity.this, preferences);
 					currentStatus.setPowerOn(true);
 					currentStatus.setCurrentMode(Mode.BROWSING);
 					currentStatus.commit();
 
 					setScreenVisible(true);
 					statusArea.setCurrentMode(Mode.BROWSING);
-				
-					resultArea.display(Converter.to(resultList.getLast().getValue(), 
-							resultList.getLast().getUnit(), Unit.DL),Unit.DL);
+
+					resultArea.display(Converter.to(resultList.getLast()
+							.getValue(), resultList.getLast().getUnit(),
+							Unit.DL), Unit.DL);
 
 					progressBarArea.setVisible(false);
 					dateArea.setDateTime(resultList.getLast().getTime());
-				}
-				else{
-					//TODO auto ending
+				} else {
+					// TODO auto ending
 					currentStatus.setPowerOn(false);
 					setScreenVisible(false);
 				}
 			}
-		return;
+			return;
 		}
 		default:
 			break;
-			}
+		}
 	}
+
 	/**
 	 * change the beeper's image, since it's contained in the glucometer image
-	 * @param beeping true: set beeping glucometer image
-	 * 								false: set not beeping glucometer image
+	 * 
+	 * @param beeping
+	 *            true: set beeping glucometer image false: set not beeping
+	 *            glucometer image
 	 */
 	private void setBeeperImage(boolean beeping) {
 		if (beeping) {
-			this.glucometerImage.setImageResource(R.drawable.glucometer_beeping);
-		}
-		else {
-			this.glucometerImage.setImageResource(R.drawable.glucometer_not_beeping);
+			this.glucometerImage
+					.setImageResource(R.drawable.glucometer_beeping);
+		} else {
+			this.glucometerImage
+					.setImageResource(R.drawable.glucometer_not_beeping);
 		}
 	}
-	
-    @Override
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.option_menu, menu);
@@ -447,11 +502,11 @@ public class GlucometerActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_setting: 
+		case R.id.menu_setting:
 			this.doSetting();
-			return true;			
+			return true;
 
-		case R.id.menu_about: 
+		case R.id.menu_about:
 			this.doAbout();
 			return true;
 
@@ -463,92 +518,107 @@ public class GlucometerActivity extends Activity {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * display Setting info on a new dialog
 	 */
 	private void doSetting() {
-		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater) this
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.setting_info, null);
 		final CurrentStatus status = new CurrentStatus(preferences);
-		
+
 		{
-			final TextView batteryTextView = (TextView) view.findViewById(R.id.batteryText);
-			SeekBar batterySeekBar = (SeekBar) view.findViewById(R.id.batterySeekBar);
-			batterySeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {}
-				
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {}
-				
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress,
-						boolean fromUser) {
-					if (fromUser) {
-						status.setBatteryLevel(progress);
-					}
-					batteryTextView.setText(Integer.toString(progress) + "%");
-				}
-			});
+			final TextView batteryTextView = (TextView) view
+					.findViewById(R.id.batteryText);
+			SeekBar batterySeekBar = (SeekBar) view
+					.findViewById(R.id.batterySeekBar);
+			batterySeekBar
+					.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+						@Override
+						public void onStopTrackingTouch(SeekBar seekBar) {
+						}
+
+						@Override
+						public void onStartTrackingTouch(SeekBar seekBar) {
+						}
+
+						@Override
+						public void onProgressChanged(SeekBar seekBar,
+								int progress, boolean fromUser) {
+							if (fromUser) {
+								status.setBatteryLevel(progress);
+							}
+							batteryTextView.setText(Integer.toString(progress)
+									+ "%");
+						}
+					});
 			batterySeekBar.setProgress(status.getBattery());
-		} {
-			CheckBox initializationBox = (CheckBox) view.findViewById(R.id.initializationErrorCheckbox);
-			initializationBox.setChecked(status.isInitializationErrorNextTime());
-			initializationBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					status.setInitializationErrorNextTime(isChecked);
-				}
-			});
+		}
+		{
+			CheckBox initializationBox = (CheckBox) view
+					.findViewById(R.id.initializationErrorCheckbox);
+			initializationBox
+					.setChecked(status.isInitializationErrorNextTime());
+			initializationBox
+					.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(CompoundButton buttonView,
+								boolean isChecked) {
+							status.setInitializationErrorNextTime(isChecked);
+						}
+					});
 		}
 
 		AlertDialog.Builder builder = new Builder(this);
 		builder.setTitle("Setting");
 		builder.setView(view);
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				status.commit();
 				dialog.dismiss();
 			}
 		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+		builder.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
 		builder.create().show();
 	}
-	
+
 	/**
 	 * display About info on a new dialog
 	 */
 	private void doAbout() {
 		AlertDialog.Builder builder = new Builder(this);
 		builder.setTitle("About");
-		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater) this
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		builder.setView(inflater.inflate(R.layout.about_info, null));
-		builder.setPositiveButton("Excellent", new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+		builder.setPositiveButton("Excellent",
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
 		builder.create().show();
 	}
 
 	/**
-     * the callback to deal with Messages in the Handler 
-     */
-    private class GlucometerHandlerCallback implements Callback {
-		
+	 * the callback to deal with Messages in the Handler
+	 */
+	private class GlucometerHandlerCallback implements Callback {
+
 		@Override
 		public boolean handleMessage(Message msg) {
 			if (STRIP_INSERTED.ordinal() == msg.what) {
@@ -559,7 +629,7 @@ public class GlucometerActivity extends Activity {
 				doStripPulledOut();
 				return true;
 			}
-			
+
 			if (USB_CONNECTED.ordinal() == msg.what) {
 				doUSBConnected();
 				return true;
@@ -568,7 +638,7 @@ public class GlucometerActivity extends Activity {
 				doUSBDisconnected();
 				return true;
 			}
-			
+
 			if (STRIP_VALID.ordinal() == msg.what) {
 				doStripValid();
 				return true;
@@ -577,7 +647,7 @@ public class GlucometerActivity extends Activity {
 				doStripInvalid();
 				return true;
 			}
-			
+
 			if (BLOOD_SUFFICIENT.ordinal() == msg.what) {
 				doBloodSufficient();
 				return true;
@@ -586,12 +656,12 @@ public class GlucometerActivity extends Activity {
 				doBloodInsufficient();
 				return true;
 			}
-			
+
 			if (RESULT_READY.ordinal() == msg.what) {
 				doResultReady();
 				return true;
 			}
-			
+
 			if (AC_ON.ordinal() == msg.what) {
 				doAcOn();
 				return true;
@@ -600,18 +670,18 @@ public class GlucometerActivity extends Activity {
 				doAcOff();
 				return true;
 			}
-			
+
 			if (TIME_TICK.ordinal() == msg.what) {
 				CurrentStatus status = new CurrentStatus(preferences);
 				dateArea.setDateTime(status.getCurrentTime());
 				return true;
 			}
-			
+
 			if (BUTTON_CLICKED.ordinal() == msg.what) {
 				doButtonClicked(msg);
 				return true;
 			}
-			
+
 			if (BEEP_START.ordinal() == msg.what) {
 				setBeeperImage(true);
 				return true;
@@ -620,7 +690,7 @@ public class GlucometerActivity extends Activity {
 				setBeeperImage(false);
 				return true;
 			}
-			
+
 			if (POWER_ON.ordinal() == msg.what) {
 				setScreenVisible(true);
 				return true;
@@ -630,9 +700,9 @@ public class GlucometerActivity extends Activity {
 				currentModeLogic = null;
 				return true;
 			}
-			
+
 			return false;
 		}
 	}
-    
+
 }
