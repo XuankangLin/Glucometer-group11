@@ -22,7 +22,7 @@ public class HistoryManager {
 		list.addLast(result);
 
 		if (list.size() > MAX_RESULTS) {
-			list.removeFirst();
+			list.removeFirst(); 
 		}
 		
 		DBHelper helper = new DBHelper(context);

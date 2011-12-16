@@ -1,17 +1,22 @@
 package com.group11.ui;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Random;
 
 import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
 import com.group11.base.Mode;
+import com.group11.base.TestResult;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
+import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
+import com.group11.util.Converter;
+import com.group11.util.HistoryManager;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -106,7 +111,7 @@ public class GlucometerActivity extends Activity {
         
         
         //TODO testing code, to be deleted
-        statusArea.setCurrentMode(Mode.BROWSING);
+        /*statusArea.setCurrentMode(Mode.BROWSING);
         statusArea.setErroring(true);
         statusArea.setACing(true);
         statusArea.setBatteryLevel(BatteryLevel.SEVENTY_FIVE_PERCENT);
@@ -116,7 +121,7 @@ public class GlucometerActivity extends Activity {
         progressBarArea.setVisible(true);
         progressBarArea.setProgress(6);
         
-        dateArea.setDateTime(new Date());
+        dateArea.setDateTime(new Date());*/
     }
     
     private void setOnClickListeners() {
@@ -252,10 +257,13 @@ public class GlucometerActivity extends Activity {
 		 * is NOT null when it's power on
 		 */
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		//for test
+		//currentStatus.setPowerOn(false);
+
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
 			if (currentStatus.isPowerOn()) {
-				currentModeLogic.onShortClick();				
+				currentModeLogic.onShortClick();	
 			}
 			return;
 		}
@@ -270,19 +278,55 @@ public class GlucometerActivity extends Activity {
 		}
 		case LONG_CLICK: {
 			if (currentStatus.isPowerOn()) {
-				currentModeLogic.onLongClick();				
+				currentModeLogic.onLongClick();	
+				//for testing i have problem for preferences
+				//currentStatus.setPowerOn(false);
 			}
 			else {
 				//TODO go into Browsing Mode
-			}
-			return;
-		}
+				//for testing
+				HistoryManager historymanager=new HistoryManager();
 
+				TestResult result1 = new TestResult(222.1459972, Unit.L, new Date());
+				historymanager.addTestResult(this,result1);
+				TestResult result2 = new TestResult(999.1459972, Unit.L, new Date());
+				historymanager.addTestResult(this,result2);
+				TestResult result3 = new TestResult(666.1459972, Unit.L, new Date());
+				historymanager.addTestResult(this,result3);
+
+				LinkedList<TestResult> resultList = new LinkedList<TestResult>();
+				resultList = historymanager.getTestResults(GlucometerActivity.this);
+				
+				if(resultList.size() != 0){
+					currentModeLogic = new BrowsingModeLogic(statusArea, resultArea,
+							progressBarArea , dateArea, GlucometerActivity.this, preferences );
+					currentStatus.setPowerOn(true);
+					currentStatus.setCurrentMode(Mode.BROWSING);
+					setScreenVisible(true);
+					statusArea.setCurrentMode(Mode.BROWSING);
+					statusArea.setErroring(false);
+					statusArea.setACing(false);
+					statusArea.setBatteryLevel(BatteryLevel.HUNDRED_PERCENT);
+				
+					resultArea.display(Converter.to(resultList.getLast().getValue(), 
+							resultList.getLast().getUnit(), Unit.DL),Unit.DL);
+
+					progressBarArea.setProgress(0);
+	        
+					dateArea.setDateTime(resultList.getLast().getTime());
+				}
+				else{
+					//TODO auto ending
+					currentStatus.setPowerOn(false);
+					setScreenVisible(false);
+				}
+			}
+		return;
+		}
 		default:
 			break;
-		}
+			}
 	}
-	
 	/**
 	 * change the beeper's image, since it's contained in the glucometer image
 	 * @param beeping true: set beeping glucometer image

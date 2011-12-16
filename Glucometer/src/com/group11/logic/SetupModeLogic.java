@@ -1,5 +1,8 @@
 package com.group11.logic;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
@@ -11,8 +14,8 @@ import com.group11.ui.StatusArea;
 public class SetupModeLogic extends ModeLogic {
 	
 	public SetupModeLogic(StatusArea status, ResultArea result,
-			ProgressBarArea progressBar, DateArea date) {
-		super(status, result, progressBar, date);
+			ProgressBarArea progressBar, DateArea date,Context context,SharedPreferences preferences) {
+		super(status, result, progressBar, date, context, preferences);
 	}
 
 	@Override
