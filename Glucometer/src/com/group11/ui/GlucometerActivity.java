@@ -161,6 +161,7 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setPowerOn(false);
 		currentStatus.setCurrentMode(null);
 		currentStatus.setRefreshingTime(true);
+		currentStatus.setACPlugged(false);
 		// TODO add other status here!
 
 		currentStatus.commit();
@@ -212,8 +213,8 @@ public class GlucometerActivity extends Activity {
 						BatteryLevel level = new CurrentStatus(preferences)
 								.getBatteryLevel();
 						statusArea.setBatteryLevel(level);
-						statusArea
-								.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT);
+						statusArea.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT
+										|| new CurrentStatus(preferences).isACPlugged());
 					}
 				});
 			}
@@ -271,9 +272,7 @@ public class GlucometerActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Beeper.get().doDoubleBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "double beep", 1000)
-						.show();
+				resetGlucometer();
 			}
 		});
 
@@ -306,17 +305,42 @@ public class GlucometerActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Beeper.get().doShortBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "short beep", 1000)
-						.show();
+				CurrentStatus status = new CurrentStatus(preferences);
+				Message message = Message.obtain(handler);
+				if (status.isACPlugged()) {
+					message.what = Interrupt.AC_OFF.ordinal();
+					status.setACPlugged(false);
+				}
+				else {
+					message.what = Interrupt.AC_ON.ordinal();
+					status.setACPlugged(true);
+				}
+				status.commit();
+				message.sendToTarget();
 			}
 		});
+	}
+	
+	/**
+	 * restore to the factory setting:
+	 * test unit: L, 
+	 * date: 2000/01/01, time: 00:00,
+	 * battery level: current battery level)
+	 * number of history: 0, clear the memory for history records.
+	 */
+	public void resetGlucometer() {
+		CurrentStatus status = new CurrentStatus(preferences);
+		status.setCurrentUnit(Unit.L);
+		status.setCurrentTime(CurrentStatus.getDefaultTime());
+		status.commit();
+		
+		new HistoryManager(this).deleteAllTestResults();
 	}
 
 	/**
 	 * set all the screen parts's layout to be invisible
 	 */
-	private void setScreenInvisible() {
+	public void setScreenInvisible() {
 		statusArea.setVisible(false);
 		resultArea.setVisible(false);
 		progressBarArea.setVisible(false);
@@ -395,14 +419,6 @@ public class GlucometerActivity extends Activity {
 		// TODO fulfill this method
 	}
 
-	private void doAcOn() {
-		// TODO fulfill this method
-	}
-
-	private void doAcOff() {
-		// TODO fulfill this method
-	}
-	
 	/**
 	 * do some cleaning when power off 
 	 */
@@ -484,7 +500,9 @@ public class GlucometerActivity extends Activity {
 				} else {
 					// TODO auto ending
 					currentStatus.setPowerOn(false);
+					currentStatus.commit();
 					setScreenInvisible();
+					Toast.makeText(this, "nothing in history", 1000).show();
 				}
 			}
 			return;
@@ -682,11 +700,11 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (AC_ON.ordinal() == msg.what) {
-				doAcOn();
+				statusArea.setACing(true);
 				return true;
 			}
 			if (AC_OFF.ordinal() == msg.what) {
-				doAcOff();
+				statusArea.setACing(false);
 				return true;
 			}
 
