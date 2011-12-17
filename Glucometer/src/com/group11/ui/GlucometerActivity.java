@@ -341,16 +341,28 @@ public class GlucometerActivity extends Activity {
 		statusArea.setVisible(true);
 		dateArea.setVisible(true);
 		Beeper.get().doShortBeep(GlucometerActivity.this);
-		/*
-		 * HistoryManager historyManager = new HistoryManager();
-		 * if(!historyManager
-		 * .getTestResults(GlucometerActivity.this).isEmpty()){ //TODO Blinking
-		 * wait 5s Beeper.get().doShortLongBeep(GlucometerActivity.this);
-		 * currentStatus.setPowerOn(false); } else { //wait for shortclick
-		 * historyManager.deleteAllTestResults(GlucometerActivity.this);
-		 * currentStatus.setCurrentMode(null); currentStatus.setPowerOn(false);
-		 * //wait 5s }
-		 */
+		HistoryManager historyManager = new HistoryManager(this);
+		 if(historyManager.getTestResults().size() == 0){ 
+			 //TODO Blinking
+			 //wait 5s
+			 statusArea.setVisible(false);
+			 //dateArea.setVisible(false);
+			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
+			 currentStatus.setCurrentMode(null); 
+			 currentStatus.setPowerOn(false);
+			 currentStatus.commit();
+			 } 
+		 else {
+			 //wait for shortclick
+			 historyManager.deleteAllTestResults();
+			 //wait 5s 
+			 //statusArea.setVisible(false);
+			 dateArea.setVisible(false);
+			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
+			 currentStatus.setCurrentMode(null); 
+		     currentStatus.setPowerOn(false);
+		     currentStatus.commit();
+		     }
 	}
 
 	private void doUSBDisconnected() {
@@ -358,7 +370,7 @@ public class GlucometerActivity extends Activity {
 		dateArea.setVisible(false);
 		Beeper.get().doShortLongBeep(GlucometerActivity.this);
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		// currentStatus.setCurrentMode(null);
+		currentStatus.setCurrentMode(null);
 		currentStatus.setPowerOn(false);
 		currentStatus.commit();
 	}
