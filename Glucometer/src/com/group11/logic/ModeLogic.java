@@ -58,6 +58,10 @@ public abstract class ModeLogic {
 	 */
 	public boolean checkMeterStatus() {
 		CurrentStatus status = new CurrentStatus(preferences);
+		if (status.getPreviousMode() == null) {
+			return true;
+		}
+		
 		switch (status.getPreviousMode()) {
 		case BROWSING:
 		case SETUP:

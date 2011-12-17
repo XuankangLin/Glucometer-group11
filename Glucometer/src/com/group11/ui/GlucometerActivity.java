@@ -255,6 +255,7 @@ public class GlucometerActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				addTestingRecords();
 				Random random = new Random();
 				if (random.nextBoolean()) {
 					testStripImage
@@ -282,6 +283,11 @@ public class GlucometerActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				CurrentStatus currentStatus = new CurrentStatus(preferences);
+				Toast.makeText(
+						GlucometerActivity.this,
+						currentStatus.getPreviousMode() == null ? "pre: null"
+								: currentStatus.getPreviousMode().toString(),
+						1000).show();
 				if (currentStatus.isPowerOn() == false) {
 					Message message = Message.obtain(handler,
 							USB_CONNECTED.ordinal());
@@ -416,6 +422,18 @@ public class GlucometerActivity extends Activity {
 		status.setRefreshingTime(true);
 		status.commit();
 	}
+	
+	public void addTestingRecords() {
+		//for testing
+		HistoryManager historymanager = new HistoryManager(this);
+
+		historymanager.addTestResult(new TestResult(222.1459972,
+				Unit.L, new Date()));
+		historymanager.addTestResult(new TestResult(999.1459972,
+				Unit.L, new Date()));
+		historymanager.addTestResult(new TestResult(666.1459972,
+				Unit.L, new Date()));
+	}
 
 	private void doButtonClicked(Message msg) {
 		/*
@@ -442,52 +460,25 @@ public class GlucometerActivity extends Activity {
 			if (currentStatus.isPowerOn()) {
 				currentModeLogic.onLongClick();
 			} else {
-				// TODO go into Browsing Mode
-//				{
-//					//for testing
-//					HistoryManager historymanager = new HistoryManager(this);
-//
-//					historymanager.addTestResult(new TestResult(222.1459972,
-//							Unit.L, new Date()));
-//					historymanager.addTestResult(new TestResult(999.1459972,
-//							Unit.L, new Date()));
-//					historymanager.addTestResult(new TestResult(666.1459972,
-//							Unit.L, new Date()));
-//				}
-
+				//=======go into Browsing Mode=======
 				BrowsingModeLogic modeLogic = new BrowsingModeLogic(statusArea,
 						resultArea, progressBarArea, dateArea, this,
 						preferences, handler);
-				currentModeLogic = modeLogic;
-
-				LinkedList<TestResult> resultList = modeLogic.getTestResults();
-
-				if (resultList.size() != 0) {
-					currentStatus.setPowerOn(true);
-					currentStatus.setCurrentMode(Mode.BROWSING);
-					currentStatus.setRefreshingTime(false);
-					currentStatus.commit();
-
-					statusArea.setVisible(true);
-					statusArea.setCurrentMode(Mode.BROWSING);
-
-					resultArea.setVisible(true);
-					resultArea.display(Converter.to(resultList.getLast()
-							.getValue(), resultList.getLast().getUnit(),
-							Unit.DL), Unit.DL);
-
-					progressBarArea.setVisible(false);
-
-					dateArea.setVisible(true);
-					dateArea.setColonBlinking(false);
-					dateArea.setDateTime(resultList.getLast().getTime());
-				} else {
-					// TODO auto ending
-					currentStatus.setPowerOn(false);
-					currentStatus.commit();
-					setScreenInvisible();
-					Toast.makeText(this, "nothing in history", 1000).show();
+				if (!modeLogic.initialize()) {
+					//=====Initialization Error=====
+					//TODO
 				}
+				if (!modeLogic.checkMeterStatus()) {
+					//=====Meter Status Checking Error=====
+					//TODO
+				}
+				if (!modeLogic.validateMode()) {
+					//=====Mode Validation Error=====
+					//TODO
+				}
+				
+				modeLogic.firstDisplay();
+				currentModeLogic = modeLogic;
 			}
 			return;
 		}
