@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.util.Log;
 
 import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
@@ -28,7 +29,8 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 
 	private HistoryManager historyManager = new HistoryManager(context);
-	
+	private TimerTask timerTask;
+
 	@Override
 	public boolean validateMode() {
 		// TODO Auto-generated method stub
@@ -82,34 +84,42 @@ public class UploadingModeLogic extends ModeLogic {
 		statusArea.setUploadingBlinking(true);
 	}
 	
-	public void onUsbConnected(){
+	public void onUsbConnected() {
+		Log.i("NULLLLL", "onConnected");
+		
 		PowerOn();
-		if(historyManager.getTestResults().size() == 0){ 
-			showBlinkingView();
-			timer.schedule(timerTask, 10000);
-			 } 
-		 else {
-			 Beeper.get().doShortBeep(context);
-			 //wait for shortclick
-			 historyManager.deleteAllTestResults();
-			 showBlinkingView();
-			 timer.schedule(timerTask, 10000); 
-		     }
+		if (historyManager.getTestResults().size() == 0) {
+			// showBlinkingView();
+			// new Timer().schedule(timerTask, 10000);
+		} else {
+			Beeper.get().doShortBeep(context);
+			// wait for shortclick
+			historyManager.deleteAllTestResults();
+		}
+		showBlinkingView();
+		timerTask = new TimerTask() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				PowerOff();
+			}
+		};
+		new Timer().schedule(timerTask, 10000);
 	}
 	
-	public void onUsbDisConnected(){
-		timer.cancel();
+	public void onUsbDisConnected() {
+		Log.i("NULLLLL", "onDisConnected");
+
+		if (timerTask.cancel()) {
+			Log.e("CANCEL", "success");
+		}
+		else {
+			Log.e("CANCEL", "failed");			
+		}
+//		timer.cancel();
 		PowerOff();
 	}
-	
-	Timer timer = new Timer();
-	TimerTask timerTask = new TimerTask() {
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			PowerOff();
-		}
-	};
+
 
 }

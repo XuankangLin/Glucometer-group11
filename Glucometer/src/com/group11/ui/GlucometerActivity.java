@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -281,10 +282,12 @@ public class GlucometerActivity extends Activity {
 			public void onClick(View v) {
 				CurrentStatus currentStatus = new CurrentStatus(preferences);
 				if (currentStatus.isPowerOn() == false) {
+					Log.i("NULLLLL", "sending connected");
 					Message message = Message.obtain(handler,
 							USB_CONNECTED.ordinal());
 					message.sendToTarget();
 				} else {
+					Log.i("NULLLLL", "sending disconnected");
 					switch (currentStatus.getCurrentMode()) {
 					case SETUP:
 					case BROWSING:
