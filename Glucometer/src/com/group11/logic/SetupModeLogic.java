@@ -20,6 +20,15 @@ public class SetupModeLogic extends ModeLogic {
 		super(status, result, progressBar, date, context, preferences, handler);
 	}
 
+	/**
+	 * Setup mode doesn't have Mode Validation Process
+	 * so, just return true
+	 */
+	@Override
+	public boolean validateMode() {
+		return true;
+	}
+
 	@Override
 	public void onShortClick() {
 		// TODO Auto-generated method stub
