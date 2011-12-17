@@ -1,5 +1,8 @@
 package com.group11.logic;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -24,6 +27,8 @@ public class UploadingModeLogic extends ModeLogic {
 		super(status, result, progressBar, date, context, preferences, handler);
 	}
 
+	private HistoryManager historyManager = new HistoryManager(context);
+	
 	@Override
 	public boolean validateMode() {
 		// TODO Auto-generated method stub
@@ -63,9 +68,10 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 	
 	public void PowerOff(){
+		 CurrentStatus currentStatus = new CurrentStatus(preferences);
+		 Beeper.get().doShortLongBeep(context); 
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
-		 CurrentStatus currentStatus = new CurrentStatus(preferences);
 		 currentStatus.setCurrentMode(null);
 		 currentStatus.setUSBConnected(false);
 		 currentStatus.setPowerOn(false);
@@ -74,32 +80,36 @@ public class UploadingModeLogic extends ModeLogic {
 	
 	public void showBlinkingView(){
 		statusArea.setUploadingBlinking(true);
-		//statusArea.setVisible(false);
-		dateArea.setVisible(false);
 	}
 	
 	public void onUsbConnected(){
 		PowerOn();
-		HistoryManager historyManager = new HistoryManager(context);
 		if(historyManager.getTestResults().size() == 0){ 
 			showBlinkingView();
-			//wait 5s
-			Beeper.get().doShortLongBeep(context);
-			PowerOff();
+			timer.schedule(timerTask, 10000);
 			 } 
 		 else {
 			 Beeper.get().doShortBeep(context);
 			 //wait for shortclick
 			 historyManager.deleteAllTestResults();
-			 //wait 5s 
-			 Beeper.get().doShortLongBeep(context);
-			 PowerOff();
+			 showBlinkingView();
+			 timer.schedule(timerTask, 10000); 
 		     }
 	}
 	
 	public void onUsbDisConnected(){
-		Beeper.get().doShortLongBeep(context);
+		timer.cancel();
 		PowerOff();
 	}
+	
+	Timer timer = new Timer();
+	TimerTask timerTask = new TimerTask() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			PowerOff();
+		}
+	};
 
 }

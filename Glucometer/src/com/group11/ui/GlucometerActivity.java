@@ -363,11 +363,14 @@ public class GlucometerActivity extends Activity {
 		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
 		currentModeLogic = uploadingModeLogic;
 		uploadingModeLogic.onUsbConnected();
+		//doPowerOff();
 	}
 
 	private void doUSBDisconnected() {
 		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
+		currentModeLogic = uploadingModeLogic;
 		uploadingModeLogic.onUsbDisConnected();
+		//doPowerOff();
 	}
 
 	private void doStripValid() {
