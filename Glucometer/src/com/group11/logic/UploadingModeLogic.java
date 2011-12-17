@@ -8,7 +8,6 @@ import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.ui.DateArea;
-import com.group11.ui.GlucometerActivity;
 import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
 import com.group11.ui.StatusArea;
@@ -77,6 +76,30 @@ public class UploadingModeLogic extends ModeLogic {
 		statusArea.setUploadingBlinking(true);
 		//statusArea.setVisible(false);
 		dateArea.setVisible(false);
+	}
+	
+	public void onUsbConnected(){
+		PowerOn();
+		HistoryManager historyManager = new HistoryManager(context);
+		if(historyManager.getTestResults().size() == 0){ 
+			showBlinkingView();
+			//wait 5s
+			Beeper.get().doShortLongBeep(context);
+			PowerOff();
+			 } 
+		 else {
+			 Beeper.get().doShortBeep(context);
+			 //wait for shortclick
+			 historyManager.deleteAllTestResults();
+			 //wait 5s 
+			 Beeper.get().doShortLongBeep(context);
+			 PowerOff();
+		     }
+	}
+	
+	public void onUsbDisConnected(){
+		Beeper.get().doShortLongBeep(context);
+		PowerOff();
 	}
 
 }

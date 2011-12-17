@@ -1,7 +1,6 @@
 package com.group11.ui;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -10,7 +9,6 @@ import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
 import com.group11.base.Interrupt;
-import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
@@ -19,7 +17,6 @@ import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
 import com.group11.logic.UploadingModeLogic;
 import com.group11.util.ClickJudger;
-import com.group11.util.Converter;
 import com.group11.util.HistoryManager;
 
 import android.app.Activity;
@@ -365,28 +362,12 @@ public class GlucometerActivity extends Activity {
 	private void doUSBConnected() {
 		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
 		currentModeLogic = uploadingModeLogic;
-		uploadingModeLogic.PowerOn();
-		HistoryManager historyManager = new HistoryManager(this);
-		if(historyManager.getTestResults().size() == 0){ 
-			uploadingModeLogic.showBlinkingView();
-			//wait 5s
-			Beeper.get().doShortLongBeep(GlucometerActivity.this);
-			uploadingModeLogic.PowerOff();
-			 } 
-		 else {
-			 Beeper.get().doShortBeep(GlucometerActivity.this);
-			 //wait for shortclick
-			 historyManager.deleteAllTestResults();
-			 //wait 5s 
-			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
-			 uploadingModeLogic.PowerOff();
-		     }
+		uploadingModeLogic.onUsbConnected();
 	}
 
 	private void doUSBDisconnected() {
 		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
-		Beeper.get().doShortLongBeep(GlucometerActivity.this);
-		uploadingModeLogic.PowerOff();
+		uploadingModeLogic.onUsbDisConnected();
 	}
 
 	private void doStripValid() {
