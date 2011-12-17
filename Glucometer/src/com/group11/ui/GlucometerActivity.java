@@ -19,7 +19,6 @@ import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
 import com.group11.util.Converter;
-import com.group11.util.HistoryManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
