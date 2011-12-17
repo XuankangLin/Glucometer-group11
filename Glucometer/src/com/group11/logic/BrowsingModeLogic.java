@@ -36,6 +36,12 @@ public class BrowsingModeLogic extends ModeLogic {
 	private int position = resultList.size() - 1;
 
 	@Override
+	public boolean validateMode() {
+		// TODO Auto-generated method stub
+		return super.validateMode();
+	}
+
+	@Override
 	public void onShortClick() {
 		if (position > 0) {
 			// !!!for testing suppose DL for setup!!!

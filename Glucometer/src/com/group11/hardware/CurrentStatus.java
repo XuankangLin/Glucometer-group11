@@ -48,11 +48,13 @@ public class CurrentStatus {
 	private static final String CURRENT_TIME = "currentTime";
 	private static final String TIME_INTERVAL = "timeInterval";
 	private static final String CURRENT_MODE = "currentMode";
+	private static final String PREVIOUS_MODE = "previousMode";
 	private static final String CURRENT_UNIT = "currentUnit";
 	private static final String BATTERY_LEVEL = "batteryLevel";
 	private static final String REFRESH_TIME = "refreshTime";
 	private static final String AC_PLUGGED = "acPlugged";
 	private static final String USB_CONNECTED = "usbConnected";
+	private static final String STRIP_INSERTED = "stripInserted";
 	private static final String INITIALIZATION_ERROR = "initializationError";
 
 	/**
@@ -129,7 +131,13 @@ public class CurrentStatus {
 	 * @param mode
 	 */
 	public synchronized void setCurrentMode(Mode mode) {
+		this.editor.putInt(PREVIOUS_MODE, preferences.getInt(CURRENT_MODE, -1));
 		this.editor.putInt(CURRENT_MODE, mode == null ? -1 : mode.ordinal());
+	}
+	
+	public Mode getPreviousMode() { 
+		int ordinal = preferences.getInt(PREVIOUS_MODE, -1);
+		return ordinal == -1 ? null : Mode.get(ordinal);
 	}
 	
 	public int getBattery() {
@@ -153,7 +161,7 @@ public class CurrentStatus {
 		return preferences.getBoolean(INITIALIZATION_ERROR, false);
 	}
 	
-	public void setInitializationErrorNextTime(boolean error) {
+	public synchronized void setInitializationErrorNextTime(boolean error) {
 		this.editor.putBoolean(INITIALIZATION_ERROR, error);
 	}
 	
@@ -168,7 +176,7 @@ public class CurrentStatus {
 	 * set whether should refresh the Time every second
 	 * @param refresh
 	 */
-	public void setRefreshingTime(boolean refresh) {
+	public synchronized void setRefreshingTime(boolean refresh) {
 		this.editor.putBoolean(REFRESH_TIME, refresh);
 	}
 	
@@ -179,7 +187,7 @@ public class CurrentStatus {
 		return Unit.get(preferences.getInt(CURRENT_UNIT, Unit.L.ordinal()));
 	}
 	
-	public void setCurrentUnit(Unit unit) {
+	public synchronized void setCurrentUnit(Unit unit) {
 		if (unit == null) {
 			throw new IllegalArgumentException("@param unit should not be null");
 		}
@@ -191,7 +199,7 @@ public class CurrentStatus {
 		return preferences.getBoolean(AC_PLUGGED, false);
 	}
 	
-	public void setACPlugged(boolean plugged) {
+	public synchronized void setACPlugged(boolean plugged) {
 		this.editor.putBoolean(AC_PLUGGED, plugged);
 	}
 	
@@ -199,7 +207,15 @@ public class CurrentStatus {
 		return preferences.getBoolean(USB_CONNECTED, false);
 	}
 	
-	public void setUSBConnected(boolean usb) {
+	public synchronized void setUSBConnected(boolean usb) {
 		this.editor.putBoolean(USB_CONNECTED, usb);
+	}
+	
+	public boolean isStripInserted() {
+		return preferences.getBoolean(STRIP_INSERTED, false);
+	}
+	
+	public synchronized void setStripInserted(boolean inserted) {
+		this.editor.putBoolean(STRIP_INSERTED, inserted);
 	}
 }

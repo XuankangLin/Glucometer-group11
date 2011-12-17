@@ -21,6 +21,12 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 
 	@Override
+	public boolean validateMode() {
+		// TODO Auto-generated method stub
+		return super.validateMode();
+	}
+
+	@Override
 	public void onShortClick() {
 		// TODO Auto-generated method stub
 
