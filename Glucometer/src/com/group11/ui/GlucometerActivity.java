@@ -1,7 +1,6 @@
 package com.group11.ui;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -10,7 +9,6 @@ import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
 import com.group11.base.Interrupt;
-import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
@@ -19,7 +17,6 @@ import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
 import com.group11.logic.UploadingModeLogic;
 import com.group11.util.ClickJudger;
-import com.group11.util.Converter;
 import com.group11.util.HistoryManager;
 
 import android.app.Activity;
@@ -283,11 +280,6 @@ public class GlucometerActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				CurrentStatus currentStatus = new CurrentStatus(preferences);
-				Toast.makeText(
-						GlucometerActivity.this,
-						currentStatus.getPreviousMode() == null ? "pre: null"
-								: currentStatus.getPreviousMode().toString(),
-						1000).show();
 				if (currentStatus.isPowerOn() == false) {
 					Message message = Message.obtain(handler,
 							USB_CONNECTED.ordinal());
@@ -363,7 +355,10 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doUSBConnected() {
-		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
+		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
+				statusArea, resultArea, progressBarArea, dateArea, this,
+				preferences, handler);
+		
 		currentModeLogic = uploadingModeLogic;
 		uploadingModeLogic.PowerOn();
 		HistoryManager historyManager = new HistoryManager(this);
