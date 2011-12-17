@@ -19,6 +19,7 @@ import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
 import com.group11.util.ClickJudger;
 import com.group11.util.Converter;
+import com.group11.util.HistoryManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -270,9 +271,7 @@ public class GlucometerActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Beeper.get().doDoubleBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "double beep", 1000)
-						.show();
+				resetGlucometer();
 			}
 		});
 
@@ -311,11 +310,27 @@ public class GlucometerActivity extends Activity {
 			}
 		});
 	}
+	
+	/**
+	 * restore to the factory setting:
+	 * test unit: L, 
+	 * date: 2000/01/01, time: 00:00,
+	 * battery level: current battery level)
+	 * number of history: 0, clear the memory for history records.
+	 */
+	public void resetGlucometer() {
+		CurrentStatus status = new CurrentStatus(preferences);
+		status.setCurrentUnit(Unit.L);
+		status.setCurrentTime(CurrentStatus.getDefaultTime());
+		status.commit();
+		
+		new HistoryManager(this).deleteAllTestResults();
+	}
 
 	/**
 	 * set all the screen parts's layout to be invisible
 	 */
-	private void setScreenInvisible() {
+	public void setScreenInvisible() {
 		statusArea.setVisible(false);
 		resultArea.setVisible(false);
 		progressBarArea.setVisible(false);
@@ -471,7 +486,9 @@ public class GlucometerActivity extends Activity {
 				} else {
 					// TODO auto ending
 					currentStatus.setPowerOn(false);
+					currentStatus.commit();
 					setScreenInvisible();
+					Toast.makeText(this, "nothing in history", 1000).show();
 				}
 			}
 			return;

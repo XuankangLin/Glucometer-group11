@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 
 import com.group11.base.BatteryLevel;
 import com.group11.base.Mode;
+import com.group11.base.Unit;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -47,6 +48,7 @@ public class CurrentStatus {
 	private static final String CURRENT_TIME = "currentTime";
 	private static final String TIME_INTERVAL = "timeInterval";
 	private static final String CURRENT_MODE = "currentMode";
+	private static final String CURRENT_UNIT = "currentUnit";
 	private static final String BATTERY_LEVEL = "batteryLevel";
 	private static final String REFRESH_TIME = "refreshTime";
 	private static final String INITIALIZATION_ERROR = "initializationError";
@@ -82,8 +84,16 @@ public class CurrentStatus {
 		if (time == null) {
 			throw new IllegalArgumentException("@param time should not be null");
 		}
-		this.editor.putLong(CURRENT_TIME, time.getTime());
-		preferences.edit().putLong(TIME_INTERVAL, new Date().getTime() - time.getTime()).commit();
+		this.setCurrentTime(time.getTime());
+	}
+	
+	/**
+	 * call commit() to write in the changes
+	 * @param time
+	 */
+	public synchronized void setCurrentTime(long time) {
+		this.editor.putLong(CURRENT_TIME, time);
+		preferences.edit().putLong(TIME_INTERVAL, new Date().getTime() - time).commit();
 	}
 
 	/**
@@ -158,5 +168,20 @@ public class CurrentStatus {
 	 */
 	public void setRefreshingTime(boolean refresh) {
 		this.editor.putBoolean(REFRESH_TIME, refresh);
+	}
+	
+	/**
+	 * @return L / DL
+	 */
+	public Unit getCurrentUnit() {
+		return Unit.get(preferences.getInt(CURRENT_UNIT, Unit.L.ordinal()));
+	}
+	
+	public void setCurrentUnit(Unit unit) {
+		if (unit == null) {
+			throw new IllegalArgumentException("@param unit should not be null");
+		}
+		
+		this.editor.putInt(CURRENT_UNIT, unit.ordinal());
 	}
 }
