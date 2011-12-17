@@ -359,6 +359,7 @@ public class GlucometerActivity extends Activity {
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.UPLOADING);
+		currentStatus.setUSBConnected(true);
 		currentStatus.commit();
 		
 		statusArea.setCurrentMode(Mode.UPLOADING);
@@ -367,12 +368,12 @@ public class GlucometerActivity extends Activity {
 		Beeper.get().doShortBeep(GlucometerActivity.this);
 		HistoryManager historyManager = new HistoryManager(this);
 		 if(historyManager.getTestResults().size() == 0){ 
-			 //TODO Blinking
-			 //wait 5s
-			 statusArea.setVisible(false);
-			 //dateArea.setVisible(false);
+			 statusArea.setUploadingBlinking(true);
+			 //statusArea.setVisible(false);
+			 dateArea.setVisible(false);
 			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
-			 currentStatus.setCurrentMode(null); 
+			 currentStatus.setCurrentMode(null);
+			 currentStatus.setUSBConnected(false);
 			 currentStatus.setPowerOn(false);
 			 currentStatus.commit();
 			 } 
@@ -384,6 +385,7 @@ public class GlucometerActivity extends Activity {
 			 dateArea.setVisible(false);
 			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
 			 currentStatus.setCurrentMode(null); 
+			 currentStatus.setUSBConnected(false);
 		     currentStatus.setPowerOn(false);
 		     currentStatus.commit();
 		     }
@@ -395,6 +397,7 @@ public class GlucometerActivity extends Activity {
 		Beeper.get().doShortLongBeep(GlucometerActivity.this);
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setCurrentMode(null);
+		currentStatus.setUSBConnected(false);
 		currentStatus.setPowerOn(false);
 		currentStatus.commit();
 	}

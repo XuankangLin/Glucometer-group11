@@ -27,6 +27,7 @@ public class StatusArea extends UIArea {
 	private final ImageView errorModeImage;
 	
 	private TimerTask batteryBlinkingTask = null;
+	private TimerTask uploadingBlinkingTask = null;
 
 	public StatusArea(Activity activity, LinearLayout panel, ImageView battery, ImageView ac,
 			ImageView tMode, ImageView bMode, ImageView uMode, ImageView eMode) {
@@ -164,6 +165,44 @@ public class StatusArea extends UIArea {
 		}
 		else {
 			this.batteryImage.setVisibility(View.VISIBLE);
+		}
+	}
+	private void initUploadingBlinkingTask() {
+		uploadingBlinkingTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				activity.runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (uploadingModeImage.getVisibility() == View.VISIBLE) {
+							uploadingModeImage.setVisibility(View.INVISIBLE);
+						} 
+						else {
+							uploadingModeImage.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+			}
+		};
+	}
+	
+	private void clearUploadingBlinkingTask() {
+		if (uploadingBlinkingTask != null) {
+			uploadingBlinkingTask.cancel();
+			uploadingBlinkingTask = null;
+		}		
+	}
+	
+	public void setUploadingBlinking(boolean blinking) {
+		this.clearUploadingBlinkingTask();
+		if (blinking) {
+			this.initUploadingBlinkingTask();
+			new Timer().scheduleAtFixedRate(uploadingBlinkingTask, 0, 1000);
+		}
+		else {
+			this.uploadingModeImage.setVisibility(View.VISIBLE);
 		}
 	}
 }
