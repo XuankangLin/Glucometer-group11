@@ -161,6 +161,7 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setPowerOn(false);
 		currentStatus.setCurrentMode(null);
 		currentStatus.setRefreshingTime(true);
+		currentStatus.setACPlugged(false);
 		// TODO add other status here!
 
 		currentStatus.commit();
@@ -212,8 +213,8 @@ public class GlucometerActivity extends Activity {
 						BatteryLevel level = new CurrentStatus(preferences)
 								.getBatteryLevel();
 						statusArea.setBatteryLevel(level);
-						statusArea
-								.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT);
+						statusArea.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT
+										|| new CurrentStatus(preferences).isACPlugged());
 					}
 				});
 			}
@@ -304,9 +305,18 @@ public class GlucometerActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Beeper.get().doShortBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "short beep", 1000)
-						.show();
+				CurrentStatus status = new CurrentStatus(preferences);
+				Message message = Message.obtain(handler);
+				if (status.isACPlugged()) {
+					message.what = Interrupt.AC_OFF.ordinal();
+					status.setACPlugged(false);
+				}
+				else {
+					message.what = Interrupt.AC_ON.ordinal();
+					status.setACPlugged(true);
+				}
+				status.commit();
+				message.sendToTarget();
 			}
 		});
 	}
@@ -397,14 +407,6 @@ public class GlucometerActivity extends Activity {
 		// TODO fulfill this method
 	}
 
-	private void doAcOn() {
-		// TODO fulfill this method
-	}
-
-	private void doAcOff() {
-		// TODO fulfill this method
-	}
-	
 	/**
 	 * do some cleaning when power off 
 	 */
@@ -686,11 +688,11 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (AC_ON.ordinal() == msg.what) {
-				doAcOn();
+				statusArea.setACing(true);
 				return true;
 			}
 			if (AC_OFF.ordinal() == msg.what) {
-				doAcOff();
+				statusArea.setACing(false);
 				return true;
 			}
 

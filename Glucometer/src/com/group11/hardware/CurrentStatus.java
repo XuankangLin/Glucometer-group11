@@ -51,6 +51,7 @@ public class CurrentStatus {
 	private static final String CURRENT_UNIT = "currentUnit";
 	private static final String BATTERY_LEVEL = "batteryLevel";
 	private static final String REFRESH_TIME = "refreshTime";
+	private static final String AC_PLUGGED = "acPlugged";
 	private static final String INITIALIZATION_ERROR = "initializationError";
 
 	/**
@@ -183,5 +184,13 @@ public class CurrentStatus {
 		}
 		
 		this.editor.putInt(CURRENT_UNIT, unit.ordinal());
+	}
+	
+	public boolean isACPlugged() {
+		return preferences.getBoolean(AC_PLUGGED, false);
+	}
+	
+	public void setACPlugged(boolean plugged) {
+		this.editor.putBoolean(AC_PLUGGED, plugged);
 	}
 }
