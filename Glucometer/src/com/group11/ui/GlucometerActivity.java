@@ -360,28 +360,15 @@ public class GlucometerActivity extends Activity {
 				preferences, handler);
 		
 		currentModeLogic = uploadingModeLogic;
-		uploadingModeLogic.PowerOn();
-		HistoryManager historyManager = new HistoryManager(this);
-		if(historyManager.getTestResults().size() == 0){ 
-			uploadingModeLogic.showBlinkingView();
-			//wait 5s
-			Beeper.get().doShortLongBeep(GlucometerActivity.this);
-			uploadingModeLogic.PowerOff();
-			 } 
-		 else {
-			 Beeper.get().doShortBeep(GlucometerActivity.this);
-			 //wait for shortclick
-			 historyManager.deleteAllTestResults();
-			 //wait 5s 
-			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
-			 uploadingModeLogic.PowerOff();
-		     }
+		uploadingModeLogic.onUsbConnected();
+		//doPowerOff();
 	}
 
 	private void doUSBDisconnected() {
 		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
-		Beeper.get().doShortLongBeep(GlucometerActivity.this);
-		uploadingModeLogic.PowerOff();
+		currentModeLogic = uploadingModeLogic;
+		uploadingModeLogic.onUsbDisConnected();
+		//doPowerOff();
 	}
 
 	private void doStripValid() {

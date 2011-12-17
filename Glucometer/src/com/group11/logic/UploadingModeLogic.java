@@ -1,5 +1,8 @@
 package com.group11.logic;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -8,7 +11,6 @@ import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.ui.DateArea;
-import com.group11.ui.GlucometerActivity;
 import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
 import com.group11.ui.StatusArea;
@@ -25,6 +27,8 @@ public class UploadingModeLogic extends ModeLogic {
 		super(status, result, progressBar, date, context, preferences, handler);
 	}
 
+	private HistoryManager historyManager = new HistoryManager(context);
+	
 	@Override
 	public boolean validateMode() {
 		// TODO Auto-generated method stub
@@ -64,9 +68,10 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 	
 	public void PowerOff(){
+		 CurrentStatus currentStatus = new CurrentStatus(preferences);
+		 Beeper.get().doShortLongBeep(context); 
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
-		 CurrentStatus currentStatus = new CurrentStatus(preferences);
 		 currentStatus.setCurrentMode(null);
 		 currentStatus.setUSBConnected(false);
 		 currentStatus.setPowerOn(false);
@@ -75,8 +80,36 @@ public class UploadingModeLogic extends ModeLogic {
 	
 	public void showBlinkingView(){
 		statusArea.setUploadingBlinking(true);
-		//statusArea.setVisible(false);
-		dateArea.setVisible(false);
 	}
+	
+	public void onUsbConnected(){
+		PowerOn();
+		if(historyManager.getTestResults().size() == 0){ 
+			showBlinkingView();
+			timer.schedule(timerTask, 10000);
+			 } 
+		 else {
+			 Beeper.get().doShortBeep(context);
+			 //wait for shortclick
+			 historyManager.deleteAllTestResults();
+			 showBlinkingView();
+			 timer.schedule(timerTask, 10000); 
+		     }
+	}
+	
+	public void onUsbDisConnected(){
+		timer.cancel();
+		PowerOff();
+	}
+	
+	Timer timer = new Timer();
+	TimerTask timerTask = new TimerTask() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			PowerOff();
+		}
+	};
 
 }

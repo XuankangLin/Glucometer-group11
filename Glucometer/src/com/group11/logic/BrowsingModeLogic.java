@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
