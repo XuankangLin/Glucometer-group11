@@ -17,6 +17,7 @@ import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
+import com.group11.logic.UploadingModeLogic;
 import com.group11.util.ClickJudger;
 import com.group11.util.Converter;
 import com.group11.util.HistoryManager;
@@ -356,50 +357,30 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doUSBConnected() {
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		currentStatus.setPowerOn(true);
-		currentStatus.setCurrentMode(Mode.UPLOADING);
-		currentStatus.setUSBConnected(true);
-		currentStatus.commit();
-		
-		statusArea.setCurrentMode(Mode.UPLOADING);
-		statusArea.setVisible(true);
-		dateArea.setVisible(true);
-		Beeper.get().doShortBeep(GlucometerActivity.this);
+		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
+		currentModeLogic = uploadingModeLogic;
+		uploadingModeLogic.PowerOn();
 		HistoryManager historyManager = new HistoryManager(this);
-		 if(historyManager.getTestResults().size() == 0){ 
-			 statusArea.setUploadingBlinking(true);
-			 //statusArea.setVisible(false);
-			 dateArea.setVisible(false);
-			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
-			 currentStatus.setCurrentMode(null);
-			 currentStatus.setUSBConnected(false);
-			 currentStatus.setPowerOn(false);
-			 currentStatus.commit();
+		if(historyManager.getTestResults().size() == 0){ 
+			uploadingModeLogic.showBlinkingView();
+			//wait 5s
+			Beeper.get().doShortLongBeep(GlucometerActivity.this);
+			uploadingModeLogic.PowerOff();
 			 } 
 		 else {
+			 Beeper.get().doShortBeep(GlucometerActivity.this);
 			 //wait for shortclick
 			 historyManager.deleteAllTestResults();
 			 //wait 5s 
-			 //statusArea.setVisible(false);
-			 dateArea.setVisible(false);
 			 Beeper.get().doShortLongBeep(GlucometerActivity.this);
-			 currentStatus.setCurrentMode(null); 
-			 currentStatus.setUSBConnected(false);
-		     currentStatus.setPowerOn(false);
-		     currentStatus.commit();
+			 uploadingModeLogic.PowerOff();
 		     }
 	}
 
 	private void doUSBDisconnected() {
-		statusArea.setVisible(false);
-		dateArea.setVisible(false);
+		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
 		Beeper.get().doShortLongBeep(GlucometerActivity.this);
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		currentStatus.setCurrentMode(null);
-		currentStatus.setUSBConnected(false);
-		currentStatus.setPowerOn(false);
-		currentStatus.commit();
+		uploadingModeLogic.PowerOff();
 	}
 
 	private void doStripValid() {
