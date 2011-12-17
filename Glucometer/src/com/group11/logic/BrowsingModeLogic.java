@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
+import com.group11.hardware.CurrentStatus;
 
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
@@ -40,7 +42,7 @@ public class BrowsingModeLogic extends ModeLogic {
 		// TODO Auto-generated method stub
 		return super.validateMode();
 	}
-
+	
 	@Override
 	public void onShortClick() {
 		if (position > 0) {
@@ -105,7 +107,36 @@ public class BrowsingModeLogic extends ModeLogic {
 		statusArea.setErroring(false);
 	}
 	
-	public LinkedList<TestResult> getTestResults() {
-		return this.resultList;
+	/**
+	 * when first go into Browsing Mode, display the following things
+	 */
+	public void firstDisplay() {
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+
+		if (resultList.size() != 0) {
+			currentStatus.setPowerOn(true);
+			currentStatus.setCurrentMode(Mode.BROWSING);
+			currentStatus.setRefreshingTime(false);
+			currentStatus.commit();
+
+			statusArea.setVisible(true);
+			statusArea.setCurrentMode(Mode.BROWSING);
+
+			resultArea.setVisible(true);
+			resultArea.display(Converter.to(resultList.getLast()
+					.getValue(), resultList.getLast().getUnit(),
+					Unit.DL), Unit.DL);
+
+			progressBarArea.setVisible(false);
+
+			dateArea.setVisible(true);
+			dateArea.setColonBlinking(false);
+			dateArea.setDateTime(resultList.getLast().getTime());
+		} else {
+			// TODO auto ending
+			currentStatus.setPowerOn(false);
+			currentStatus.commit();
+		}
+
 	}
 }
