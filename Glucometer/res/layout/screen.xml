@@ -42,7 +42,7 @@
 			<ImageView android:src="@drawable/number0" android:id="@+id/thirdNumberImage"
 				android:layout_width="20dp" android:layout_height="match_parent"></ImageView>
 		</LinearLayout>
-		<ImageView android:src="@drawable/dl" android:id="@+id/unitImage"
+		<ImageView android:src="@drawable/l" android:id="@+id/unitImage"
 			android:layout_width="30dp" android:layout_height="wrap_content"
 			android:layout_marginLeft="10dp"></ImageView>
 	</LinearLayout>

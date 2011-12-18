@@ -177,22 +177,7 @@ public class StatusArea extends UIArea {
 		}
 	}
 	
-	private void initModeBlinkingTask(Mode mode) {
-		switch (mode) {
-		case BROWSING:
-			this.modeBlinkingImage = browsingModeImage;
-			break;
-		case TESTING:
-			this.modeBlinkingImage = testingModeImage;
-			break;
-		case UPLOADING:
-			this.modeBlinkingImage = uploadingModeImage;
-			break;
-
-		default:
-			throw new IllegalArgumentException("mode should be among BROWSING, TESTING, UPLOADING");
-		}
-		
+	private void initModeBlinkingTask() {
 		modeBlinkingTask = new TimerTask() {
 			
 			@Override
@@ -234,7 +219,23 @@ public class StatusArea extends UIArea {
 	 */
 	public void setModeBlinking(Mode mode) {
 		this.cancelBlinking();
-		this.initModeBlinkingTask(mode);
+		
+		switch (mode) {
+		case BROWSING:
+			this.modeBlinkingImage = browsingModeImage;
+			break;
+		case TESTING:
+			this.modeBlinkingImage = testingModeImage;
+			break;
+		case UPLOADING:
+			this.modeBlinkingImage = uploadingModeImage;
+			break;
+
+		default:
+			throw new IllegalArgumentException("mode should be among BROWSING, TESTING, UPLOADING");
+		}
+
+		this.initModeBlinkingTask();
 		new Timer().scheduleAtFixedRate(modeBlinkingTask, 0, 1000);
 	}
 	

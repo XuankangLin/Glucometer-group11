@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.group11.logic.SetupModeLogic.SetupPosition;
 import com.group11.util.TimeFormatter;
 
 import android.app.Activity;
@@ -33,6 +34,9 @@ public class DateArea extends UIArea {
 	private final TextView minuteText2;
 	
 	private TimerTask colonBlinkingTask = null;
+	
+	private TextView textBlinkingImage = null;
+	private TimerTask textBlinkingTask = null;
 	
 	public DateArea(Activity activity, LinearLayout panel, TextView month1, TextView month2,
 			TextView day1, TextView day2, TextView year1, TextView year2,
@@ -109,7 +113,7 @@ public class DateArea extends UIArea {
 			colonBlinkingTask = null;
 		}
 	}
-
+	
 	/**
 	 * set if the colon is blinking
 	 * @param blinking
@@ -120,5 +124,127 @@ public class DateArea extends UIArea {
 			this.initColonBlinkingTask();
 			new Timer().scheduleAtFixedRate(colonBlinkingTask, 0, 1000);
 		}
+	}
+	
+	public void cancelTextBlinking() {
+		if (textBlinkingImage != null) {
+			textBlinkingImage.setVisibility(View.VISIBLE);
+			textBlinkingImage = null;
+		}
+		if (textBlinkingTask != null) {
+			textBlinkingTask.cancel();
+			textBlinkingTask = null;
+		}
+	}
+	
+	private void initTextBlinking() {
+		textBlinkingTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				textBlinkingImage.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (textBlinkingImage.getVisibility() == View.VISIBLE) {
+							textBlinkingImage.setVisibility(View.INVISIBLE);
+						}
+						else {
+							textBlinkingImage.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+			}
+		};
+	}
+	
+	private void attachTextBlinkingImage(SetupPosition position) {
+		switch (position) {
+		case MONTH1:
+			textBlinkingImage = this.monthText1;
+			break;
+		case MONTH2:
+			textBlinkingImage = this.monthText2;
+			break;
+		case DAY1:
+			textBlinkingImage = this.dayText1;
+			break;
+		case DAY2:
+			textBlinkingImage = this.dayText2;
+			break;
+		case YEAR1:
+			textBlinkingImage = this.yearText1;
+			break;
+		case YEAR2:
+			textBlinkingImage = this.yearText2;
+			break;
+		case HOUR1:
+			textBlinkingImage = this.hourText1;
+			break;
+		case HOUR2:
+			textBlinkingImage = this.hourText2;
+			break;
+		case MINUTE1:
+			textBlinkingImage = this.minuteText1;
+			break;
+		case MINUTE2:
+			textBlinkingImage = this.minuteText2;
+			break;
+
+		default:
+			textBlinkingImage = null;
+			return;
+		}
+	}
+	
+	public void setTextBlinking(SetupPosition position) {
+		this.cancelTextBlinking();
+		
+		if (position == null) {
+			return;
+		}
+		this.attachTextBlinkingImage(position);
+		this.initTextBlinking();
+		new Timer().scheduleAtFixedRate(textBlinkingTask, 0, 1000);
+	}
+
+	public void setText(SetupPosition position, String value) {
+		TextView text;
+		switch (position) {
+		case MONTH1:
+			text = this.monthText1;
+			break;
+		case MONTH2:
+			text = this.monthText2;
+			break;
+		case DAY1:
+			text = this.dayText1;
+			break;
+		case DAY2:
+			text = this.dayText2;
+			break;
+		case YEAR1:
+			text = this.yearText1;
+			break;
+		case YEAR2:
+			text = this.yearText2;
+			break;
+		case HOUR1:
+			text = this.hourText1;
+			break;
+		case HOUR2:
+			text = this.hourText2;
+			break;
+		case MINUTE1:
+			text = this.minuteText1;
+			break;
+		case MINUTE2:
+			text = this.minuteText2;
+			break;
+
+		default:
+			return;
+		}
+		text.setText(value);
 	}
 }

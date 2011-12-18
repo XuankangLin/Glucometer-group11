@@ -1,5 +1,6 @@
 package com.group11.util;
 
+import com.group11.R;
 import com.group11.base.Unit;
 
 /**
@@ -76,4 +77,37 @@ public final class Converter {
 
 		return numbers;
 	}
+	
+	/**
+	 * get a number's image by its value
+	 * @param value
+	 * @return
+	 */
+	public static int toImageIDByValue(int value) {
+		value %= 10;
+		switch (value) {
+		case 0:
+			return R.drawable.number0;
+		case 1:
+			return R.drawable.number1;
+		case 2:
+			return R.drawable.number2;
+		case 3:
+			return R.drawable.number3;
+		case 4:
+			return R.drawable.number4;
+		case 5:
+			return R.drawable.number5;
+		case 6:
+			return R.drawable.number6;
+		case 7:
+			return R.drawable.number7;
+		case 8:
+			return R.drawable.number8;
+		case 9:
+			return R.drawable.number9;
+		}
+		return -1;
+	}
+
 }

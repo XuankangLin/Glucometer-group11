@@ -47,6 +47,9 @@ public class ResultArea extends UIArea {
 			this.displayDL(value);
 		}
 		this.unitImage.setVisibility(View.VISIBLE);
+		this.firstImage.setVisibility(View.VISIBLE);
+		this.secondImage.setVisibility(View.VISIBLE);
+		this.thirdImage.setVisibility(View.VISIBLE);
 	}
 	
 	/**
@@ -60,9 +63,9 @@ public class ResultArea extends UIArea {
 		this.thirdImage.setVisibility(View.VISIBLE);
 		
 		int[] numbers = Converter.toErrorCodeNumbers(errorCode);
-		this.firstImage.setImageResource(getImageIDByValue(numbers[0]));
-		this.secondImage.setImageResource(getImageIDByValue(numbers[1]));
-		this.thirdImage.setImageResource(getImageIDByValue(numbers[2]));
+		this.firstImage.setImageResource(Converter.toImageIDByValue(numbers[0]));
+		this.secondImage.setImageResource(Converter.toImageIDByValue(numbers[1]));
+		this.thirdImage.setImageResource(Converter.toImageIDByValue(numbers[2]));
 	}
 	
 	private void displayL(double value) {
@@ -70,9 +73,9 @@ public class ResultArea extends UIArea {
 		this.pointImage.setVisibility(View.VISIBLE);
 
 		int[] numbers = Converter.toLNumbers(value);
-		this.firstImage.setImageResource(getImageIDByValue(numbers[0]));
-		this.secondImage.setImageResource(getImageIDByValue(numbers[1]));
-		this.thirdImage.setImageResource(getImageIDByValue(numbers[2]));
+		this.firstImage.setImageResource(Converter.toImageIDByValue(numbers[0]));
+		this.secondImage.setImageResource(Converter.toImageIDByValue(numbers[1]));
+		this.thirdImage.setImageResource(Converter.toImageIDByValue(numbers[2]));
 	}
 	
 	private void displayDL(double value) {
@@ -80,37 +83,11 @@ public class ResultArea extends UIArea {
 		this.pointImage.setVisibility(View.INVISIBLE);
 
 		int[] numbers = Converter.toDLNumbers(value);
-		this.firstImage.setImageResource(getImageIDByValue(numbers[0]));
-		this.secondImage.setImageResource(getImageIDByValue(numbers[1]));
-		this.thirdImage.setImageResource(getImageIDByValue(numbers[2]));
+		this.firstImage.setImageResource(Converter.toImageIDByValue(numbers[0]));
+		this.secondImage.setImageResource(Converter.toImageIDByValue(numbers[1]));
+		this.thirdImage.setImageResource(Converter.toImageIDByValue(numbers[2]));
 	}
 	
-	private int getImageIDByValue(int value) {
-		value %= 10;
-		switch (value) {
-		case 0:
-			return R.drawable.number0;
-		case 1:
-			return R.drawable.number1;
-		case 2:
-			return R.drawable.number2;
-		case 3:
-			return R.drawable.number3;
-		case 4:
-			return R.drawable.number4;
-		case 5:
-			return R.drawable.number5;
-		case 6:
-			return R.drawable.number6;
-		case 7:
-			return R.drawable.number7;
-		case 8:
-			return R.drawable.number8;
-		case 9:
-			return R.drawable.number9;
-		}
-		return -1;
-	}
 	
 	private void clearUnitBlinkingTask() {
 		if (unitBlinkingTask != null) {
@@ -157,5 +134,14 @@ public class ResultArea extends UIArea {
 		this.pointImage.setVisibility(View.INVISIBLE);
 		this.thirdImage.setVisibility(View.INVISIBLE);
 		this.unitImage.setVisibility(View.VISIBLE);
+	}
+
+	public void setUnit(Unit unit) {
+		if (unit == Unit.L) {
+			this.unitImage.setImageResource(R.drawable.l);
+		}
+		else if (unit == Unit.DL) {
+			this.unitImage.setImageResource(R.drawable.dl);
+		}
 	}
 }

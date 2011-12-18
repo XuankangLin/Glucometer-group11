@@ -42,11 +42,16 @@ public class UploadingModeLogic extends ModeLogic {
 		// TODO Auto-generated method stub
 		super.validateMode();
 	}
+	
+	private boolean hasClicked = false;
 
 	@Override
 	public void onShortClick() {
 		// TODO Auto-generated method stub
-
+		if (!hasClicked) {
+			//dodododododo
+			hasClicked = true;
+		}
 	}
 
 	@Override

@@ -162,10 +162,12 @@ public class GlucometerActivity extends Activity {
 
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.syncCurrentTime();
+
 		currentStatus.setPowerOn(false);
 		currentStatus.setCurrentMode(null);
 		currentStatus.setRefreshingTime(true);
 		currentStatus.setACPlugged(false);
+		currentStatus.setUSBConnected(false);
 		// TODO add other status here!
 
 		currentStatus.commit();
@@ -454,13 +456,13 @@ public class GlucometerActivity extends Activity {
 
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
-			if (currentStatus.isPowerOn()) {
-				currentModeLogic.onShortClick();
+			if (currentModeLogic != null) {
+				currentModeLogic.onShortClick();				
 			}
 			return;
 		}
 		case DOUBLE_CLICK: {
-			if (currentStatus.isPowerOn()) {
+			if (currentModeLogic != null) {
 				currentModeLogic.onDoubleClick();
 			} else {
 				//=====enter Setup Mode=====
@@ -469,7 +471,7 @@ public class GlucometerActivity extends Activity {
 			return;
 		}
 		case LONG_CLICK: {
-			if (currentStatus.isPowerOn()) {
+			if (currentModeLogic != null) {
 				currentModeLogic.onLongClick();
 			} else {
 				//=======go into Browsing Mode=======
