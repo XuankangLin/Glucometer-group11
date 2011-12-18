@@ -22,10 +22,29 @@ public class SetupModeLogic extends ModeLogic {
 
 	/**
 	 * Setup mode doesn't have Mode Validation Process
-	 * so, just return true
 	 */
 	@Override
 	public void validateMode() {
+		//=====do nothing=====
+	}
+	
+	/**
+	 * the initial view of the Setup Mode
+	 */
+	public void initDisplay() {
+		statusArea.setVisible(true);
+		statusArea.setErroring(false);
+		statusArea.cancelBlinking();
+		statusArea.setCurrentMode(null);
+		
+		resultArea.setVisible(true);
+		resultArea.setOnlyDisplayUnit();
+		resultArea.setUnitBlinking(true);
+
+		progressBarArea.setVisible(false);
+
+		dateArea.setVisible(true);
+		dateArea.setColonBlinking(true);
 	}
 
 	@Override

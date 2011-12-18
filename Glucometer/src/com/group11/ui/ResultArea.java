@@ -1,5 +1,8 @@
 package com.group11.ui;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.group11.R;
 import com.group11.base.Unit;
 import com.group11.util.Converter;
@@ -19,6 +22,8 @@ public class ResultArea extends UIArea {
 	private final ImageView pointImage;
 	private final ImageView thirdImage;
 	private final ImageView unitImage;
+	
+	private TimerTask unitBlinkingTask = null;
 	
 	public ResultArea(LinearLayout panel, ImageView first, ImageView second, ImageView point,
 			ImageView third, ImageView unit) {
@@ -105,5 +110,52 @@ public class ResultArea extends UIArea {
 			return R.drawable.number9;
 		}
 		return -1;
+	}
+	
+	private void clearUnitBlinkingTask() {
+		if (unitBlinkingTask != null) {
+			unitBlinkingTask.cancel();
+			unitBlinkingTask = null;
+		}
+	}
+	
+	private void initUnitBlinkingTask() {
+		unitBlinkingTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				unitImage.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (unitImage.getVisibility() == View.VISIBLE) {
+							unitImage.setVisibility(View.INVISIBLE);
+						}
+						else {
+							unitImage.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+			}
+		};
+	}
+	
+	public void setUnitBlinking(boolean blinking) {
+		this.clearUnitBlinkingTask();
+		if (blinking) {
+			this.initUnitBlinkingTask();
+			new Timer().scheduleAtFixedRate(unitBlinkingTask, 0, 1000);
+		}
+	}
+
+	/**
+	 * only unit image is visible
+	 */
+	public void setOnlyDisplayUnit() {
+		this.firstImage.setVisibility(View.INVISIBLE);
+		this.secondImage.setVisibility(View.INVISIBLE);
+		this.pointImage.setVisibility(View.INVISIBLE);
+		this.thirdImage.setVisibility(View.INVISIBLE);
+		this.unitImage.setVisibility(View.VISIBLE);
 	}
 }
