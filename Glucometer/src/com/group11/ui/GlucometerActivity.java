@@ -352,50 +352,53 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doStripInserted() {
-		//===== enter Testing Mode =====
+		if (currentModeLogic != null) {
+			currentModeLogic.onStripInserted();
+		}
+		else {
+			//===== enter Testing Mode =====
+			this.enterTestingMode();
+		}
 	}
 
 	private void doStripPulledOut() {
-		// TODO fulfill this method
+		if (currentModeLogic != null) {
+			currentModeLogic.onStripPulledOut();
+		}
+		else {
+			throw new IllegalStateException("should it come to here???");
+		}
 	}
 
 	private void doUSBConnected() {
-		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
-				statusArea, resultArea, progressBarArea, dateArea, this,
-				preferences, handler);
-		
-		currentModeLogic = uploadingModeLogic;
-		uploadingModeLogic.onUsbConnected();
-		//doPowerOff();
+		if (currentModeLogic != null) {
+			currentModeLogic.onUSBConnected();
+		}
+		else {
+			//=====enter Uploading Mode=====
+			UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
+					statusArea, resultArea, progressBarArea, dateArea, this,
+					preferences, handler);
+			uploadingModeLogic.onUsbConnected();
+
+			currentModeLogic = uploadingModeLogic;
+			//doPowerOff();
+		}
 	}
 
 	private void doUSBDisconnected() {
-		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
-				statusArea, resultArea, progressBarArea, dateArea, this,
-				preferences, handler);
-		currentModeLogic = uploadingModeLogic;
-		uploadingModeLogic.onUsbDisConnected();
-		//doPowerOff();
-	}
+		if (currentModeLogic != null) {
+			currentModeLogic.onUSBDisconnected();
+		}
+		else {
+			UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
+					statusArea, resultArea, progressBarArea, dateArea, this,
+					preferences, handler);
+			uploadingModeLogic.onUsbDisConnected();
 
-	private void doStripValid() {
-		// TODO fulfill this method
-	}
-
-	private void doStripInvalid() {
-		// TODO fulfill this method
-	}
-
-	private void doBloodSufficient() {
-		// TODO fulfill this method
-	}
-
-	private void doBloodInsufficient() {
-		// TODO fulfill this method
-	}
-
-	private void doResultReady() {
-		// TODO fulfill this method
+			currentModeLogic = uploadingModeLogic;
+			//doPowerOff();			
+		}
 	}
 	
 	/**
@@ -455,9 +458,6 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doButtonClicked(Message msg) {
-		/*
-		 * provided that this.currentModeLogic is NOT null when it's power on
-		 */
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 
 		switch (ClickStyle.get(msg.arg1)) {
@@ -471,7 +471,8 @@ public class GlucometerActivity extends Activity {
 			if (currentStatus.isPowerOn()) {
 				currentModeLogic.onDoubleClick();
 			} else {
-				// TODO go into Setup Mode
+				//=====enter Setup Mode=====
+				this.enterSetupMode();
 			}
 			return;
 		}
@@ -484,8 +485,9 @@ public class GlucometerActivity extends Activity {
 			}
 			return;
 		}
+		
 		default:
-			break;
+			return;
 		}
 	}
 	
@@ -494,6 +496,7 @@ public class GlucometerActivity extends Activity {
 				resultArea, progressBarArea, dateArea, this, preferences,
 				handler);
 		
+		//TODO
 		if (!modeLogic.initialize()) {
 			
 		}
@@ -523,6 +526,10 @@ public class GlucometerActivity extends Activity {
 
 		modeLogic.validateMode();
 		currentModeLogic = modeLogic;
+	}
+	
+	private void enterSetupMode() {
+		//TODO
 	}
 
 	/**
@@ -690,25 +697,25 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (STRIP_VALID.ordinal() == msg.what) {
-				doStripValid();
+				((TestingModeLogic) currentModeLogic).onStripValid();
 				return true;
 			}
 			if (STRIP_INVALID.ordinal() == msg.what) {
-				doStripInvalid();
+				((TestingModeLogic) currentModeLogic).onStripInvalid();
 				return true;
 			}
 
 			if (BLOOD_SUFFICIENT.ordinal() == msg.what) {
-				doBloodSufficient();
+				((TestingModeLogic) currentModeLogic).onBloodSufficient();
 				return true;
 			}
 			if (BLOOD_INSUFFICIENT.ordinal() == msg.what) {
-				doBloodInsufficient();
+				((TestingModeLogic) currentModeLogic).onBloodInsufficient();
 				return true;
 			}
 
 			if (RESULT_READY.ordinal() == msg.what) {
-				doResultReady();
+				((TestingModeLogic) currentModeLogic).onResultReady();
 				return true;
 			}
 

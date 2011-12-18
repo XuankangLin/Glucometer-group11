@@ -28,20 +28,17 @@ public class TestingModeLogic extends ModeLogic {
 
 	@Override
 	public void onShortClick() {
-		// TODO Auto-generated method stub
-
+		//=====Undefined Action, ignored=====
 	}
 
 	@Override
 	public void onLongClick() {
-		// TODO Auto-generated method stub
-
+		//=====Undefined Action, ignored=====
 	}
 
 	@Override
 	public void onDoubleClick() {
-		// TODO Auto-generated method stub
-
+		//=====Undefined Action, ignored=====
 	}
 
 	@Override
@@ -57,15 +54,31 @@ public class TestingModeLogic extends ModeLogic {
 
 	@Override
 	public void onUSBConnected() {
-		// TODO Auto-generated method stub
-		
+		//=====Undefined Action, ignored=====
 	}
 
 	@Override
 	public void onUSBDisconnected() {
-		// TODO Auto-generated method stub
-		
+		//=====Undefined Action, ignored=====
 	}
 
+	public void onStripValid() {
+		//TODO
+	}
 	
+	public void onStripInvalid() {
+		//TODO
+	}
+	
+	public void onBloodSufficient() {
+		//TODO
+	}
+	
+	public void onBloodInsufficient() {
+		//TODO
+	}
+	
+	public void onResultReady() {
+		//TODO
+	}
 }
