@@ -20,9 +20,9 @@
 				android:layout_height="20dp" android:id="@+id/resetImage"
 				android:layout_width="60dp" android:layout_marginBottom="50dp"
 				android:layout_gravity="right"></ImageView>
-			<ImageView android:src="@drawable/usb" android:id="@+id/usbImage"
-				android:layout_marginTop="50dp" android:layout_width="60dp"
-				android:layout_height="20dp" android:layout_gravity="right"></ImageView>
+			<ImageView android:src="@drawable/usb_not_inserted" android:id="@+id/usbImage"
+				android:layout_marginTop="80dp" android:layout_width="70dp"
+				android:layout_height="30dp" android:layout_gravity="right"></ImageView>
 		</LinearLayout>
 		<ImageView android:id="@+id/acPlugImage" android:src="@drawable/ac_plug"
 			android:layout_width="wrap_content" android:layout_height="80dp"

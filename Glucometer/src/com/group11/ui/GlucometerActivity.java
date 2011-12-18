@@ -9,6 +9,7 @@ import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
 import com.group11.base.ErrorCode;
 import com.group11.base.Interrupt;
+import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
 import com.group11.hardware.Beeper;
@@ -144,6 +145,7 @@ public class GlucometerActivity extends Activity {
 				(TextView) findViewById(R.id.minuteText2));
 
 		this.updateTestStripImage();
+		this.updateUSBImage();
 		this.setOnClickListeners();
 
 		Beeper.get().attachHandler(this.handler);
@@ -328,6 +330,7 @@ public class GlucometerActivity extends Activity {
 					currentStatus.setUSBConnected(true);
 				}
 				currentStatus.commit();
+				updateUSBImage();
 			}
 		});
 
@@ -372,6 +375,16 @@ public class GlucometerActivity extends Activity {
 			testStripImage
 					.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip_not_inserted
 							: R.drawable.invalid_test_strip_not_inserted);
+		}
+	}
+	
+	private void updateUSBImage() {
+		CurrentStatus status = new CurrentStatus(preferences);
+		if (status.isUSBConnected()) {
+			usbImage.setImageResource(R.drawable.usb);
+		}
+		else {
+			usbImage.setImageResource(R.drawable.usb_not_inserted);
 		}
 	}
 	
@@ -420,7 +433,13 @@ public class GlucometerActivity extends Activity {
 			currentModeLogic.onStripPulledOut();
 		}
 		else {
-			//=====do nothing=====
+			//=====finish the last Testing Mode=====
+			CurrentStatus status = new CurrentStatus(preferences);
+			if (status.getCurrentMode() == Mode.TESTING) {
+				status.setLastModeComplete(true);
+				status.setCurrentMode(null);
+				status.commit();
+			}
 		}
 	}
 
@@ -439,7 +458,13 @@ public class GlucometerActivity extends Activity {
 			currentModeLogic.onUSBDisconnected();
 		}
 		else {
-			//=====do nothing=====
+			//=====finish the last Uploading Mode=====
+			CurrentStatus status = new CurrentStatus(preferences);
+			if (status.getCurrentMode() == Mode.UPLOADING) {
+				status.setLastModeComplete(true);
+				status.setCurrentMode(null);
+				status.commit();
+			}
 		}
 	}
 	
@@ -472,10 +497,9 @@ public class GlucometerActivity extends Activity {
 	}
 
 	/**
-	 * do some cleaning when power off
-	 * still NEED to set current mode by yourself
+	 * do some cleaning when voluntary ending
 	 */
-	private void doPowerOff() {
+	private void doVoluntaryEnding() {
 		setScreenInvisible();
 		currentModeLogic = null;
 		
@@ -483,6 +507,35 @@ public class GlucometerActivity extends Activity {
 		status.setPowerOn(false);
 		status.setRefreshingTime(true);
 		status.setErrorNow(false);
+		//TODO assuming that do not setCurrentMode(null) in your ModeLogic
+		switch (status.getCurrentMode()) {
+		case BROWSING:
+		case SETUP:
+			status.setLastModeComplete(true);
+			status.setCurrentMode(null);
+			break;
+		case TESTING:
+			if (!status.isStripInserted()) {
+				status.setLastModeComplete(true);
+				status.setCurrentMode(null);
+			}
+			else {
+				status.setLastModeComplete(false);
+			}
+			break;
+		case UPLOADING:
+			if (!status.isUSBConnected()) {
+				status.setLastModeComplete(true);
+				status.setCurrentMode(null);
+			}
+			else {
+				status.setLastModeComplete(false);
+			}
+			break;
+
+		default:
+			break;
+		}
 		
 		status.commit();
 	}
@@ -860,7 +913,7 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (POWER_OFF.ordinal() == msg.what) {
-				doPowerOff();
+				doVoluntaryEnding();
 				return true;
 			}
 
