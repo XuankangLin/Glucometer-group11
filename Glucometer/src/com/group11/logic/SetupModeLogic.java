@@ -25,8 +25,7 @@ public class SetupModeLogic extends ModeLogic {
 	 * so, just return true
 	 */
 	@Override
-	public boolean validateMode() {
-		return true;
+	public void validateMode() {
 	}
 
 	@Override

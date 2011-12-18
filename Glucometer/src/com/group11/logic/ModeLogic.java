@@ -80,13 +80,11 @@ public abstract class ModeLogic {
 	 * the Mode Validation Process
 	 * @return whether successful
 	 */
-	public boolean validateMode() {
+	public void validateMode() {
 		try {
 			Thread.sleep(VALIDATION_TIME);
 		} catch (InterruptedException e) {
 		}
-
-		return true;
 	}
 	
 	/**

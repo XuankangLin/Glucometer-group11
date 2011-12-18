@@ -25,7 +25,8 @@ public enum Interrupt {
 	BEEP_START("beeping starts"),
 	BEEP_STOP("beeping stops"),
 	POWER_ON("power on now"),
-	POWER_OFF("power off now");
+	POWER_OFF("power off now"),
+	ERROR("an error occurs");
 	
 	private String info;
 	private Interrupt(String info) {

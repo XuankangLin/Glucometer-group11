@@ -393,16 +393,21 @@ public class GlucometerActivity extends Activity {
 	private void doResultReady() {
 		// TODO fulfill this method
 	}
+	
+	private void doErrorEnding(Message msg) {
+		int errorCode = msg.arg1;
+		//TODO
+	}
 
 	/**
-	 * do some cleaning when power off 
+	 * do some cleaning when power off
+	 * still NEED to set current mode by yourself
 	 */
 	private void doPowerOff() {
 		setScreenInvisible();
 		currentModeLogic = null;
 		
 		CurrentStatus status = new CurrentStatus(preferences);
-		status.setCurrentMode(null);
 		status.setPowerOn(false);
 		status.setRefreshingTime(true);
 		status.commit();
@@ -457,12 +462,8 @@ public class GlucometerActivity extends Activity {
 					//=====Meter Status Checking Error=====
 					//TODO
 				}
-				if (!modeLogic.validateMode()) {
-					//=====Mode Validation Error=====
-					//TODO
-				}
+				modeLogic.validateMode();
 				
-				modeLogic.firstDisplay();
 				currentModeLogic = modeLogic;
 			}
 			return;
@@ -698,6 +699,11 @@ public class GlucometerActivity extends Activity {
 				return true;
 			}
 
+			if (ERROR.ordinal() == msg.what) {
+				doErrorEnding(msg);
+				return true;
+			}
+			
 			return false;
 		}
 	}

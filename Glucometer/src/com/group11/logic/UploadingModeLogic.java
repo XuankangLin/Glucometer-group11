@@ -32,9 +32,9 @@ public class UploadingModeLogic extends ModeLogic {
 	private TimerTask timerTask;
 
 	@Override
-	public boolean validateMode() {
+	public void validateMode() {
 		// TODO Auto-generated method stub
-		return super.validateMode();
+		super.validateMode();
 	}
 
 	@Override
@@ -81,7 +81,8 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 	
 	public void showBlinkingView(){
-		statusArea.setUploadingBlinking(true);
+		statusArea.cancelBlinking();
+		statusArea.setModeBlinking(Mode.UPLOADING);
 	}
 	
 	public void onUsbConnected() {

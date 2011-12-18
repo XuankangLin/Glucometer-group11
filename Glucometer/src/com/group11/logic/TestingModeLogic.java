@@ -21,9 +21,9 @@ public class TestingModeLogic extends ModeLogic {
 	}
 
 	@Override
-	public boolean validateMode() {
+	public void validateMode() {
 		// TODO Auto-generated method stub
-		return super.validateMode();
+		super.validateMode();
 	}
 
 	@Override
@@ -44,4 +44,5 @@ public class TestingModeLogic extends ModeLogic {
 
 	}
 
+	
 }

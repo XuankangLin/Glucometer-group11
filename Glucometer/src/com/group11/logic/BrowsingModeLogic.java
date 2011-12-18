@@ -7,10 +7,12 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.group11.base.ErrorCode;
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
+import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 
 import com.group11.ui.DateArea;
@@ -36,10 +38,55 @@ public class BrowsingModeLogic extends ModeLogic {
 	private LinkedList<TestResult> resultList = historyManager.getTestResults();
 	private int position = resultList.size() - 1;
 
+	/**
+	 * Mode Validation in Browsing Mode:
+	 * check whether there are any history test records
+	 */
 	@Override
-	public boolean validateMode() {
-		// TODO Auto-generated method stub
-		return super.validateMode();
+	public void validateMode() {
+		super.validateMode();
+
+		if (resultList.size() > 0) {
+			//=====the meter should give a reminding-beep,===== 
+			//=====display symbol B, and enter the Browsing Mode.=====
+			CurrentStatus currentStatus = new CurrentStatus(preferences);
+			currentStatus.setPowerOn(true);
+			currentStatus.setCurrentMode(Mode.BROWSING);
+			currentStatus.setRefreshingTime(false);
+			currentStatus.commit();
+
+			Beeper.get().doShortBeep(context);
+			
+			TestResult testResult = resultList.getLast();
+			Unit unit = currentStatus.getCurrentUnit();
+
+			statusArea.setVisible(true);
+			statusArea.setCurrentMode(Mode.BROWSING);
+
+			resultArea.setVisible(true);
+			resultArea.display(Converter.to(testResult.getValue(),
+					testResult.getUnit(), unit), unit);
+
+			progressBarArea.setVisible(false);
+
+			dateArea.setVisible(true);
+			dateArea.setColonBlinking(false);
+			dateArea.setDateTime(testResult.getTime());
+		}
+		else {
+			//=====the meter shall blink symbol B and then go through Error Ending procedure=====
+			statusArea.setVisible(true);
+			statusArea.setCurrentMode(Mode.BROWSING);
+			statusArea.cancelBlinking();
+			statusArea.setModeBlinking(Mode.BROWSING);
+
+			dateArea.setVisible(true);
+			dateArea.setColonBlinking(true);
+			
+			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+			message.arg1 = ErrorCode.NO_TEST_RESULTS.getErrorCode();
+			message.sendToTarget();
+		}
 	}
 	
 	@Override
@@ -105,37 +152,5 @@ public class BrowsingModeLogic extends ModeLogic {
 		statusArea.setCurrentMode(Mode.BROWSING);
 		statusArea.setErroring(false);
 	}
-	
-	/**
-	 * when first go into Browsing Mode, display the following things
-	 */
-	public void firstDisplay() {
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
 
-		if (resultList.size() != 0) {
-			currentStatus.setPowerOn(true);
-			currentStatus.setCurrentMode(Mode.BROWSING);
-			currentStatus.setRefreshingTime(false);
-			currentStatus.commit();
-
-			statusArea.setVisible(true);
-			statusArea.setCurrentMode(Mode.BROWSING);
-
-			resultArea.setVisible(true);
-			resultArea.display(Converter.to(resultList.getLast()
-					.getValue(), resultList.getLast().getUnit(),
-					Unit.DL), Unit.DL);
-
-			progressBarArea.setVisible(false);
-
-			dateArea.setVisible(true);
-			dateArea.setColonBlinking(false);
-			dateArea.setDateTime(resultList.getLast().getTime());
-		} else {
-			// TODO auto ending
-			currentStatus.setPowerOn(false);
-			currentStatus.commit();
-		}
-
-	}
 }

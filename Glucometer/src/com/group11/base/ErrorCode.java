@@ -1,7 +1,18 @@
 package com.group11.base;
 
 public enum ErrorCode {
-	INITIALIZATION_ERROR(001);
+	//====global errors=====
+	UNDEFINED(000),
+	INITIALIZATION_ERROR(001),
+
+	//=====Testing Mode=====
+	
+	//=====Browsing Mode=====
+	NO_TEST_RESULTS(201);
+	
+	//=====Uploading Mode=====
+	
+	//=====Setup Mode=====
 
 	private int errorCode;
 	private ErrorCode(int code) {
