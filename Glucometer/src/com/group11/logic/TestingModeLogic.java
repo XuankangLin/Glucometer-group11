@@ -114,17 +114,18 @@ public class TestingModeLogic extends ModeLogic {
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.TESTING);
-		currentStatus.setStripInserted(true);
+//		currentStatus.setStripInserted(true); do not set here!
 		currentStatus.commit();
 	}
 	
 	public void stopTestingMode(){
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
 		 Beeper.get().doErrorBeep(context);
-		 currentStatus.setStripInserted(false);
+//		 currentStatus.setStripInserted(false); do not set here!
 		 currentStatus.setCurrentMode(null);
 		 currentStatus.commit();
-		 Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
-			message.sendToTarget();
+		Message message = Message
+				.obtain(handler, Interrupt.POWER_OFF.ordinal());
+		message.sendToTarget();
 	}
 }

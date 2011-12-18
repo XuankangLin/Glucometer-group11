@@ -1,7 +1,6 @@
 package com.group11.ui;
 
 import java.util.Date;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +32,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -169,6 +169,7 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setRefreshingTime(true);
 		currentStatus.setACPlugged(false);
 		currentStatus.setUSBConnected(false);
+		currentStatus.setStripInserted(false);
 		currentStatus.setBloodFed(false);
 		// TODO add other status here!
 
@@ -350,18 +351,27 @@ public class GlucometerActivity extends Activity {
 		});
 	}
 	
+	/**
+	 * set the TestStrip Image according to INSERTED_OR_NOT BLOOD_FED_OR_NOT 
+	 */
 	private void updateTestStripImage() {
-		//TODO
 		CurrentStatus status = new CurrentStatus(preferences);
 		if (status.isStripInserted()) {
-			testStripImage
-					.setImageResource(status.isBloodSufficient() ? R.drawable.test_strip_with_sufficient
-							: R.drawable.test_strip_with_insufficient);
+			if (status.isBloodFed()) {
+				testStripImage
+						.setImageResource(status.isBloodSufficient() ? R.drawable.test_strip_with_sufficient
+								: R.drawable.test_strip_with_insufficient);
+			}
+			else {
+				testStripImage
+						.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip
+								: R.drawable.invalid_test_strip);
+			}
 		}
 		else {
 			testStripImage
-					.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip
-							: R.drawable.invalid_test_strip);
+					.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip_not_inserted
+							: R.drawable.invalid_test_strip_not_inserted);
 		}
 	}
 	
@@ -776,10 +786,12 @@ public class GlucometerActivity extends Activity {
 		@Override
 		public boolean handleMessage(Message msg) {
 			if (STRIP_INSERTED.ordinal() == msg.what) {
+				Log.i("TESTING", "inserted");
 				doStripInserted();
 				return true;
 			}
 			if (STRIP_PULLED_OUT.ordinal() == msg.what) {
+				Log.i("TESTING", "pulled out");
 				doStripPulledOut();
 				return true;
 			}
@@ -794,6 +806,7 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (STRIP_VALID.ordinal() == msg.what) {
+				Log.i("TESTING", "valid strip");
 				((TestingModeLogic) currentModeLogic).onStripValid();
 				return true;
 			}
@@ -803,6 +816,7 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (BLOOD_SUFFICIENT.ordinal() == msg.what) {
+				Log.i("TESTING", "sufficient blood");
 				((TestingModeLogic) currentModeLogic).onBloodSufficient();
 				return true;
 			}
