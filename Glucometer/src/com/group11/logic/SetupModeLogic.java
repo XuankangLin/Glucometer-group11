@@ -3,11 +3,14 @@ package com.group11.logic;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.util.Pair;
 
 import com.group11.base.Interrupt;
@@ -24,6 +27,8 @@ import com.group11.util.TimeFormatter;
  * the logical controller in Setup Mode, it judges what to do
  */
 public class SetupModeLogic extends ModeLogic {
+	
+	private static final int AUTO_ENDING_TIME = 10000;
 	
 	public static enum SetupPosition {
 		UNIT,
@@ -76,6 +81,29 @@ public class SetupModeLogic extends ModeLogic {
 	private SetupPosition currentPosition = null;
 	private final SetupData data = new SetupData();
 
+	private TimerTask autoEndingTask = null;
+	
+	/**
+	 * restart (postpone to now) the auto-ending time counting
+	 */
+	private void restartAutoEnding() {
+		if (autoEndingTask != null) {
+			autoEndingTask.cancel();
+			autoEndingTask = null;
+		}
+		autoEndingTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				Log.i("TESTING", "auto ending in SETUP MODE");
+				Message message = Message.obtain(handler,
+						Interrupt.VOLUNTARY_ENDING.ordinal());
+				message.sendToTarget();
+			}
+		};
+		new Timer().schedule(autoEndingTask, AUTO_ENDING_TIME);
+	}
+	
 	/**
 	 * Setup mode doesn't have Mode Validation Process
 	 */
@@ -90,6 +118,7 @@ public class SetupModeLogic extends ModeLogic {
 	public void initDisplay() {
 		this.initStatus();
 		this.initSetupData();
+		this.restartAutoEnding();
 		
 		statusArea.setVisible(true);
 		statusArea.setErroring(false);
@@ -384,6 +413,7 @@ public class SetupModeLogic extends ModeLogic {
 
 	@Override
 	public void onShortClick() {
+		this.restartAutoEnding();
 		this.toNextData();
 	}
 
@@ -394,6 +424,7 @@ public class SetupModeLogic extends ModeLogic {
 
 	@Override
 	public void onDoubleClick() {
+		this.restartAutoEnding();
 		this.toNextItem();
 	}
 

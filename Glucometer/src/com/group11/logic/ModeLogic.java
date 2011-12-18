@@ -17,7 +17,6 @@ public abstract class ModeLogic {
 	
 	private static final int INITIALIZATION_TIME = 300;
 	private static final int VALIDATION_TIME = 200;
-	private static final int AUTO_ENDING_TIME = 10000;
 
 	protected final StatusArea statusArea;
 	protected final ResultArea resultArea;
