@@ -118,7 +118,7 @@ public class CurrentStatus {
 	 * we store the interval between the time set and the real time.
 	 * this time when the glucometer powers on, reinstate the time according to new real time.
 	 * 
-	 * TODO should be called every time the glucometer is powered on
+	 * should be called every time the glucometer is powered on
 	 */
 	public synchronized void syncCurrentTime() {
 		long interval = preferences.getLong(TIME_INTERVAL, 0);

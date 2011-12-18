@@ -14,6 +14,16 @@ import android.database.sqlite.SQLiteOpenHelper;
  * It deals with the History Records with database 
  */
 public class HistoryManager {
+	
+	private static final String DB_NAME = "glucometer_db";
+	private static final int DB_VERSION = 1;
+
+	private static final String TABLE_NAME = "glucometer_table";
+	private static final String FIELD_ID = "_id";
+	private static final String FIELD_VALUE = "result_value";
+	private static final String FIELD_UNIT = "result_unit";
+	private static final String FIELD_TIME = "result_time";
+
 
 	public static final int MAX_RESULTS = 30;
 	
@@ -40,8 +50,8 @@ public class HistoryManager {
 	
 	public LinkedList<TestResult> getTestResults() {
 		DBHelper helper = new DBHelper(context);
-		
-		Cursor cursor = helper.selectAll();
+		SQLiteDatabase db = helper.getReadableDatabase();
+		Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
 		cursor.moveToFirst();
 
 		LinkedList<TestResult> resultList = new LinkedList<TestResult>();
@@ -51,6 +61,9 @@ public class HistoryManager {
 			resultList.add(info);
 			cursor.moveToNext();
 		}
+
+		cursor.close();
+		db.close();
 		return resultList;
 	}
 	
@@ -61,14 +74,6 @@ public class HistoryManager {
 	
 	
 	private static class DBHelper extends SQLiteOpenHelper {
-		private static final String DB_NAME = "glucometer_db";
-		private static final int DB_VERSION = 1;
-
-		private static final String TABLE_NAME = "glucometer_table";
-		private static final String FIELD_ID = "_id";
-		private static final String FIELD_VALUE = "result_value";
-		private static final String FIELD_UNIT = "result_unit";
-		private static final String FIELD_TIME = "result_time";
 		
 		public DBHelper(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
@@ -101,12 +106,6 @@ public class HistoryManager {
 			long row = db.insert(TABLE_NAME, null, cv);
 			db.close();
 			return row;
-		}
-		
-		public Cursor selectAll() {
-			SQLiteDatabase db = this.getReadableDatabase();
-			Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
-			return cursor;
 		}
 		
 		@SuppressWarnings("unused")

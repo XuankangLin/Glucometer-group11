@@ -417,7 +417,8 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doStripInserted() {
-		if (new CurrentStatus(preferences).isErrorNow()) {
+		boolean error =new CurrentStatus(preferences).isErrorNow(); 
+		if (error) {
 			return;
 		}
 
@@ -492,7 +493,13 @@ public class GlucometerActivity extends Activity {
 			
 			@Override
 			public void run() {
-				doEnding();
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						doEnding();
+					}
+				});
 			}
 		}, ERROR_ENDING_TIME);
 	}
@@ -596,8 +603,7 @@ public class GlucometerActivity extends Activity {
 				handler);
 		currentModeLogic = modeLogic;
 
-		if (this.enterXXMode(modeLogic)) {
-		}
+		this.enterXXMode(modeLogic);
 		//TODO else, error occurs, it may still feed the blood?
 	}
 	
@@ -638,6 +644,7 @@ public class GlucometerActivity extends Activity {
 	private boolean enterXXMode(ModeLogic modeLogic) {
 		CurrentStatus status = new CurrentStatus(preferences);
 		status.setPowerOn(true);
+		status.syncCurrentTime();
 		status.commit();
 
 		if (!modeLogic.initialize()) {
