@@ -515,21 +515,23 @@ public class GlucometerActivity extends Activity {
 				progressBarArea, dateArea, this, preferences, handler);
 		currentModeLogic = modeLogic;
 		
-		this.enterXXMode(modeLogic);
-		modeLogic.initDisplay();
+		if (this.enterXXMode(modeLogic)) {
+			modeLogic.initDisplay();			
+		}
 	}
 	
 	/**
 	 * the procedure of entering a particular mode
 	 * @param modeLogic
+	 * @return whether successful
 	 */
-	private void enterXXMode(ModeLogic modeLogic) {
+	private boolean enterXXMode(ModeLogic modeLogic) {
 		if (!modeLogic.initialize()) {
 			//=====Initialization Error=====
 			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
 			message.arg1 = ErrorCode.INITIALIZATION_ERROR.getErrorCode();
 			message.sendToTarget();
-			return;
+			return false;
 		}
 		
 		if (!modeLogic.checkMeterStatus()) {
@@ -537,10 +539,11 @@ public class GlucometerActivity extends Activity {
 			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
 			message.arg1 = ErrorCode.METER_STATUS_ERROR.getErrorCode();
 			message.sendToTarget();
-			return;
+			return false;
 		}
 
 		modeLogic.validateMode();
+		return true;
 	}
 
 	/**
