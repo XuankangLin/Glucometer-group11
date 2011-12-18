@@ -3,7 +3,9 @@ package com.group11.logic;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Message;
 
+import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
@@ -67,12 +69,24 @@ public class TestingModeLogic extends ModeLogic {
 
 	public void onStripValid() {
 		//TODO
-		
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		startTestingMode();
+		if(currentStatus.isStripValid()){
+			if(currentStatus.isBloodSufficient()){
+				onBloodSufficient();
+			}
+			else {
+				onBloodInsufficient();
+			}
+			
+		}
+		else {
+			onStripInvalid();
+		}
 	}
 	
 	public void onStripInvalid() {
 		//TODO
-		startTestingMode();
 		Beeper.get().doErrorBeep(context);
 		statusArea.setModeBlinking(Mode.TESTING);
 		statusArea.setVisible(true);
@@ -82,6 +96,8 @@ public class TestingModeLogic extends ModeLogic {
 	
 	public void onBloodSufficient() {
 		//TODO
+		
+		stopTestingMode();
 	}
 	
 	public void onBloodInsufficient() {
@@ -98,6 +114,17 @@ public class TestingModeLogic extends ModeLogic {
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.TESTING);
+		currentStatus.setStripInserted(true);
 		currentStatus.commit();
+	}
+	
+	public void stopTestingMode(){
+		 CurrentStatus currentStatus = new CurrentStatus(preferences);
+		 Beeper.get().doErrorBeep(context);
+		 currentStatus.setStripInserted(false);
+		 currentStatus.setCurrentMode(null);
+		 currentStatus.commit();
+		 Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+			message.sendToTarget();
 	}
 }
