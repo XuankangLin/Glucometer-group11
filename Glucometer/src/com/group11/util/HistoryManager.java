@@ -106,7 +106,6 @@ public class HistoryManager {
 		public Cursor selectAll() {
 			SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
-			db.close();
 			return cursor;
 		}
 		

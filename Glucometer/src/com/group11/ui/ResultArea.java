@@ -41,6 +41,7 @@ public class ResultArea extends UIArea {
 		else if (unit == Unit.DL) {
 			this.displayDL(value);
 		}
+		this.unitImage.setVisibility(View.VISIBLE);
 	}
 	
 	/**

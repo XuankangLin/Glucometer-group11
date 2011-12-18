@@ -63,6 +63,7 @@ public class BrowsingModeLogic extends ModeLogic {
 			dateArea.setVisible(true);
 
 			statusArea.setCurrentMode(Mode.BROWSING);
+			statusArea.cancelBlinking();
 			dateArea.setColonBlinking(false);
 			
 			this.displayTestResult(resultList.getLast());
