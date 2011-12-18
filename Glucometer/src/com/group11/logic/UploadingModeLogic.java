@@ -106,7 +106,7 @@ public class UploadingModeLogic extends ModeLogic {
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
 		 currentStatus.setUSBConnected(false);
-		 currentStatus.setCurrentMode(null);
+//		 currentStatus.setCurrentMode(null); do not set currentMode(null) here!!!!!
 		 currentStatus.commit();
 		 Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
 			message.sendToTarget();

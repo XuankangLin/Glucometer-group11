@@ -17,6 +17,7 @@ public abstract class ModeLogic {
 	
 	private static final int INITIALIZATION_TIME = 300;
 	private static final int VALIDATION_TIME = 200;
+	private static final int AUTO_ENDING_TIME = 10000;
 
 	protected final StatusArea statusArea;
 	protected final ResultArea resultArea;
@@ -58,22 +59,7 @@ public abstract class ModeLogic {
 	 */
 	public boolean checkMeterStatus() {
 		CurrentStatus status = new CurrentStatus(preferences);
-		if (status.getPreviousMode() == null) {
-			return true;
-		}
-		
-		switch (status.getPreviousMode()) {
-		case BROWSING:
-		case SETUP:
-			return !status.isPowerOn();
-		case TESTING:
-			return !status.isStripInserted() && !status.isPowerOn();
-		case UPLOADING:
-			return !status.isUSBConnected() && !status.isPowerOn();
-
-		default:
-			return true;
-		}
+		return status.isLastModeComplete();
 	}
 	
 	/**

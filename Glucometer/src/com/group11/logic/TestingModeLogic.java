@@ -71,18 +71,18 @@ public class TestingModeLogic extends ModeLogic {
 		//TODO
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		startTestingMode();
-		if(currentStatus.isStripValid()){
-			if(currentStatus.isBloodSufficient()){
-				onBloodSufficient();
-			}
-			else {
-				onBloodInsufficient();
-			}
-			
-		}
-		else {
-			onStripInvalid();
-		}
+//		if(currentStatus.isStripValid()){
+//			if(currentStatus.isBloodSufficient()){
+//				onBloodSufficient();
+//			}
+//			else {
+//				onBloodInsufficient();
+//			}
+//			
+//		}
+//		else {
+//			onStripInvalid();
+//		}
 	}
 	
 	public void onStripInvalid() {
@@ -122,7 +122,7 @@ public class TestingModeLogic extends ModeLogic {
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
 		 Beeper.get().doErrorBeep(context);
 //		 currentStatus.setStripInserted(false); do not set here!
-		 currentStatus.setCurrentMode(null);
+//		 currentStatus.setCurrentMode(null); do not set currentMode(null) here!!!
 		 currentStatus.commit();
 		Message message = Message
 				.obtain(handler, Interrupt.POWER_OFF.ordinal());

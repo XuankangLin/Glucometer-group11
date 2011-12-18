@@ -508,33 +508,38 @@ public class GlucometerActivity extends Activity {
 		status.setRefreshingTime(true);
 		status.setErrorNow(false);
 		//TODO assuming that do not setCurrentMode(null) in your ModeLogic
-		switch (status.getCurrentMode()) {
-		case BROWSING:
-		case SETUP:
-			status.setLastModeComplete(true);
-			status.setCurrentMode(null);
-			break;
-		case TESTING:
-			if (!status.isStripInserted()) {
+		if (status.getCurrentMode() == null) {
+			Log.i("PREVIOUS", "current mode is null???");
+		}
+		else {
+			switch (status.getCurrentMode()) {
+			case BROWSING:
+			case SETUP:
 				status.setLastModeComplete(true);
 				status.setCurrentMode(null);
-			}
-			else {
-				status.setLastModeComplete(false);
-			}
-			break;
-		case UPLOADING:
-			if (!status.isUSBConnected()) {
-				status.setLastModeComplete(true);
-				status.setCurrentMode(null);
-			}
-			else {
-				status.setLastModeComplete(false);
-			}
-			break;
+				break;
+			case TESTING:
+				if (!status.isStripInserted()) {
+					status.setLastModeComplete(true);
+					status.setCurrentMode(null);
+				}
+				else {
+					status.setLastModeComplete(false);
+				}
+				break;
+			case UPLOADING:
+				if (!status.isUSBConnected()) {
+					status.setLastModeComplete(true);
+					status.setCurrentMode(null);
+				}
+				else {
+					status.setLastModeComplete(false);
+				}
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}			
 		}
 		
 		status.commit();
@@ -590,7 +595,14 @@ public class GlucometerActivity extends Activity {
 				handler);
 		currentModeLogic = modeLogic;
 
-		this.enterXXMode(modeLogic);
+		if (this.enterXXMode(modeLogic)) {
+			CurrentStatus status = new CurrentStatus(preferences);
+			Message message = Message.obtain(handler);
+			message.what = status.isStripValid() ? Interrupt.STRIP_VALID
+					.ordinal() : Interrupt.STRIP_INVALID.ordinal();
+			message.sendToTarget();
+		}
+		//TODO else, error occurs, it may still feed the blood?
 	}
 	
 	private void enterBrowsingMode() {

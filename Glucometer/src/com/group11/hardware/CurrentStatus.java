@@ -49,7 +49,7 @@ public class CurrentStatus {
 
 	//=====should be set by Logic Controller itself=====
 	private static final String CURRENT_MODE = "currentMode";
-	private static final String PREVIOUS_MODE = "previousMode";
+	private static final String LAST_MODE_COMPLETE = "lastModeComplete";
 
 	//=====should be reset every time this program starts=====
 	private static final String AC_PLUGGED = "acPlugged";
@@ -143,16 +143,15 @@ public class CurrentStatus {
 	 * @param mode
 	 */
 	public synchronized void setCurrentMode(Mode mode) {
-		int lastMode = preferences.getInt(CURRENT_MODE, -1);
-		if (lastMode != -1) {
-			this.editor.putInt(PREVIOUS_MODE, lastMode);
-		}
 		this.editor.putInt(CURRENT_MODE, mode == null ? -1 : mode.ordinal());
 	}
+
+	public boolean isLastModeComplete() {
+		return preferences.getBoolean(LAST_MODE_COMPLETE, true);
+	}
 	
-	public Mode getPreviousMode() { 
-		int ordinal = preferences.getInt(PREVIOUS_MODE, -1);
-		return ordinal == -1 ? null : Mode.get(ordinal);
+	public synchronized void setLastModeComplete(boolean complete) {
+		this.editor.putBoolean(LAST_MODE_COMPLETE, complete);
 	}
 	
 	public int getBattery() {

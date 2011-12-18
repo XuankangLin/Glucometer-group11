@@ -67,6 +67,7 @@ public class BrowsingModeLogic extends ModeLogic {
 			dateArea.setColonBlinking(false);
 			
 			this.displayTestResult(resultList.getLast());
+			
 		}
 		else {
 			//=====the meter shall blink symbol B and then go through Error Ending procedure=====

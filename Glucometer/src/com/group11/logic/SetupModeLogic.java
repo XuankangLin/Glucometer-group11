@@ -375,8 +375,6 @@ public class SetupModeLogic extends ModeLogic {
 				data.getMonth() - 1, data.getDay(), data.getHour(),
 				data.getMinute());
 		status.setCurrentTime(calendar.getTimeInMillis());
-
-		status.setCurrentMode(null);
 		status.commit();
 		
 		//=====voluntary ending=====
