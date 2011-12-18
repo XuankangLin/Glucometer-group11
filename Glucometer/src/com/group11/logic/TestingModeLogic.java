@@ -26,6 +26,7 @@ import com.group11.util.HistoryManager;
 public class TestingModeLogic extends ModeLogic {
 	
 	private static final int WAIT_FOR_BLOOD_TIME = 10000;
+	private static final int DISPLAY_RESULT_TIME = 10000;
 
 	public TestingModeLogic(StatusArea status, ResultArea result,
 			ProgressBarArea progressBar, DateArea date, Context context,
@@ -34,6 +35,7 @@ public class TestingModeLogic extends ModeLogic {
 	}
 	
 	private TimerTask waitForBloodTask = null;
+	private TimerTask displayResultTask = null;
 
 	/**
 	 * Mode validation process is to check whether a test strip is valid (never
@@ -85,6 +87,9 @@ public class TestingModeLogic extends ModeLogic {
 	@Override
 	public void onStripPulledOut() {
 		//=====the meter should go through the Voluntary Ending procedure=====
+		this.clearWaitForBloodTask();
+		this.clearDisplayResultTask();
+		
 		Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
 		message.sendToTarget();
 		Beeper.get().doTurnOffBeep(context);
@@ -185,6 +190,10 @@ public class TestingModeLogic extends ModeLogic {
 				preferences).getCurrentUnit());
 		
 		new HistoryManager(context).addTestResult(result);
+		
+		this.clearDisplayResultTask();
+		this.initDisplayResultTask();
+		new Timer().schedule(displayResultTask, DISPLAY_RESULT_TIME);
 	}
 	
 	public void onResultTimeout() {
@@ -194,6 +203,25 @@ public class TestingModeLogic extends ModeLogic {
 				Interrupt.ERROR_ENDING.ordinal());
 		message.arg1 = ErrorCode.TEST_TIMEOUT.getErrorCode();
 		message.sendToTarget();
+	}
+	
+	private void clearDisplayResultTask() {
+		if (displayResultTask != null) {
+			displayResultTask.cancel();
+			displayResultTask = null;
+		}
+	}
+	
+	private void initDisplayResultTask() {
+		displayResultTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				Message message = Message.obtain(handler,
+						Interrupt.VOLUNTARY_ENDING.ordinal());
+				message.sendToTarget();
+			}
+		};
 	}
 	
 	public void startTestingMode(){
