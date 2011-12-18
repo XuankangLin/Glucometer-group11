@@ -623,8 +623,7 @@ public class GlucometerActivity extends Activity {
 						}
 					});
 			batterySeekBar.setProgress(status.getBattery());
-		}
-		{
+		} {
 			CheckBox initializationBox = (CheckBox) view
 					.findViewById(R.id.initializationErrorCheckbox);
 			initializationBox
@@ -638,6 +637,28 @@ public class GlucometerActivity extends Activity {
 							status.setInitializationErrorNextTime(isChecked);
 						}
 					});
+		} {
+			CheckBox validStripBox = (CheckBox) view
+					.findViewById(R.id.stripValidCheckbox);
+			validStripBox.setChecked(status.isStripValid());
+			validStripBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					status.setStripValid(isChecked);
+				}
+			});
+		} {
+			CheckBox sufficientBloodBox = (CheckBox) view
+					.findViewById(R.id.bloodSufficientCheckbox);
+			sufficientBloodBox.setChecked(status.isBloodSufficient());
+			sufficientBloodBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					status.setBloodSufficient(isChecked);
+				}
+			});
 		}
 
 		AlertDialog.Builder builder = new Builder(this);

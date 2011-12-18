@@ -21,5 +21,19 @@
 		<CheckBox android:text="" android:id="@+id/initializationErrorCheckbox"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@+id/linearLayout3">
+		<TextView android:text="Valid Strip in next test: " android:id="@+id/textView2"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+		<CheckBox android:text="" android:id="@+id/stripValidCheckbox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@+id/linearLayout4">
+		<TextView android:text="Sufficient Blood in next Test: " android:id="@+id/textView3"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+		<CheckBox android:text="" android:id="@+id/bloodSufficientCheckbox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+	</LinearLayout>
 
 </LinearLayout>

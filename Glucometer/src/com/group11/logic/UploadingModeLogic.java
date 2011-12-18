@@ -1,21 +1,14 @@
 package com.group11.logic;
 
-
-
-
-
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
-
-
 
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
@@ -64,8 +57,9 @@ public class UploadingModeLogic extends ModeLogic {
 
 	@Override
 	public void validateMode() {
-		// TODO Auto-generated method stub
 		super.validateMode();
+		
+		//TODO PC
 	}
 
 	@Override

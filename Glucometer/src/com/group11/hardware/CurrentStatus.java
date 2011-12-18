@@ -64,7 +64,10 @@ public class CurrentStatus {
 	
 	//=====set by Setting Dialog=====
 	private static final String BATTERY_LEVEL = "batteryLevel";
+	private static final String PC_READY = "pcReady";
 	private static final String INITIALIZATION_ERROR = "initializationError";
+	private static final String STRIP_VALID = "stripValid";
+	private static final String BLOOD_SUFFICIENT = "bloodSufficient";
 
 	/**
 	 * write in all the changes that have been made
@@ -237,5 +240,29 @@ public class CurrentStatus {
 	
 	public synchronized void setErrorNow(boolean error) {
 		this.editor.putBoolean(ERROR_NOW, error);
+	}
+	
+	public boolean isPCReady() {
+		return preferences.getBoolean(PC_READY, true);
+	}
+	
+	public synchronized void setPCReady(boolean ready) {
+		this.editor.putBoolean(PC_READY, ready);
+	}
+	
+	public boolean isStripValid() {
+		return preferences.getBoolean(STRIP_VALID, true);
+	}
+	
+	public synchronized void setStripValid(boolean valid) {
+		this.editor.putBoolean(STRIP_VALID, valid);
+	}
+	
+	public boolean isBloodSufficient() {
+		return preferences.getBoolean(BLOOD_SUFFICIENT, true);
+	}
+	
+	public synchronized void setBloodSufficient(boolean sufficient) {
+		this.editor.putBoolean(BLOOD_SUFFICIENT, sufficient);
 	}
 }
