@@ -55,7 +55,7 @@ public class BrowsingModeLogic extends ModeLogic {
 			currentStatus.setRefreshingTime(false);
 			currentStatus.commit();
 
-			Beeper.get().doShortBeep(context);
+			Beeper.get().doRemindBeep(context);
 			
 			statusArea.setVisible(true);
 			resultArea.setVisible(true);

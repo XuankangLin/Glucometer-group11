@@ -71,7 +71,7 @@ public class UploadingModeLogic extends ModeLogic {
 	
 	public void PowerOff(){
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
-		 Beeper.get().doShortLongBeep(context); 
+		 Beeper.get().doErrorBeep(context); 
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
 		 currentStatus.setCurrentMode(null);
@@ -93,7 +93,7 @@ public class UploadingModeLogic extends ModeLogic {
 			// showBlinkingView();
 			// new Timer().schedule(timerTask, 10000);
 		} else {
-			Beeper.get().doShortBeep(context);
+			Beeper.get().doRemindBeep(context);
 			// wait for shortclick
 			historyManager.deleteAllTestResults();
 		}

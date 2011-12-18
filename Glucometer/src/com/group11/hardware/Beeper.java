@@ -86,13 +86,21 @@ public class Beeper {
 		}, milliseconds);
 	}
 	
+	private void doShortBeep(Context context) {
+		this.playXms(context, SHORT_DURATION);
+	}
+	
 	/**
 	 * a short-beep lasts 0.2 seconds
 	 * also called remind-beep
 	 * @param context  passing in the Activity instance is OK
 	 */
-	public void doShortBeep(Context context) {
-		this.playXms(context, SHORT_DURATION);
+	public void doRemindBeep(Context context) {
+		this.doShortBeep(context);
+	}
+	
+	public void doLongBeep(Context context) {
+		this.playXms(context, LONG_DURATION);
 	}
 	
 	/**
@@ -100,15 +108,10 @@ public class Beeper {
 	 * also called turn-off-beep
 	 * @param context  passing in the Activity instance is OK
 	 */
-	public void doLongBeep(Context context) {
-		this.playXms(context, LONG_DURATION);
+	public void doTurnOffBeep(Context context) {
+		this.doLongBeep(context);
 	}
 
-	/**
-	 * a double-beep is two consecutive short-beep with 0.2 seconds of interval
-	 * also called warning beep
-	 * @param context  passing in the Activity instance is OK
-	 */
 	public void doDoubleBeep(final Context context) {
 		this.doShortBeep(context);
 		
@@ -122,12 +125,15 @@ public class Beeper {
 	}
 	
 	/**
-	 * a short-long-beep is a short beep followed by a long beep 
-	 * with interval less than 0.2 seconds
-	 * also called error-beep
+	 * a double-beep is two consecutive short-beep with 0.2 seconds of interval
+	 * also called warning beep
 	 * @param context  passing in the Activity instance is OK
 	 */
-	public void doShortLongBeep(final Context context) {
+	public void doWarningBeep(Context context) {
+		this.doDoubleBeep(context);
+	}
+	
+	private void doShortLongBeep(final Context context) {
 		this.doShortBeep(context);
 		
 		new Timer().schedule(new TimerTask() {
@@ -139,6 +145,16 @@ public class Beeper {
 		}, SHORT_DURATION + 150);
 		
 		sendBeepStartStop(true);
+	}
+	
+	/**
+	 * a short-long-beep is a short beep followed by a long beep 
+	 * with interval less than 0.2 seconds
+	 * also called error-beep
+	 * @param context  passing in the Activity instance is OK
+	 */
+	public void doErrorBeep(Context context) {
+		this.doShortLongBeep(context);
 	}
 	
 	private synchronized void sendBeepStartStop(boolean start) {

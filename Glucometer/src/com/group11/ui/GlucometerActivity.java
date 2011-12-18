@@ -47,7 +47,6 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static com.group11.base.Interrupt.*;
 
@@ -262,9 +261,6 @@ public class GlucometerActivity extends Activity {
 					testStripImage
 							.setImageResource(R.drawable.test_strip_valid);
 				}
-				Beeper.get().doShortLongBeep(GlucometerActivity.this);
-				Toast.makeText(GlucometerActivity.this, "short long beep", 1000)
-						.show();
 			}
 		});
 
@@ -395,6 +391,8 @@ public class GlucometerActivity extends Activity {
 	}
 	
 	private void doErrorEnding(Message msg) {
+		Beeper.get().doErrorBeep(this);
+		
 		int errorCode = msg.arg1;
 		statusArea.setVisible(true);
 		statusArea.setErroring(true);
