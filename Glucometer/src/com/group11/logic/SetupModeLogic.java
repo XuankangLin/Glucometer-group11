@@ -367,7 +367,6 @@ public class SetupModeLogic extends ModeLogic {
 		}
 	}
 	
-	//TODO there exists an bug, every time it saves, the time is increased by 5 minutes......
 	private void saveAndExit() {
 		//=====save changes=====
 		CurrentStatus status = new CurrentStatus(preferences);
