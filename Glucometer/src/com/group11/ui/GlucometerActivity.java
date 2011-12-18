@@ -16,6 +16,7 @@ import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
+import com.group11.logic.SetupModeLogic;
 import com.group11.logic.TestingModeLogic;
 import com.group11.logic.UploadingModeLogic;
 import com.group11.util.ClickJudger;
@@ -32,7 +33,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -283,25 +283,19 @@ public class GlucometerActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				CurrentStatus currentStatus = new CurrentStatus(preferences);
-				if (currentStatus.isPowerOn() == false) {
-					Log.i("NULLLLL", "sending connected");
+				if (currentStatus.isUSBConnected()) {
+					Message message = Message.obtain(handler,
+							USB_DISCONNECTED.ordinal());
+					message.sendToTarget();
+					currentStatus.setUSBConnected(false);
+				}
+				else {
 					Message message = Message.obtain(handler,
 							USB_CONNECTED.ordinal());
 					message.sendToTarget();
-				} else {
-					Log.i("NULLLLL", "sending disconnected");
-					switch (currentStatus.getCurrentMode()) {
-					case SETUP:
-					case BROWSING:
-					case TESTING:
-						break;
-					case UPLOADING:
-						Message message = Message.obtain(handler,
-								USB_DISCONNECTED.ordinal());
-						message.sendToTarget();
-						break;
-					}
+					currentStatus.setUSBConnected(true);
 				}
+				currentStatus.commit();
 			}
 		});
 
@@ -352,6 +346,10 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doStripInserted() {
+		if (new CurrentStatus(preferences).isErrorNow()) {
+			return;
+		}
+
 		if (currentModeLogic != null) {
 			currentModeLogic.onStripInserted();
 		}
@@ -391,13 +389,7 @@ public class GlucometerActivity extends Activity {
 			currentModeLogic.onUSBDisconnected();
 		}
 		else {
-			UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
-					statusArea, resultArea, progressBarArea, dateArea, this,
-					preferences, handler);
-			uploadingModeLogic.onUsbDisConnected();
-
-			currentModeLogic = uploadingModeLogic;
-			//doPowerOff();			
+			//=====do nothing=====
 		}
 	}
 	
@@ -495,19 +487,42 @@ public class GlucometerActivity extends Activity {
 		TestingModeLogic modeLogic = new TestingModeLogic(statusArea,
 				resultArea, progressBarArea, dateArea, this, preferences,
 				handler);
-		
-		//TODO
-		if (!modeLogic.initialize()) {
-			
-		}
+		currentModeLogic = modeLogic;
 
+		this.enterXXMode(modeLogic);
 	}
 	
 	private void enterBrowsingMode() {
 		BrowsingModeLogic modeLogic = new BrowsingModeLogic(statusArea,
 				resultArea, progressBarArea, dateArea, this,
 				preferences, handler);
+		currentModeLogic = modeLogic;
 		
+		this.enterXXMode(modeLogic);
+	}
+	
+	private void enterUploadingMode() {
+		UploadingModeLogic modeLogic = new UploadingModeLogic(statusArea,
+				resultArea, progressBarArea, dateArea, this, preferences,
+				handler);
+		currentModeLogic = modeLogic;
+		
+		this.enterXXMode(modeLogic);
+	}
+	
+	private void enterSetupMode() {
+		SetupModeLogic modeLogic = new SetupModeLogic(statusArea, resultArea,
+				progressBarArea, dateArea, this, preferences, handler);
+		currentModeLogic = modeLogic;
+		
+		this.enterXXMode(modeLogic);
+	}
+	
+	/**
+	 * the procedure of entering a particular mode
+	 * @param modeLogic
+	 */
+	private void enterXXMode(ModeLogic modeLogic) {
 		if (!modeLogic.initialize()) {
 			//=====Initialization Error=====
 			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
@@ -525,11 +540,6 @@ public class GlucometerActivity extends Activity {
 		}
 
 		modeLogic.validateMode();
-		currentModeLogic = modeLogic;
-	}
-	
-	private void enterSetupMode() {
-		//TODO
 	}
 
 	/**
