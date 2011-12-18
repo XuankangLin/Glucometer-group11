@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -51,15 +52,19 @@ public class UploadingModeLogic extends ModeLogic {
 		public void run() {
 			// TODO Auto-generated method stub
 			stopUploading();
-			timerTask.cancel();
+			//timerTask.cancel();
 		}
 	};
 
 	@Override
 	public void validateMode() {
 		super.validateMode();
-		
-		//TODO PC
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		if (historyManager.getTestResults().size() == 0||currentStatus.isPCReady()||currentStatus.isSoftwareReady()){
+			showBlinkingView();
+			//timer.schedule(timerTask, 10000);
+			//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
+		}
 	}
 
 	@Override
@@ -129,14 +134,8 @@ public class UploadingModeLogic extends ModeLogic {
 
 	@Override
 	public void onUSBConnected() {
-		// TODO Auto-generated method stub
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		// TODO Auto-generated method stub	
 		startUploading();
-		if (historyManager.getTestResults().size() == 0 || currentStatus.isPCReady()) {
-			showBlinkingView();
-		} 
-		else {
-			}
 		//timer.schedule(timerTask, 5000);
 		//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
 		}
