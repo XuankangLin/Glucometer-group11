@@ -364,7 +364,7 @@ public class GlucometerActivity extends Activity {
 			currentModeLogic.onStripPulledOut();
 		}
 		else {
-			throw new IllegalStateException("should it come to here???");
+			//=====do nothing=====
 		}
 	}
 
