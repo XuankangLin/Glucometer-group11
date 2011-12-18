@@ -369,7 +369,9 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doUSBDisconnected() {
-		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(statusArea, resultArea, progressBarArea,dateArea, this, preferences, handler);
+		UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
+				statusArea, resultArea, progressBarArea, dateArea, this,
+				preferences, handler);
 		currentModeLogic = uploadingModeLogic;
 		uploadingModeLogic.onUsbDisConnected();
 		//doPowerOff();
@@ -477,33 +479,38 @@ public class GlucometerActivity extends Activity {
 				currentModeLogic.onLongClick();
 			} else {
 				//=======go into Browsing Mode=======
-				BrowsingModeLogic modeLogic = new BrowsingModeLogic(statusArea,
-						resultArea, progressBarArea, dateArea, this,
-						preferences, handler);
-				
-				if (!modeLogic.initialize()) {
-					Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
-					message.arg1 = ErrorCode.INITIALIZATION_ERROR.getErrorCode();
-					message.sendToTarget();
-					return;
-				}
-				
-				if (!modeLogic.checkMeterStatus()) {
-					//=====Meter Status Checking Error=====
-					Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
-					message.arg1 = ErrorCode.METER_STATUS_ERROR.getErrorCode();
-					message.sendToTarget();
-					return;
-				}
-
-				modeLogic.validateMode();
-				currentModeLogic = modeLogic;
+				this.enterBrowsingMode();
 			}
 			return;
 		}
 		default:
 			break;
 		}
+	}
+	
+	private void enterBrowsingMode() {
+		BrowsingModeLogic modeLogic = new BrowsingModeLogic(statusArea,
+				resultArea, progressBarArea, dateArea, this,
+				preferences, handler);
+		
+		if (!modeLogic.initialize()) {
+			//=====Initialization Error=====
+			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+			message.arg1 = ErrorCode.INITIALIZATION_ERROR.getErrorCode();
+			message.sendToTarget();
+			return;
+		}
+		
+		if (!modeLogic.checkMeterStatus()) {
+			//=====Meter Status Checking Error=====
+			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+			message.arg1 = ErrorCode.METER_STATUS_ERROR.getErrorCode();
+			message.sendToTarget();
+			return;
+		}
+
+		modeLogic.validateMode();
+		currentModeLogic = modeLogic;
 	}
 
 	/**
@@ -722,11 +729,6 @@ public class GlucometerActivity extends Activity {
 				return true;
 			}
 
-			if (POWER_ON.ordinal() == msg.what) {
-				statusArea.setVisible(true);
-				dateArea.setVisible(true);
-				return true;
-			}
 			if (POWER_OFF.ordinal() == msg.what) {
 				doPowerOff();
 				return true;

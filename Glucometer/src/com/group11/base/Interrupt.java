@@ -24,7 +24,7 @@ public enum Interrupt {
 	BUTTON_CLICKED("several button_down & button_up has happened"),
 	BEEP_START("beeping starts"),
 	BEEP_STOP("beeping stops"),
-	POWER_ON("power on now"),
+//	POWER_ON("power on now"),
 	POWER_OFF("power off now"),
 	ERROR("an error occurs");
 	
