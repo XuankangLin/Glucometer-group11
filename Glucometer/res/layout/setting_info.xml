@@ -49,5 +49,12 @@
 		<CheckBox android:text="" android:id="@+id/softwareReadyCheckbox"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@+id/linearLayout7">
+		<TextView android:text="Testing Timeout next time: " android:id="@+id/textView6"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+		<CheckBox android:text="" android:id="@+id/testingTimeoutCheckbox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+	</LinearLayout>
 
 </LinearLayout>

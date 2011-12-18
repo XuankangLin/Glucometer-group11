@@ -68,6 +68,7 @@ public class CurrentStatus {
 	private static final String INITIALIZATION_ERROR = "initializationError";
 	private static final String STRIP_VALID = "stripValid";
 	private static final String BLOOD_SUFFICIENT = "bloodSufficient";
+	private static final String RESULT_TIMEOUT = "resultTimeout";
 
 	/**
 	 * write in all the changes that have been made
@@ -279,5 +280,13 @@ public class CurrentStatus {
 	
 	public void setSoftwareReady(boolean ready) {
 		this.editor.putBoolean(SOFTWARE_READY, ready);
+	}
+	
+	public boolean isResultTimeout() {
+		return preferences.getBoolean(RESULT_TIMEOUT, false);
+	}
+	
+	public synchronized void setResultTimeout(boolean timeout) {
+		this.editor.putBoolean(RESULT_TIMEOUT, timeout);
 	}
 }

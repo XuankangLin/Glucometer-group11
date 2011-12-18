@@ -798,6 +798,17 @@ public class GlucometerActivity extends Activity {
 					status.setSoftwareReady(isChecked);
 				}
 			});
+		} {
+			CheckBox timeoutBox = (CheckBox) view
+					.findViewById(R.id.testingTimeoutCheckbox);
+			timeoutBox.setChecked(status.isResultTimeout());
+			timeoutBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					status.setResultTimeout(isChecked);
+				}
+			});
 		}
 
 		AlertDialog.Builder builder = new Builder(this);
