@@ -161,9 +161,9 @@ public class TestingModeLogic extends ModeLogic {
 	public void onBloodSufficient() {
 		this.clearWaitForBloodTask();
 
-		//TODO
-		
-//		stopTestingMode();
+		progressBarArea.setVisible(true);
+		progressBarArea.cancelProgress();
+		progressBarArea.startProgress(handler);
 	}
 	
 	public void onBloodInsufficient() {
@@ -177,6 +177,7 @@ public class TestingModeLogic extends ModeLogic {
 	
 	public void onResultReady() {
 		//TODO
+		
 	}
 	
 	public void startTestingMode(){

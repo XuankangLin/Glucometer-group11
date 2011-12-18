@@ -1,7 +1,13 @@
 package com.group11.ui;
 
-import com.group11.R;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import com.group11.R;
+import com.group11.base.Interrupt;
+
+import android.os.Handler;
+import android.os.Message;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -14,6 +20,9 @@ public class ProgressBarArea extends UIArea {
 
 		this.progressBarImage = progressBar;
 	}
+	
+	private TimerTask progressTask = null;
+	private int progress = 0;
 
 	/**
 	 * set the image according to @param progress
@@ -56,5 +65,40 @@ public class ProgressBarArea extends UIArea {
 		default:
 			break;
 		}
+	}
+	
+	public void cancelProgress() {
+		if (progressTask != null) {
+			progressTask.cancel();
+			progressTask = null;
+		}
+	}
+	
+	public void startProgress(final Handler handler) {
+		this.cancelProgress();
+		this.progress = 0;
+		progressTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				if (progress > 9) {
+					Message message = Message.obtain(handler,
+							Interrupt.RESULT_READY.ordinal());
+					message.sendToTarget();
+					cancel();
+				}
+				else {
+					progressBarImage.post(new Runnable() {
+						
+						@Override
+						public void run() {
+							setProgress(progress);
+							progress++;
+						}
+					});
+				}
+			}
+		};
+		new Timer().scheduleAtFixedRate(progressTask, 0, 1000);
 	}
 }
