@@ -36,14 +36,33 @@ public class SetupModeLogic extends ModeLogic {
 
 	@Override
 	public void onLongClick() {
-		// TODO Auto-generated method stub
-
+		//=====Undefined Action, ignored=====
 	}
 
 	@Override
 	public void onDoubleClick() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onStripInserted() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onStripPulledOut() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onUSBConnected() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onUSBDisconnected() {
+		//=====Undefined Action, ignored=====
 	}
 
 }

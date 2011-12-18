@@ -101,4 +101,24 @@ public abstract class ModeLogic {
 	 * when double-clicked, what should be done?
 	 */
 	public abstract void onDoubleClick();
+	
+	/**
+	 * when strip-inserted, what should be done?
+	 */
+	public abstract void onStripInserted();
+	
+	/**
+	 * when strip-pulled-out, what should be done?
+	 */
+	public abstract void onStripPulledOut();
+	
+	/**
+	 * when usb-connected, what should be done?
+	 */
+	public abstract void onUSBConnected();
+	
+	/**
+	 * when usb-disconnected, what should be done?
+	 */
+	public abstract void onUSBDisconnected();
 }

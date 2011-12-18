@@ -16,6 +16,7 @@ import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.logic.BrowsingModeLogic;
 import com.group11.logic.ModeLogic;
+import com.group11.logic.TestingModeLogic;
 import com.group11.logic.UploadingModeLogic;
 import com.group11.util.ClickJudger;
 import com.group11.util.HistoryManager;
@@ -351,7 +352,7 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doStripInserted() {
-		// TODO fulfill this method
+		//===== enter Testing Mode =====
 	}
 
 	private void doStripPulledOut() {
@@ -486,6 +487,17 @@ public class GlucometerActivity extends Activity {
 		default:
 			break;
 		}
+	}
+	
+	private void enterTestingMode() {
+		TestingModeLogic modeLogic = new TestingModeLogic(statusArea,
+				resultArea, progressBarArea, dateArea, this, preferences,
+				handler);
+		
+		if (!modeLogic.initialize()) {
+			
+		}
+
 	}
 	
 	private void enterBrowsingMode() {

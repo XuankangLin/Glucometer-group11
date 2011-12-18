@@ -9,11 +9,14 @@ public enum Interrupt {
 	STRIP_PULLED_OUT("When test strip is pulled out"),
 	USB_CONNECTED("When USB is connected"),
 	USB_DISCONNECTED("When USB is disconnected"),
+
+	//=====Testing Mode Specially=====
 	STRIP_VALID("If the inserted test strip is valid"),
 	STRIP_INVALID("If the inserted test strip is used or out of date"),
 	BLOOD_SUFFICIENT("If blood sample fed is sufficient"),
 	BLOOD_INSUFFICIENT("If blood sample fed is insufficient"),
 	RESULT_READY("When the test result is ready for further processing"),
+
 //	BUTTON_DOWN("When the button is pushed down"),
 //	BUTTON_UP("When the button is released"),
 	AC_ON("When AC is plugged in"),

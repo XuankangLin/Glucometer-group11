@@ -44,5 +44,28 @@ public class TestingModeLogic extends ModeLogic {
 
 	}
 
+	@Override
+	public void onStripInserted() {
+		throw new IllegalStateException("it should never enter this method.");
+	}
+
+	@Override
+	public void onStripPulledOut() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUSBConnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUSBDisconnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

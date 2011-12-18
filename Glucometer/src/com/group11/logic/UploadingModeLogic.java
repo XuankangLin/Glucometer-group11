@@ -6,7 +6,6 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
-import android.util.Log;
 
 import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
@@ -108,6 +107,28 @@ public class UploadingModeLogic extends ModeLogic {
 	public void onUsbDisConnected() {
 		timerTask.cancel();
 		PowerOff();
+	}
+
+	@Override
+	public void onStripInserted() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onStripPulledOut() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onUSBConnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUSBDisconnected() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

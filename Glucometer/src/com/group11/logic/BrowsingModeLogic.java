@@ -136,4 +136,24 @@ public class BrowsingModeLogic extends ModeLogic {
 		statusArea.setErroring(false);
 	}
 
+	@Override
+	public void onStripInserted() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onStripPulledOut() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onUSBConnected() {
+		//=====Undefined Action, ignored=====
+	}
+
+	@Override
+	public void onUSBDisconnected() {
+		//=====Undefined Action, ignored=====
+	}
+
 }
