@@ -21,6 +21,7 @@ import com.group11.logic.TestingModeLogic;
 import com.group11.logic.UploadingModeLogic;
 import com.group11.util.ClickJudger;
 import com.group11.util.HistoryManager;
+import com.group11.util.RandomGenerator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -899,8 +900,17 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (RESULT_READY.ordinal() == msg.what) {
-				((TestingModeLogic) currentModeLogic).onResultReady();
+				CurrentStatus status = new CurrentStatus(preferences);
+				Unit unit = status.getCurrentUnit();
+				((TestingModeLogic) currentModeLogic)
+						.onResultReady(new TestResult(RandomGenerator
+								.getRandomResult(unit), unit, status
+								.getCurrentTime()));
 				return true;
+			}
+			if (RESULT_TIMEOUT.ordinal() == msg.what) {
+				((TestingModeLogic) currentModeLogic).onResultTimeout();
+				return true;				
 			}
 
 			if (AC_ON.ordinal() == msg.what) {

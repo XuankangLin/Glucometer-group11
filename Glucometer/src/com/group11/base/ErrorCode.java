@@ -9,6 +9,7 @@ public enum ErrorCode {
 	//=====Testing Mode=====
 	INVALID_STRIP(101),
 	INSUFFICIENT_BLOOD(102),
+	TEST_TIMEOUT(103),
 	
 	//=====Browsing Mode=====
 	NO_TEST_RESULTS(201);

@@ -5,7 +5,9 @@ import java.util.TimerTask;
 
 import com.group11.R;
 import com.group11.base.Interrupt;
+import com.group11.hardware.CurrentStatus;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
@@ -71,10 +73,11 @@ public class ProgressBarArea extends UIArea {
 		if (progressTask != null) {
 			progressTask.cancel();
 			progressTask = null;
+			progress = 0;
 		}
 	}
 	
-	public void startProgress(final Handler handler) {
+	public void startProgress(final Handler handler, final SharedPreferences preference) {
 		this.cancelProgress();
 		this.progress = 0;
 		progressTask = new TimerTask() {
@@ -82,8 +85,10 @@ public class ProgressBarArea extends UIArea {
 			@Override
 			public void run() {
 				if (progress > 9) {
-					Message message = Message.obtain(handler,
-							Interrupt.RESULT_READY.ordinal());
+					Message message = Message.obtain(handler);
+					message.what = new CurrentStatus(preference)
+							.isResultTimeout() ? Interrupt.RESULT_TIMEOUT
+							.ordinal() : Interrupt.RESULT_READY.ordinal();
 					message.sendToTarget();
 					cancel();
 				}

@@ -11,12 +11,14 @@ import android.os.Message;
 import com.group11.base.ErrorCode;
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
+import com.group11.base.TestResult;
 import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
 import com.group11.ui.StatusArea;
+import com.group11.util.HistoryManager;
 
 /**
  * the logical controller in Testing Mode, it judges what to do
@@ -163,7 +165,7 @@ public class TestingModeLogic extends ModeLogic {
 
 		progressBarArea.setVisible(true);
 		progressBarArea.cancelProgress();
-		progressBarArea.startProgress(handler);
+		progressBarArea.startProgress(handler, preferences);
 	}
 	
 	public void onBloodInsufficient() {
@@ -175,9 +177,23 @@ public class TestingModeLogic extends ModeLogic {
 		message.sendToTarget();
 	}
 	
-	public void onResultReady() {
-		//TODO
+	public void onResultReady(TestResult result) {
+		progressBarArea.setVisible(false);
 		
+		resultArea.setVisible(true);
+		resultArea.displayResult(result.getValue(), new CurrentStatus(
+				preferences).getCurrentUnit());
+		
+		new HistoryManager(context).addTestResult(result);
+	}
+	
+	public void onResultTimeout() {
+		progressBarArea.setVisible(false);
+		
+		Message message = Message.obtain(handler,
+				Interrupt.ERROR_ENDING.ordinal());
+		message.arg1 = ErrorCode.TEST_TIMEOUT.getErrorCode();
+		message.sendToTarget();
 	}
 	
 	public void startTestingMode(){
