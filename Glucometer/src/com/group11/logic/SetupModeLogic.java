@@ -26,11 +26,12 @@ public class SetupModeLogic extends ModeLogic {
 	@Override
 	public void validateMode() {
 		//=====do nothing=====
-		
-		this.initDisplay();
 	}
 	
-	private void initDisplay() {
+	/**
+	 * the initial view of the Setup Mode
+	 */
+	public void initDisplay() {
 		statusArea.setVisible(true);
 		statusArea.setErroring(false);
 		statusArea.cancelBlinking();

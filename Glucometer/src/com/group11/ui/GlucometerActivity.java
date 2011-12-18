@@ -516,6 +516,7 @@ public class GlucometerActivity extends Activity {
 		currentModeLogic = modeLogic;
 		
 		this.enterXXMode(modeLogic);
+		modeLogic.initDisplay();
 	}
 	
 	/**
