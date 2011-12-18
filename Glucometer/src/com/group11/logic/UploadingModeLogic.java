@@ -63,7 +63,7 @@ public class UploadingModeLogic extends ModeLogic {
 		if (historyManager.getTestResults().size() == 0||currentStatus.isPCReady()||currentStatus.isSoftwareReady()){
 			showBlinkingView();
 			//timer.schedule(timerTask, 10000);
-			scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
+			//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
 		}
 	}
 
