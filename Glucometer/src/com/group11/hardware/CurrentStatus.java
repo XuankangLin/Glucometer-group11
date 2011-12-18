@@ -109,7 +109,7 @@ public class CurrentStatus {
 	 */
 	public synchronized void setCurrentTime(long time) {
 		this.editor.putLong(CURRENT_TIME, time);
-		preferences.edit().putLong(TIME_INTERVAL, new Date().getTime() - time).commit();
+		preferences.edit().putLong(TIME_INTERVAL, new GregorianCalendar().getTimeInMillis() - time).commit();
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class CurrentStatus {
 	 */
 	public synchronized void syncCurrentTime() {
 		long interval = preferences.getLong(TIME_INTERVAL, 0);
-		preferences.edit().putLong(CURRENT_TIME, new Date().getTime() - interval).commit();
+		preferences.edit().putLong(CURRENT_TIME, new GregorianCalendar().getTimeInMillis() - interval).commit();
 	}
 
 	/**

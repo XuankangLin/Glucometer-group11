@@ -105,7 +105,7 @@ public class GlucometerActivity extends Activity {
 		acPlugImage = (ImageView) findViewById(R.id.acPlugImage);
 
 		// ==========screen's top panel==========
-		statusArea = new StatusArea(this,
+		statusArea = new StatusArea(
 				(LinearLayout) findViewById(R.id.topPanel),
 				(ImageView) findViewById(R.id.batteryImage),
 				(ImageView) findViewById(R.id.acImage),
@@ -129,7 +129,7 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.progressBarImage));
 
 		// ==========screen's date panel==========
-		dateArea = new DateArea(this,
+		dateArea = new DateArea(
 				(LinearLayout) findViewById(R.id.datePanel),
 				(TextView) findViewById(R.id.monthText1),
 				(TextView) findViewById(R.id.monthText2),
@@ -446,8 +446,6 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doButtonClicked(Message msg) {
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
-
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
 			if (currentModeLogic != null) {
