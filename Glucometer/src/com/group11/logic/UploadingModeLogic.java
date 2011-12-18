@@ -61,7 +61,7 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 	
 	
-	public void PowerOn(){
+	public void StartUploading(){
 		initialize();
 		checkMeterStatus();
 		validateMode();
@@ -78,11 +78,10 @@ public class UploadingModeLogic extends ModeLogic {
 	public void PowerOff(){
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
 		 Beeper.get().doErrorBeep(context);
-		 statusArea.cancelBlinking();
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
-		 currentStatus.setCurrentMode(null);
 		 currentStatus.setUSBConnected(false);
+		 currentStatus.setCurrentMode(null);
 		 currentStatus.setPowerOn(false);
 		 currentStatus.commit();
 	}
@@ -92,23 +91,6 @@ public class UploadingModeLogic extends ModeLogic {
 		statusArea.setModeBlinking(Mode.UPLOADING);
 	}
 	
-	public void onUsbConnected() {
-		PowerOn();
-		if (historyManager.getTestResults().size() == 0) {
-		} else {
-			Beeper.get().doRemindBeep(context);
-			// wait for shortclick
-			historyManager.deleteAllTestResults();
-		}
-		showBlinkingView();
-		new Timer().schedule(timerTask, 10000);
-	}
-	
-	public void onUsbDisConnected() {
-		timerTask.cancel();
-		PowerOff();
-	}
-
 	@Override
 	public void onStripInserted() {
 		//=====Undefined Action, ignored=====
@@ -122,13 +104,22 @@ public class UploadingModeLogic extends ModeLogic {
 	@Override
 	public void onUSBConnected() {
 		// TODO Auto-generated method stub
-		
+		StartUploading();
+		if (historyManager.getTestResults().size() == 0) {
+		} else {
+			Beeper.get().doRemindBeep(context);
+			// wait for shortclick
+			historyManager.deleteAllTestResults();
+		}
+		showBlinkingView();
+		new Timer().schedule(timerTask, 10000);
 	}
 
 	@Override
 	public void onUSBDisconnected() {
 		// TODO Auto-generated method stub
-		
+		timerTask.cancel();
+		PowerOff();
 	}
 
 

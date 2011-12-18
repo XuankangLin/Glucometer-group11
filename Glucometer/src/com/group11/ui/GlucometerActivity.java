@@ -374,13 +374,7 @@ public class GlucometerActivity extends Activity {
 		}
 		else {
 			//=====enter Uploading Mode=====
-			UploadingModeLogic uploadingModeLogic = new UploadingModeLogic(
-					statusArea, resultArea, progressBarArea, dateArea, this,
-					preferences, handler);
-			uploadingModeLogic.onUsbConnected();
-
-			currentModeLogic = uploadingModeLogic;
-			//doPowerOff();
+			this.enterUploadingMode();
 		}
 	}
 
@@ -506,6 +500,7 @@ public class GlucometerActivity extends Activity {
 				resultArea, progressBarArea, dateArea, this, preferences,
 				handler);
 		currentModeLogic = modeLogic;
+		modeLogic.onUSBConnected();
 		
 		this.enterXXMode(modeLogic);
 	}
