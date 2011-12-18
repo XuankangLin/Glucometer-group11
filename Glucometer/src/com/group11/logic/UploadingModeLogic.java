@@ -41,7 +41,7 @@ public class UploadingModeLogic extends ModeLogic {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			PowerOff();
+			stopUploading();
 			scheduler.shutdown();
 		}
 	};
@@ -50,7 +50,7 @@ public class UploadingModeLogic extends ModeLogic {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			PowerOff();
+			stopUploading();
 			timerTask.cancel();
 		}
 	};
@@ -89,7 +89,7 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 	
 	
-	public void StartUploading(){
+	public void startUploading(){
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.UPLOADING);
@@ -100,7 +100,7 @@ public class UploadingModeLogic extends ModeLogic {
 		dateArea.setVisible(true);
 	}
 	
-	public void PowerOff(){
+	public void stopUploading(){
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
 		 Beeper.get().doErrorBeep(context);
 		 statusArea.setVisible(false);
@@ -130,7 +130,7 @@ public class UploadingModeLogic extends ModeLogic {
 	@Override
 	public void onUSBConnected() {
 		// TODO Auto-generated method stub
-		StartUploading();
+		startUploading();
 		if (historyManager.getTestResults().size() == 0) {
 			showBlinkingView();
 		} 
@@ -145,7 +145,7 @@ public class UploadingModeLogic extends ModeLogic {
 		// TODO Auto-generated method stub
 		//timerTask.cancel();
 		//scheduler.shutdownNow();
-		PowerOff();
+		stopUploading();
 	}
 	
 
