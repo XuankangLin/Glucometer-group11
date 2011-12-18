@@ -79,7 +79,7 @@ public class BrowsingModeLogic extends ModeLogic {
 			dateArea.setVisible(true);
 			dateArea.setColonBlinking(true);
 			
-			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+			Message message = Message.obtain(handler, Interrupt.ERROR_ENDING.ordinal());
 			message.arg1 = ErrorCode.NO_TEST_RESULTS.getErrorCode();
 			message.sendToTarget();
 		}

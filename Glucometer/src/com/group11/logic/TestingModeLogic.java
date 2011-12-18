@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 
+import com.group11.base.ErrorCode;
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
@@ -25,10 +26,31 @@ public class TestingModeLogic extends ModeLogic {
 		super(status, result, progressBar, date, context, preferences, handler);
 	}
 
+	/**
+	 * Mode validation process is to check whether a test strip is valid (never
+	 * been used before and unstained).
+	 */
 	@Override
 	public void validateMode() {
-		// TODO Auto-generated method stub
 		super.validateMode();
+		
+		CurrentStatus status = new CurrentStatus(preferences);
+		status.setCurrentMode(Mode.TESTING);
+		status.setRefreshingTime(true);
+		status.commit();
+
+		if (status.isStripValid()) {
+			//===== If valid, interrupt 6 shall be issue===== 
+			Message message = Message.obtain(handler,
+					Interrupt.STRIP_VALID.ordinal());
+			message.sendToTarget();
+		}
+		else {
+			// =====interrupt 5 shall be issued=====
+			Message message = Message.obtain(handler,
+					Interrupt.STRIP_INVALID.ordinal());
+			message.sendToTarget();
+		}
 	}
 
 	@Override
@@ -53,8 +75,10 @@ public class TestingModeLogic extends ModeLogic {
 
 	@Override
 	public void onStripPulledOut() {
-		// TODO Auto-generated method stub
-		
+		//=====the meter should go through the Voluntary Ending procedure=====
+		Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+		message.sendToTarget();
+		Beeper.get().doTurnOffBeep(context);
 	}
 
 	@Override
@@ -68,36 +92,46 @@ public class TestingModeLogic extends ModeLogic {
 	}
 
 	public void onStripValid() {
-		//TODO
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		startTestingMode();
-//		if(currentStatus.isStripValid()){
-//			if(currentStatus.isBloodSufficient()){
-//				onBloodSufficient();
-//			}
-//			else {
-//				onBloodInsufficient();
-//			}
-//			
-//		}
-//		else {
-//			onStripInvalid();
-//		}
+		//===== the meter enters the Testing Mode after a reminding-beep and
+		// displaying symbol T=====
+		Beeper.get().doRemindBeep(context);
+		
+		statusArea.setVisible(true);
+		statusArea.setCurrentMode(Mode.TESTING);
+		statusArea.setErroring(false);
+		statusArea.cancelBlinking();
+
+		resultArea.setVisible(false);
+		progressBarArea.setVisible(false);
+
+		dateArea.setVisible(true);
+		dateArea.setColonBlinking(true);
 	}
 	
 	public void onStripInvalid() {
-		//TODO
-		Beeper.get().doErrorBeep(context);
-		statusArea.setModeBlinking(Mode.TESTING);
+		// the meter should blink symbol T and go through Error Ending procedure
+		// with an error-beep.
 		statusArea.setVisible(true);
-		//10s
-		//ErrorEnding
+		statusArea.setCurrentMode(Mode.TESTING);
+		statusArea.setErroring(false);
+		statusArea.cancelBlinking();
+		statusArea.setModeBlinking(Mode.TESTING);
+
+		resultArea.setVisible(false);
+		progressBarArea.setVisible(false);
+
+		dateArea.setVisible(true);
+		dateArea.setColonBlinking(true);
+
+		Message message = Message.obtain(handler, Interrupt.ERROR_ENDING.ordinal());
+		message.arg1 = ErrorCode.INVALID_STRIP.getErrorCode();
+		message.sendToTarget();
 	}
 	
 	public void onBloodSufficient() {
 		//TODO
 		
-		stopTestingMode();
+//		stopTestingMode();
 	}
 	
 	public void onBloodInsufficient() {
