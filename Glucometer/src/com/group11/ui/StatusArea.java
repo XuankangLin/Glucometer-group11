@@ -7,17 +7,11 @@ import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.Mode;
 
-import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class StatusArea extends UIArea {
-	
-	/**
-	 * for doing periodically operations on UI thread
-	 */
-	private final Activity activity;
 
 	private final ImageView batteryImage;
 	private final ImageView acImage;
@@ -31,11 +25,9 @@ public class StatusArea extends UIArea {
 	private ImageView modeBlinkingImage = null;
 	private TimerTask modeBlinkingTask = null;
 
-	public StatusArea(Activity activity, LinearLayout panel, ImageView battery, ImageView ac,
+	public StatusArea(LinearLayout panel, ImageView battery, ImageView ac,
 			ImageView tMode, ImageView bMode, ImageView uMode, ImageView eMode) {
 		super(panel);
-		
-		this.activity = activity;
 		
 		this.batteryImage = battery;
 		this.acImage = ac;
@@ -143,7 +135,7 @@ public class StatusArea extends UIArea {
 			
 			@Override
 			public void run() {
-				activity.runOnUiThread(new Runnable() {
+				batteryImage.post(new Runnable() {
 					
 					@Override
 					public void run() {
@@ -182,7 +174,7 @@ public class StatusArea extends UIArea {
 			
 			@Override
 			public void run() {
-				activity.runOnUiThread(new Runnable() {
+				modeBlinkingImage.post(new Runnable() {
 					
 					@Override
 					public void run() {

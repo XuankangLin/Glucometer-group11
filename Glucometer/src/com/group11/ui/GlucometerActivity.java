@@ -105,7 +105,7 @@ public class GlucometerActivity extends Activity {
 		acPlugImage = (ImageView) findViewById(R.id.acPlugImage);
 
 		// ==========screen's top panel==========
-		statusArea = new StatusArea(this,
+		statusArea = new StatusArea(
 				(LinearLayout) findViewById(R.id.topPanel),
 				(ImageView) findViewById(R.id.batteryImage),
 				(ImageView) findViewById(R.id.acImage),
@@ -446,8 +446,6 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doButtonClicked(Message msg) {
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
-
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
 			if (currentModeLogic != null) {
