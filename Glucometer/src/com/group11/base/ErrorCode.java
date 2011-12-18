@@ -7,6 +7,7 @@ public enum ErrorCode {
 	METER_STATUS_ERROR(002),
 
 	//=====Testing Mode=====
+	INVALID_STRIP(101),
 	
 	//=====Browsing Mode=====
 	NO_TEST_RESULTS(201);

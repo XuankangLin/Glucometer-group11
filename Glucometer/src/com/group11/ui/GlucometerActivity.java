@@ -596,11 +596,6 @@ public class GlucometerActivity extends Activity {
 		currentModeLogic = modeLogic;
 
 		if (this.enterXXMode(modeLogic)) {
-			CurrentStatus status = new CurrentStatus(preferences);
-			Message message = Message.obtain(handler);
-			message.what = status.isStripValid() ? Interrupt.STRIP_VALID
-					.ordinal() : Interrupt.STRIP_INVALID.ordinal();
-			message.sendToTarget();
 		}
 		//TODO else, error occurs, it may still feed the blood?
 	}
@@ -610,7 +605,7 @@ public class GlucometerActivity extends Activity {
 				resultArea, progressBarArea, dateArea, this,
 				preferences, handler);
 		currentModeLogic = modeLogic;
-		
+
 		this.enterXXMode(modeLogic);
 	}
 	
@@ -640,9 +635,13 @@ public class GlucometerActivity extends Activity {
 	 * @return whether successful
 	 */
 	private boolean enterXXMode(ModeLogic modeLogic) {
+		CurrentStatus status = new CurrentStatus(preferences);
+		status.setPowerOn(true);
+		status.commit();
+
 		if (!modeLogic.initialize()) {
 			//=====Initialization Error=====
-			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+			Message message = Message.obtain(handler, Interrupt.ERROR_ENDING.ordinal());
 			message.arg1 = ErrorCode.INITIALIZATION_ERROR.getErrorCode();
 			message.sendToTarget();
 			return false;
@@ -650,7 +649,7 @@ public class GlucometerActivity extends Activity {
 		
 		if (!modeLogic.checkMeterStatus()) {
 			//=====Meter Status Checking Error=====
-			Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+			Message message = Message.obtain(handler, Interrupt.ERROR_ENDING.ordinal());
 			message.arg1 = ErrorCode.METER_STATUS_ERROR.getErrorCode();
 			message.sendToTarget();
 			return false;
@@ -851,12 +850,10 @@ public class GlucometerActivity extends Activity {
 		@Override
 		public boolean handleMessage(Message msg) {
 			if (STRIP_INSERTED.ordinal() == msg.what) {
-				Log.i("TESTING", "inserted");
 				doStripInserted();
 				return true;
 			}
 			if (STRIP_PULLED_OUT.ordinal() == msg.what) {
-				Log.i("TESTING", "pulled out");
 				doStripPulledOut();
 				return true;
 			}
@@ -871,7 +868,6 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (STRIP_VALID.ordinal() == msg.what) {
-				Log.i("TESTING", "valid strip");
 				((TestingModeLogic) currentModeLogic).onStripValid();
 				return true;
 			}
@@ -929,7 +925,7 @@ public class GlucometerActivity extends Activity {
 				return true;
 			}
 
-			if (ERROR.ordinal() == msg.what) {
+			if (ERROR_ENDING.ordinal() == msg.what) {
 				doErrorEnding(msg);
 				return true;
 			}
