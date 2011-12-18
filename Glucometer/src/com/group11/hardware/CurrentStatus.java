@@ -45,6 +45,7 @@ public class CurrentStatus {
 	private static final String POWER_ON = "powerOn";
 	private static final String REFRESH_TIME = "refreshTime";
 	private static final String ERROR_NOW = "errorNow";
+	private static final String BLOOD_FED = "bloodFed";
 
 	//=====should be set by Logic Controller itself=====
 	private static final String CURRENT_MODE = "currentMode";
@@ -63,6 +64,7 @@ public class CurrentStatus {
 	//=====set by Setting Dialog=====
 	private static final String BATTERY_LEVEL = "batteryLevel";
 	private static final String PC_READY = "pcReady";
+	private static final String SOFTWARE_READY = "softwareReady";
 	private static final String INITIALIZATION_ERROR = "initializationError";
 	private static final String STRIP_VALID = "stripValid";
 	private static final String BLOOD_SUFFICIENT = "bloodSufficient";
@@ -262,5 +264,21 @@ public class CurrentStatus {
 	
 	public synchronized void setBloodSufficient(boolean sufficient) {
 		this.editor.putBoolean(BLOOD_SUFFICIENT, sufficient);
+	}
+	
+	public boolean isBloodFed() {
+		return preferences.getBoolean(BLOOD_FED, false);
+	}
+	
+	public synchronized void setBloodFed(boolean fed) {
+		this.editor.putBoolean(BLOOD_FED, fed);
+	}
+	
+	public boolean isSoftwareReady() {
+		return preferences.getBoolean(SOFTWARE_READY, true);
+	}
+	
+	public void setSoftwareReady(boolean ready) {
+		this.editor.putBoolean(SOFTWARE_READY, ready);
 	}
 }

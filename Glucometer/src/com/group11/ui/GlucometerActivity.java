@@ -169,6 +169,7 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setRefreshingTime(true);
 		currentStatus.setACPlugged(false);
 		currentStatus.setUSBConnected(false);
+		currentStatus.setBloodFed(false);
 		// TODO add other status here!
 
 		currentStatus.commit();
@@ -261,14 +262,15 @@ public class GlucometerActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				addTestingRecords();
-				Random random = new Random();
-				if (random.nextBoolean()) {
-					testStripImage
-							.setImageResource(R.drawable.test_strip_invalid);
-				} else {
-					testStripImage
-							.setImageResource(R.drawable.test_strip_valid);
+				CurrentStatus status = new CurrentStatus(preferences);
+				if (status.isBloodFed()) {
+					Message message = Message.obtain(handler);
+					message.what = status.isBloodSufficient() ? Interrupt.BLOOD_SUFFICIENT
+							.ordinal() : Interrupt.BLOOD_INSUFFICIENT.ordinal();
+					message.sendToTarget();
+				}
+				else {
+					//TODO
 				}
 			}
 		});
@@ -324,9 +326,16 @@ public class GlucometerActivity extends Activity {
 	
 	private void updateGlobalImages() {
 		CurrentStatus status = new CurrentStatus(preferences);
-		testStripImage
-				.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip
-						: R.drawable.invalid_test_strip);
+		if (status.isBloodFed()) {
+			testStripImage
+					.setImageResource(status.isBloodSufficient() ? R.drawable.test_strip_with_sufficient
+							: R.drawable.test_strip_with_insufficient);
+		}
+		else {
+			testStripImage
+			.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip
+					: R.drawable.invalid_test_strip);			
+		}
 	}
 	
 	/**
@@ -663,6 +672,28 @@ public class GlucometerActivity extends Activity {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					status.setBloodSufficient(isChecked);
+				}
+			});
+		} {
+			CheckBox pcReadyBox = (CheckBox) view
+					.findViewById(R.id.pcReadyCheckbox);
+			pcReadyBox.setChecked(status.isPCReady());
+			pcReadyBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					status.setPCReady(isChecked);
+				}
+			});
+		} {
+			CheckBox softwareReadyBox = (CheckBox) view
+					.findViewById(R.id.softwareReadyCheckbox);
+			softwareReadyBox.setChecked(status.isSoftwareReady());
+			softwareReadyBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					status.setSoftwareReady(isChecked);
 				}
 			});
 		}

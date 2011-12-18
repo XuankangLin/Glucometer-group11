@@ -35,5 +35,19 @@
 		<CheckBox android:text="" android:id="@+id/bloodSufficientCheckbox"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@+id/linearLayout5">
+		<TextView android:text="PC connected: " android:id="@+id/textView4"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+		<CheckBox android:text="" android:id="@+id/pcReadyCheckbox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@+id/linearLayout6">
+		<TextView android:text="Software Running: " android:id="@+id/textView5"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+		<CheckBox android:text="" android:id="@+id/softwareReadyCheckbox"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+	</LinearLayout>
 
 </LinearLayout>
