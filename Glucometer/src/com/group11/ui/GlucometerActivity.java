@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import com.group11.R;
 import com.group11.base.BatteryLevel;
 import com.group11.base.ClickStyle;
+import com.group11.base.ErrorCode;
 import com.group11.base.Interrupt;
 import com.group11.base.TestResult;
 import com.group11.base.Unit;
@@ -479,16 +480,23 @@ public class GlucometerActivity extends Activity {
 				BrowsingModeLogic modeLogic = new BrowsingModeLogic(statusArea,
 						resultArea, progressBarArea, dateArea, this,
 						preferences, handler);
+				
 				if (!modeLogic.initialize()) {
-					//=====Initialization Error=====
-					//TODO
+					Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+					message.arg1 = ErrorCode.INITIALIZATION_ERROR.getErrorCode();
+					message.sendToTarget();
+					return;
 				}
+				
 				if (!modeLogic.checkMeterStatus()) {
 					//=====Meter Status Checking Error=====
-					//TODO
+					Message message = Message.obtain(handler, Interrupt.ERROR.ordinal());
+					message.arg1 = ErrorCode.METER_STATUS_ERROR.getErrorCode();
+					message.sendToTarget();
+					return;
 				}
+
 				modeLogic.validateMode();
-				
 				currentModeLogic = modeLogic;
 			}
 			return;

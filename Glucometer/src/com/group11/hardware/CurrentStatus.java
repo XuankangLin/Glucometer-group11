@@ -140,7 +140,9 @@ public class CurrentStatus {
 	 * @param mode
 	 */
 	public synchronized void setCurrentMode(Mode mode) {
-		this.editor.putInt(PREVIOUS_MODE, preferences.getInt(CURRENT_MODE, -1));
+		if (mode != null) {
+			this.editor.putInt(PREVIOUS_MODE, preferences.getInt(CURRENT_MODE, -1));			
+		}
 		this.editor.putInt(CURRENT_MODE, mode == null ? -1 : mode.ordinal());
 	}
 	

@@ -4,6 +4,7 @@ public enum ErrorCode {
 	//====global errors=====
 	UNDEFINED(000),
 	INITIALIZATION_ERROR(001),
+	METER_STATUS_ERROR(002),
 
 	//=====Testing Mode=====
 	

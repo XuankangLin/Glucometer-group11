@@ -50,6 +50,13 @@ public class StatusArea extends UIArea {
 	 * @param mode
 	 */
 	public void setCurrentMode(Mode mode) {
+		if (mode == null) {
+			this.testingModeImage.setVisibility(View.INVISIBLE);
+			this.browsingModeImage.setVisibility(View.INVISIBLE);
+			this.uploadingModeImage.setVisibility(View.INVISIBLE);
+			return;
+		}
+		
 		switch (mode) {
 		case TESTING: {
 			this.testingModeImage.setVisibility(View.VISIBLE);
