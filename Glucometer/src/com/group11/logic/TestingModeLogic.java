@@ -97,6 +97,7 @@ public class TestingModeLogic extends ModeLogic {
 	public void onBloodSufficient() {
 		//TODO
 		
+		stopTestingMode();
 	}
 	
 	public void onBloodInsufficient() {

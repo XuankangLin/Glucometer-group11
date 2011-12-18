@@ -130,8 +130,9 @@ public class UploadingModeLogic extends ModeLogic {
 	@Override
 	public void onUSBConnected() {
 		// TODO Auto-generated method stub
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		startUploading();
-		if (historyManager.getTestResults().size() == 0) {
+		if (historyManager.getTestResults().size() == 0 || currentStatus.isPCReady()) {
 			showBlinkingView();
 		} 
 		else {
