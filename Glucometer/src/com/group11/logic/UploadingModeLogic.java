@@ -96,9 +96,6 @@ public class UploadingModeLogic extends ModeLogic {
 	
 	
 	public void StartUploading(){
-		initialize();
-		checkMeterStatus();
-		validateMode();
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.UPLOADING);
