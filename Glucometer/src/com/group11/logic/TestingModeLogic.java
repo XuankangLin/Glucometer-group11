@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 
+import com.group11.base.Mode;
+import com.group11.hardware.Beeper;
+import com.group11.hardware.CurrentStatus;
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
@@ -64,10 +67,17 @@ public class TestingModeLogic extends ModeLogic {
 
 	public void onStripValid() {
 		//TODO
+		
 	}
 	
 	public void onStripInvalid() {
 		//TODO
+		startTestingMode();
+		Beeper.get().doErrorBeep(context);
+		statusArea.setModeBlinking(Mode.TESTING);
+		statusArea.setVisible(true);
+		//10s
+		//ErrorEnding
 	}
 	
 	public void onBloodSufficient() {
@@ -76,9 +86,18 @@ public class TestingModeLogic extends ModeLogic {
 	
 	public void onBloodInsufficient() {
 		//TODO
+		//displayerror
+		//ErrorEnding
 	}
 	
 	public void onResultReady() {
 		//TODO
+	}
+	
+	public void startTestingMode(){
+		CurrentStatus currentStatus = new CurrentStatus(preferences);
+		currentStatus.setPowerOn(true);
+		currentStatus.setCurrentMode(Mode.TESTING);
+		currentStatus.commit();
 	}
 }

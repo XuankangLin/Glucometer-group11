@@ -1,12 +1,23 @@
 package com.group11.logic;
 
+
+
+
+
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Message;
 
+
+
+import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
@@ -15,6 +26,7 @@ import com.group11.ui.ProgressBarArea;
 import com.group11.ui.ResultArea;
 import com.group11.ui.StatusArea;
 import com.group11.util.HistoryManager;
+
 
 /**
  * the logical controller in Uploading Mode, it judges what to do
@@ -26,14 +38,27 @@ public class UploadingModeLogic extends ModeLogic {
 			SharedPreferences preferences, Handler handler) {
 		super(status, result, progressBar, date, context, preferences, handler);
 	}
-
+	
+	private boolean BUTTONHASCLICKED = false;
 	private HistoryManager historyManager = new HistoryManager(context);
-	private TimerTask timerTask = new TimerTask() {
-
+	private  ScheduledExecutorService scheduler =
+		     Executors.newScheduledThreadPool(1);
+	private Runnable runnable = new Runnable() {
+		
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
 			PowerOff();
+			scheduler.shutdown();
+		}
+	};
+	private Timer timer = new Timer();
+	private TimerTask timerTask = new TimerTask() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			PowerOff();
+			timerTask.cancel();
 		}
 	};
 
@@ -42,16 +67,20 @@ public class UploadingModeLogic extends ModeLogic {
 		// TODO Auto-generated method stub
 		super.validateMode();
 	}
-	
-	private boolean hasClicked = false;
 
 	@Override
 	public void onShortClick() {
 		// TODO Auto-generated method stub
-		if (!hasClicked) {
-			//dodododododo
-			hasClicked = true;
+		if(!BUTTONHASCLICKED && historyManager.getTestResults().size()!=0)
+		{
+			Beeper.get().doRemindBeep(context);
+			historyManager.deleteAllTestResults();
+			Beeper.get().doDoubleBeep(context);
+			showBlinkingView();
+			//timer.schedule(timerTask, 10000);
+			//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
 		}
+		BUTTONHASCLICKED = true;
 	}
 
 	@Override
@@ -66,10 +95,7 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 	
 	
-	public void PowerOn(){
-		initialize();
-		checkMeterStatus();
-		validateMode();
+	public void StartUploading(){
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.UPLOADING);
@@ -83,13 +109,13 @@ public class UploadingModeLogic extends ModeLogic {
 	public void PowerOff(){
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
 		 Beeper.get().doErrorBeep(context);
-		 statusArea.cancelBlinking();
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
-		 currentStatus.setCurrentMode(null);
 		 currentStatus.setUSBConnected(false);
-		 currentStatus.setPowerOn(false);
+		 currentStatus.setCurrentMode(null);
 		 currentStatus.commit();
+		 Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+			message.sendToTarget();
 	}
 	
 	public void showBlinkingView(){
@@ -97,23 +123,6 @@ public class UploadingModeLogic extends ModeLogic {
 		statusArea.setModeBlinking(Mode.UPLOADING);
 	}
 	
-	public void onUsbConnected() {
-		PowerOn();
-		if (historyManager.getTestResults().size() == 0) {
-		} else {
-			Beeper.get().doRemindBeep(context);
-			// wait for shortclick
-			historyManager.deleteAllTestResults();
-		}
-		showBlinkingView();
-		new Timer().schedule(timerTask, 10000);
-	}
-	
-	public void onUsbDisConnected() {
-		timerTask.cancel();
-		PowerOff();
-	}
-
 	@Override
 	public void onStripInserted() {
 		//=====Undefined Action, ignored=====
@@ -127,14 +136,23 @@ public class UploadingModeLogic extends ModeLogic {
 	@Override
 	public void onUSBConnected() {
 		// TODO Auto-generated method stub
-		
-	}
+		StartUploading();
+		if (historyManager.getTestResults().size() == 0) {
+			showBlinkingView();
+		} 
+		else {
+			}
+		//timer.schedule(timerTask, 5000);
+		//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
+		}
 
 	@Override
 	public void onUSBDisconnected() {
 		// TODO Auto-generated method stub
-		
+		//timerTask.cancel();
+		//scheduler.shutdownNow();
+		PowerOff();
 	}
-
+	
 
 }
