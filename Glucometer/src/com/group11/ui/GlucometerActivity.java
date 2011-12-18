@@ -129,7 +129,7 @@ public class GlucometerActivity extends Activity {
 				(ImageView) findViewById(R.id.progressBarImage));
 
 		// ==========screen's date panel==========
-		dateArea = new DateArea(this,
+		dateArea = new DateArea(
 				(LinearLayout) findViewById(R.id.datePanel),
 				(TextView) findViewById(R.id.monthText1),
 				(TextView) findViewById(R.id.monthText2),

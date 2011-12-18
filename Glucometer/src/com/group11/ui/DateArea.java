@@ -7,18 +7,12 @@ import java.util.TimerTask;
 import com.group11.logic.SetupModeLogic.SetupPosition;
 import com.group11.util.TimeFormatter;
 
-import android.app.Activity;
 import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DateArea extends UIArea {
-
-	/**
-	 * for doing periodically operations on UI thread
-	 */
-	private final Activity activity;
 	
 	private final TextView monthText1;
 	private final TextView monthText2;
@@ -38,12 +32,10 @@ public class DateArea extends UIArea {
 	private TextView textBlinkingImage = null;
 	private TimerTask textBlinkingTask = null;
 	
-	public DateArea(Activity activity, LinearLayout panel, TextView month1, TextView month2,
+	public DateArea(LinearLayout panel, TextView month1, TextView month2,
 			TextView day1, TextView day2, TextView year1, TextView year2,
 			TextView hour1, TextView hour2, TextView colon, TextView minute1, TextView minute2) {
 		super(panel);
-
-		this.activity = activity;
 		
 		this.monthText1 = month1;
 		this.monthText2 = month2;
@@ -91,8 +83,8 @@ public class DateArea extends UIArea {
 
 			@Override
 			public void run() {
-				activity.runOnUiThread(new Runnable() {
-
+				colonText.post(new Runnable() {
+					
 					@Override
 					public void run() {
 						if (colonText.getVisibility() == View.VISIBLE) {
