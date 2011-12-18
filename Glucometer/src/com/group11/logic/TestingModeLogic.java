@@ -90,9 +90,8 @@ public class TestingModeLogic extends ModeLogic {
 		this.clearWaitForBloodTask();
 		this.clearDisplayResultTask();
 		
-		Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+		Message message = Message.obtain(handler, Interrupt.VOLUNTARY_ENDING.ordinal());
 		message.sendToTarget();
-		Beeper.get().doTurnOffBeep(context);
 	}
 
 	@Override
@@ -223,23 +222,5 @@ public class TestingModeLogic extends ModeLogic {
 			}
 		};
 	}
-	
-	public void startTestingMode(){
-		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		currentStatus.setPowerOn(true);
-		currentStatus.setCurrentMode(Mode.TESTING);
-//		currentStatus.setStripInserted(true); do not set here!
-		currentStatus.commit();
-	}
-	
-	public void stopTestingMode(){
-		 CurrentStatus currentStatus = new CurrentStatus(preferences);
-		 Beeper.get().doErrorBeep(context);
-//		 currentStatus.setStripInserted(false); do not set here!
-//		 currentStatus.setCurrentMode(null); do not set currentMode(null) here!!!
-		 currentStatus.commit();
-		Message message = Message
-				.obtain(handler, Interrupt.POWER_OFF.ordinal());
-		message.sendToTarget();
-	}
+
 }

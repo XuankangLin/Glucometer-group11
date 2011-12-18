@@ -492,8 +492,7 @@ public class GlucometerActivity extends Activity {
 			
 			@Override
 			public void run() {
-				Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
-				message.sendToTarget();
+				doEnding();
 			}
 		}, ERROR_ENDING_TIME);
 	}
@@ -863,7 +862,7 @@ public class GlucometerActivity extends Activity {
 		@Override
 		public boolean handleMessage(Message msg) {
 			if (STRIP_INSERTED.ordinal() == msg.what) {
-				doStripInserted();
+				doStripInserted();					
 				return true;
 			}
 			if (STRIP_PULLED_OUT.ordinal() == msg.what) {
@@ -881,35 +880,46 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (STRIP_VALID.ordinal() == msg.what) {
-				((TestingModeLogic) currentModeLogic).onStripValid();
+				if (currentModeLogic != null) {
+					((TestingModeLogic) currentModeLogic).onStripValid();
+				}
 				return true;
 			}
 			if (STRIP_INVALID.ordinal() == msg.what) {
-				((TestingModeLogic) currentModeLogic).onStripInvalid();
+				if (currentModeLogic != null) {
+					((TestingModeLogic) currentModeLogic).onStripInvalid();
+				}
 				return true;
 			}
 
 			if (BLOOD_SUFFICIENT.ordinal() == msg.what) {
-				Log.i("TESTING", "sufficient blood");
-				((TestingModeLogic) currentModeLogic).onBloodSufficient();
+				if (currentModeLogic != null) {
+					((TestingModeLogic) currentModeLogic).onBloodSufficient();
+				}
 				return true;
 			}
 			if (BLOOD_INSUFFICIENT.ordinal() == msg.what) {
-				((TestingModeLogic) currentModeLogic).onBloodInsufficient();
+				if (currentModeLogic != null) {
+					((TestingModeLogic) currentModeLogic).onBloodInsufficient();
+				}
 				return true;
 			}
 
 			if (RESULT_READY.ordinal() == msg.what) {
-				CurrentStatus status = new CurrentStatus(preferences);
-				Unit unit = status.getCurrentUnit();
-				((TestingModeLogic) currentModeLogic)
-						.onResultReady(new TestResult(RandomGenerator
-								.getRandomResult(unit), unit, status
-								.getCurrentTime()));
+				if (currentModeLogic != null) {
+					CurrentStatus status = new CurrentStatus(preferences);
+					Unit unit = status.getCurrentUnit();
+					((TestingModeLogic) currentModeLogic)
+							.onResultReady(new TestResult(RandomGenerator
+									.getRandomResult(unit), unit, status
+									.getCurrentTime()));
+				}
 				return true;
 			}
 			if (RESULT_TIMEOUT.ordinal() == msg.what) {
-				((TestingModeLogic) currentModeLogic).onResultTimeout();
+				if (currentModeLogic != null) {
+					((TestingModeLogic) currentModeLogic).onResultTimeout();					
+				}
 				return true;				
 			}
 
@@ -939,11 +949,6 @@ public class GlucometerActivity extends Activity {
 			}
 			if (BEEP_STOP.ordinal() == msg.what) {
 				setBeeperImage(false);
-				return true;
-			}
-
-			if (POWER_OFF.ordinal() == msg.what) {
-				doEnding();
 				return true;
 			}
 

@@ -378,7 +378,7 @@ public class SetupModeLogic extends ModeLogic {
 		status.commit();
 		
 		//=====voluntary ending=====
-		Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+		Message message = Message.obtain(handler, Interrupt.VOLUNTARY_ENDING.ordinal());
 		message.sendToTarget();
 	}
 

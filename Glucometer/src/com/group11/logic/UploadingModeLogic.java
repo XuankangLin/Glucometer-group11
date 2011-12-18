@@ -113,8 +113,8 @@ public class UploadingModeLogic extends ModeLogic {
 		 currentStatus.setUSBConnected(false);
 //		 currentStatus.setCurrentMode(null); do not set currentMode(null) here!!!!!
 		 currentStatus.commit();
-		 Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
-			message.sendToTarget();
+		 Message message = Message.obtain(handler, Interrupt.VOLUNTARY_ENDING.ordinal());
+		message.sendToTarget();
 	}
 	
 	public void showBlinkingView(){

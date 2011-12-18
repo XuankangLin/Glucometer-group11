@@ -114,7 +114,7 @@ public class BrowsingModeLogic extends ModeLogic {
 
 	@Override
 	public void onLongClick() {
-		Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+		Message message = Message.obtain(handler, Interrupt.VOLUNTARY_ENDING.ordinal());
 		message.sendToTarget();
 	}
 
