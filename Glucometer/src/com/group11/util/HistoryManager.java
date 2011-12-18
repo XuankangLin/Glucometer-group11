@@ -99,12 +99,14 @@ public class HistoryManager {
 			cv.put(FIELD_TIME, time);
 
 			long row = db.insert(TABLE_NAME, null, cv);
+			db.close();
 			return row;
 		}
 		
 		public Cursor selectAll() {
 			SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+			db.close();
 			return cursor;
 		}
 		
@@ -115,6 +117,7 @@ public class HistoryManager {
 			String[] whereValue = {Integer.toString(id)};
 			
 			db.delete(TABLE_NAME, where, whereValue);
+			db.close();
 		}
 		
 		@SuppressWarnings("unused")
@@ -129,6 +132,7 @@ public class HistoryManager {
 			cv.put(FIELD_TIME, time);
 
 			db.update(TABLE_NAME, cv, where, whereValue);
+			db.close();
 		}
 	}
 }
