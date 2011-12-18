@@ -13,8 +13,6 @@ import android.content.SharedPreferences.Editor;
 
 /**
  * stores the state of this glucometer
- * &&
- * manage the history records 
  */
 public class CurrentStatus {
 	

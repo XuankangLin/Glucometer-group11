@@ -424,6 +424,7 @@ public class GlucometerActivity extends Activity {
 	private void doPowerOff() {
 		setScreenInvisible();
 		currentModeLogic = null;
+		Beeper.get().doTurnOffBeep(this);
 		
 		CurrentStatus status = new CurrentStatus(preferences);
 		status.setPowerOn(false);
