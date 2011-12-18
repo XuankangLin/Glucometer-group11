@@ -143,6 +143,7 @@ public class GlucometerActivity extends Activity {
 				(TextView) findViewById(R.id.minuteText1),
 				(TextView) findViewById(R.id.minuteText2));
 
+		this.updateGlobalImages();
 		this.setOnClickListeners();
 
 		Beeper.get().attachHandler(this.handler);
@@ -321,6 +322,13 @@ public class GlucometerActivity extends Activity {
 		});
 	}
 	
+	private void updateGlobalImages() {
+		CurrentStatus status = new CurrentStatus(preferences);
+		testStripImage
+				.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip
+						: R.drawable.invalid_test_strip);
+	}
+	
 	/**
 	 * restore to the factory setting:
 	 * test unit: L, 
@@ -424,7 +432,6 @@ public class GlucometerActivity extends Activity {
 	private void doPowerOff() {
 		setScreenInvisible();
 		currentModeLogic = null;
-		Beeper.get().doTurnOffBeep(this);
 		
 		CurrentStatus status = new CurrentStatus(preferences);
 		status.setPowerOn(false);
@@ -668,6 +675,7 @@ public class GlucometerActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				status.commit();
+				updateGlobalImages();
 				dialog.dismiss();
 			}
 		});
