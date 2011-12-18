@@ -501,9 +501,9 @@ public class GlucometerActivity extends Activity {
 				resultArea, progressBarArea, dateArea, this, preferences,
 				handler);
 		currentModeLogic = modeLogic;
-		modeLogic.onUSBConnected();
 		
 		this.enterXXMode(modeLogic);
+		modeLogic.onUSBConnected();
 	}
 	
 	private void enterSetupMode() {

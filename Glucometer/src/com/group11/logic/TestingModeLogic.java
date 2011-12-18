@@ -64,6 +64,7 @@ public class TestingModeLogic extends ModeLogic {
 
 	public void onStripValid() {
 		//TODO
+		
 	}
 	
 	public void onStripInvalid() {
