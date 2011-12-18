@@ -29,7 +29,14 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 
 	private HistoryManager historyManager = new HistoryManager(context);
-	private TimerTask timerTask;
+	private TimerTask timerTask = new TimerTask() {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			PowerOff();
+		}
+	};
 
 	@Override
 	public void validateMode() {
@@ -71,7 +78,8 @@ public class UploadingModeLogic extends ModeLogic {
 	
 	public void PowerOff(){
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
-		 Beeper.get().doErrorBeep(context); 
+		 Beeper.get().doErrorBeep(context);
+		 statusArea.cancelBlinking();
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
 		 currentStatus.setCurrentMode(null);
@@ -86,39 +94,19 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 	
 	public void onUsbConnected() {
-		Log.i("NULLLLL", "onConnected");
-		
 		PowerOn();
 		if (historyManager.getTestResults().size() == 0) {
-			// showBlinkingView();
-			// new Timer().schedule(timerTask, 10000);
 		} else {
 			Beeper.get().doRemindBeep(context);
 			// wait for shortclick
 			historyManager.deleteAllTestResults();
 		}
 		showBlinkingView();
-		timerTask = new TimerTask() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				PowerOff();
-			}
-		};
 		new Timer().schedule(timerTask, 10000);
 	}
 	
 	public void onUsbDisConnected() {
-		Log.i("NULLLLL", "onDisConnected");
-
-		if (timerTask.cancel()) {
-			Log.e("CANCEL", "success");
-		}
-		else {
-			Log.e("CANCEL", "failed");			
-		}
-//		timer.cancel();
+		timerTask.cancel();
 		PowerOff();
 	}
 
