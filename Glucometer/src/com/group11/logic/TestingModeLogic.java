@@ -1,5 +1,8 @@
 package com.group11.logic;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -19,12 +22,16 @@ import com.group11.ui.StatusArea;
  * the logical controller in Testing Mode, it judges what to do
  */
 public class TestingModeLogic extends ModeLogic {
+	
+	private static final int WAIT_FOR_BLOOD_TIME = 10000;
 
 	public TestingModeLogic(StatusArea status, ResultArea result,
 			ProgressBarArea progressBar, DateArea date, Context context,
 			SharedPreferences preferences, Handler handler) {
 		super(status, result, progressBar, date, context, preferences, handler);
 	}
+	
+	private TimerTask waitForBloodTask = null;
 
 	/**
 	 * Mode validation process is to check whether a test strip is valid (never
@@ -90,6 +97,25 @@ public class TestingModeLogic extends ModeLogic {
 	public void onUSBDisconnected() {
 		//=====Undefined Action, ignored=====
 	}
+	
+	private void initWaitForBloodTask() {
+		waitForBloodTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				Message message = Message.obtain(handler,
+						Interrupt.VOLUNTARY_ENDING.ordinal());
+				message.sendToTarget();
+			}
+		};
+	}
+	
+	private void clearWaitForBloodTask() {
+		if (waitForBloodTask != null) {
+			waitForBloodTask.cancel();
+			waitForBloodTask = null;
+		}
+	}
 
 	public void onStripValid() {
 		//===== the meter enters the Testing Mode after a reminding-beep and
@@ -106,6 +132,10 @@ public class TestingModeLogic extends ModeLogic {
 
 		dateArea.setVisible(true);
 		dateArea.setColonBlinking(true);
+		
+		this.clearWaitForBloodTask();
+		this.initWaitForBloodTask();
+		new Timer().schedule(waitForBloodTask, WAIT_FOR_BLOOD_TIME);
 	}
 	
 	public void onStripInvalid() {
@@ -129,15 +159,20 @@ public class TestingModeLogic extends ModeLogic {
 	}
 	
 	public void onBloodSufficient() {
+		this.clearWaitForBloodTask();
+
 		//TODO
 		
 //		stopTestingMode();
 	}
 	
 	public void onBloodInsufficient() {
-		//TODO
-		//displayerror
-		//ErrorEnding
+		this.clearWaitForBloodTask();
+
+		Message message = Message.obtain(handler,
+				Interrupt.ERROR_ENDING.ordinal());
+		message.arg1 = ErrorCode.INSUFFICIENT_BLOOD.getErrorCode();
+		message.sendToTarget();
 	}
 	
 	public void onResultReady() {

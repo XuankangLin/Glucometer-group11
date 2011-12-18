@@ -29,6 +29,7 @@ public enum Interrupt {
 	BEEP_STOP("beeping stops"),
 //	POWER_ON("power on now"),
 	POWER_OFF("power off now"),
+	VOLUNTARY_ENDING("I want ending"),
 	ERROR_ENDING("an error occurs");
 	
 	private String info;

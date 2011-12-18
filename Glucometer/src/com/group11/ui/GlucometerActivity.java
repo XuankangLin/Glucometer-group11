@@ -173,6 +173,7 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setUSBConnected(false);
 		currentStatus.setStripInserted(false);
 		currentStatus.setBloodFed(false);
+		currentStatus.setLastModeComplete(true);
 		// TODO add other status here!
 
 		currentStatus.commit();
@@ -499,7 +500,7 @@ public class GlucometerActivity extends Activity {
 	/**
 	 * do some cleaning when voluntary ending
 	 */
-	private void doVoluntaryEnding() {
+	private void doEnding() {
 		setScreenInvisible();
 		currentModeLogic = null;
 		
@@ -921,12 +922,18 @@ public class GlucometerActivity extends Activity {
 			}
 
 			if (POWER_OFF.ordinal() == msg.what) {
-				doVoluntaryEnding();
+				doEnding();
 				return true;
 			}
 
 			if (ERROR_ENDING.ordinal() == msg.what) {
 				doErrorEnding(msg);
+				return true;
+			}
+			
+			if (VOLUNTARY_ENDING.ordinal() == msg.what) {
+				Beeper.get().doTurnOffBeep(GlucometerActivity.this);
+				doEnding();
 				return true;
 			}
 			
