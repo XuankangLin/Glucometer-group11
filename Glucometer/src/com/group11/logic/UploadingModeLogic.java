@@ -6,7 +6,9 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Message;
 
+import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
@@ -28,8 +30,8 @@ public class UploadingModeLogic extends ModeLogic {
 	}
 
 	private HistoryManager historyManager = new HistoryManager(context);
+	private Timer timer = new Timer();
 	private TimerTask timerTask = new TimerTask() {
-
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
@@ -82,8 +84,9 @@ public class UploadingModeLogic extends ModeLogic {
 		 dateArea.setVisible(false);
 		 currentStatus.setUSBConnected(false);
 		 currentStatus.setCurrentMode(null);
-		 currentStatus.setPowerOn(false);
 		 currentStatus.commit();
+		 Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+			message.sendToTarget();
 	}
 	
 	public void showBlinkingView(){
@@ -112,13 +115,13 @@ public class UploadingModeLogic extends ModeLogic {
 			historyManager.deleteAllTestResults();
 		}
 		showBlinkingView();
-		new Timer().schedule(timerTask, 10000);
+		//timer.schedule(timerTask, 5000);
 	}
 
 	@Override
 	public void onUSBDisconnected() {
 		// TODO Auto-generated method stub
-		timerTask.cancel();
+		//timer.cancel();
 		PowerOff();
 	}
 

@@ -166,6 +166,7 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setCurrentMode(null);
 		currentStatus.setRefreshingTime(true);
 		currentStatus.setACPlugged(false);
+		currentStatus.setUSBConnected(false);
 		// TODO add other status here!
 
 		currentStatus.commit();
