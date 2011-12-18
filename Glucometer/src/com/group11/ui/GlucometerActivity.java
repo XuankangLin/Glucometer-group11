@@ -82,7 +82,7 @@ public class GlucometerActivity extends Activity {
 	private SharedPreferences preferences;
 
 	private Handler handler = new Handler(new GlucometerHandlerCallback());
-	private ClickJudger judger = new ClickJudger(handler);;
+	private ClickJudger judger = new ClickJudger(handler);
 
 	private ModeLogic currentModeLogic = null;
 
