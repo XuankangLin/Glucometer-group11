@@ -60,4 +60,20 @@ public final class Converter {
 
 		return numbers;
 	}
+	
+	/**
+	 * @param code
+	 * @return XYZ: [0]-X, [1]-Y, [2]-Z
+	 */
+	public static int[] toErrorCodeNumbers(int code) {
+		int[] numbers = new int[3];
+		
+		numbers[2] = code % 10;
+		code /= 10;
+		numbers[1] = code % 10;
+		code /= 10;
+		numbers[0] = code % 10;
+
+		return numbers;
+	}
 }

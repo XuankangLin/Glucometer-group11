@@ -57,21 +57,15 @@ public class BrowsingModeLogic extends ModeLogic {
 
 			Beeper.get().doShortBeep(context);
 			
-			TestResult testResult = resultList.getLast();
-			Unit unit = currentStatus.getCurrentUnit();
-
 			statusArea.setVisible(true);
-			statusArea.setCurrentMode(Mode.BROWSING);
-
 			resultArea.setVisible(true);
-			resultArea.display(Converter.to(testResult.getValue(),
-					testResult.getUnit(), unit), unit);
-
 			progressBarArea.setVisible(false);
-
 			dateArea.setVisible(true);
+
+			statusArea.setCurrentMode(Mode.BROWSING);
 			dateArea.setColonBlinking(false);
-			dateArea.setDateTime(testResult.getTime());
+			
+			this.displayTestResult(resultList.getLast());
 		}
 		else {
 			//=====the meter shall blink symbol B and then go through Error Ending procedure=====
@@ -89,26 +83,24 @@ public class BrowsingModeLogic extends ModeLogic {
 		}
 	}
 	
+	private void displayTestResult(TestResult testResult) {
+		Unit unit = new CurrentStatus(preferences).getCurrentUnit();
+		
+		resultArea.displayResult(Converter.to(testResult.getValue(),
+				testResult.getUnit(), unit), unit);
+		dateArea.setDateTime(testResult.getTime());
+	}
+	
 	@Override
 	public void onShortClick() {
 		if (position > 0) {
-			// !!!for testing suppose DL for setup!!!
 			position--;
-
-			resultArea.display(Converter.to(
-					resultList.get(position).getValue(),
-					resultList.get(position).getUnit(), Unit.DL), Unit.DL);
-
-			dateArea.setDateTime(resultList.get(position).getTime());
+			this.displayTestResult(resultList.get(position));
 		} else {
 			position = resultList.size() - 1;
-
-			resultArea.display(Converter.to(
-					resultList.get(position).getValue(),
-					resultList.get(position).getUnit(), Unit.DL), Unit.DL);
-
-			dateArea.setDateTime(resultList.get(position).getTime());
+			this.displayTestResult(resultList.get(position));
 		}
+
 		statusArea.setVisible(true);
 		resultArea.setVisible(true);
 		progressBarArea.setVisible(false);
@@ -127,23 +119,13 @@ public class BrowsingModeLogic extends ModeLogic {
 	@Override
 	public void onDoubleClick() {
 		if (position < resultList.size() - 1) {
-			// !!!for testing suppose DL for setup!!!
 			position++;
-
-			resultArea.display(Converter.to(
-					resultList.get(position).getValue(),
-					resultList.get(position).getUnit(), Unit.DL), Unit.DL);
-
-			dateArea.setDateTime(resultList.get(position).getTime());
+			this.displayTestResult(resultList.get(position));
 		} else {
 			position = 0;
-
-			resultArea.display(Converter.to(
-					resultList.get(position).getValue(),
-					resultList.get(position).getUnit(), Unit.DL), Unit.DL);
-
-			dateArea.setDateTime(resultList.get(position).getTime());
+			this.displayTestResult(resultList.get(position));
 		}
+
 		statusArea.setVisible(true);
 		resultArea.setVisible(true);
 		progressBarArea.setVisible(false);

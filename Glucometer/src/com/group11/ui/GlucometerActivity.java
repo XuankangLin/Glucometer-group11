@@ -396,6 +396,10 @@ public class GlucometerActivity extends Activity {
 	
 	private void doErrorEnding(Message msg) {
 		int errorCode = msg.arg1;
+		statusArea.setVisible(true);
+		statusArea.setErroring(true);
+		resultArea.setVisible(true);
+		resultArea.displayError(errorCode);
 		//TODO
 	}
 

@@ -8,7 +8,6 @@ import com.group11.base.BatteryLevel;
 import com.group11.base.Mode;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -184,7 +183,7 @@ public class StatusArea extends UIArea {
 			break;
 
 		default:
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("mode should be among BROWSING, TESTING, UPLOADING");
 		}
 		
 		modeBlinkingTask = new TimerTask() {
@@ -205,11 +204,11 @@ public class StatusArea extends UIArea {
 				});
 			}
 		};
-		if (modeBlinkingTask == null) {
-			Log.e("TIMER", "timertask new is null !!!!!");
-		}
 	}
 	
+	/**
+	 * cancel the current blinking no matter which mode's image it is.
+	 */
 	public void cancelBlinking() {
 		if (this.modeBlinkingImage != null) {
 			this.modeBlinkingImage.setVisibility(View.VISIBLE);
@@ -221,14 +220,15 @@ public class StatusArea extends UIArea {
 		}
 	}
 	
+	/**
+	 * set one mode's image to blink
+	 * call cancelBlinking() before this method
+	 * @param mode
+	 */
 	public void setModeBlinking(Mode mode) {
 		this.cancelBlinking();
 		this.initModeBlinkingTask(mode);
-		Timer timer = new Timer();
-		if (timer == null) {
-			Log.e("TIMER", "is null here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		}
-		timer.scheduleAtFixedRate(modeBlinkingTask, 0, 1000);
+		new Timer().scheduleAtFixedRate(modeBlinkingTask, 0, 1000);
 	}
 	
 }

@@ -34,13 +34,29 @@ public class ResultArea extends UIArea {
 	/**
 	 * display a certain @param value in certain @param unit 
 	 */
-	public void display(double value, Unit unit) {
+	public void displayResult(double value, Unit unit) {
 		if (unit == Unit.L) {
 			this.displayL(value);
 		}
 		else if (unit == Unit.DL) {
 			this.displayDL(value);
 		}
+	}
+	
+	/**
+	 * display an error code
+	 */
+	public void displayError(int errorCode) {
+		this.pointImage.setVisibility(View.INVISIBLE);
+		this.unitImage.setVisibility(View.INVISIBLE);
+		this.firstImage.setVisibility(View.VISIBLE);
+		this.secondImage.setVisibility(View.VISIBLE);
+		this.thirdImage.setVisibility(View.VISIBLE);
+		
+		int[] numbers = Converter.toErrorCodeNumbers(errorCode);
+		this.firstImage.setImageResource(getImageIDByValue(numbers[0]));
+		this.secondImage.setImageResource(getImageIDByValue(numbers[1]));
+		this.thirdImage.setImageResource(getImageIDByValue(numbers[2]));
 	}
 	
 	private void displayL(double value) {
