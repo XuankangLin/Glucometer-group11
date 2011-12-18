@@ -43,18 +43,27 @@ public class CurrentStatus {
 	private final SharedPreferences preferences;
 	private final Editor editor;
 
-
+	//=====should be reset every time it power on=====
 	private static final String POWER_ON = "powerOn";
-	private static final String CURRENT_TIME = "currentTime";
-	private static final String TIME_INTERVAL = "timeInterval";
+	private static final String REFRESH_TIME = "refreshTime";
+	private static final String ERROR_NOW = "errorNow";
+
+	//=====should be set by Logic Controller itself=====
 	private static final String CURRENT_MODE = "currentMode";
 	private static final String PREVIOUS_MODE = "previousMode";
-	private static final String CURRENT_UNIT = "currentUnit";
-	private static final String BATTERY_LEVEL = "batteryLevel";
-	private static final String REFRESH_TIME = "refreshTime";
+
+	//=====should be reset every time this program starts=====
 	private static final String AC_PLUGGED = "acPlugged";
 	private static final String USB_CONNECTED = "usbConnected";
 	private static final String STRIP_INSERTED = "stripInserted";
+
+	//=====should be set in Setup Mode=====
+	private static final String TIME_INTERVAL = "timeInterval";
+	private static final String CURRENT_TIME = "currentTime";
+	private static final String CURRENT_UNIT = "currentUnit";
+	
+	//=====set by Setting Dialog=====
+	private static final String BATTERY_LEVEL = "batteryLevel";
 	private static final String INITIALIZATION_ERROR = "initializationError";
 
 	/**
@@ -217,5 +226,13 @@ public class CurrentStatus {
 	
 	public synchronized void setStripInserted(boolean inserted) {
 		this.editor.putBoolean(STRIP_INSERTED, inserted);
+	}
+	
+	public boolean isErrorNow() {
+		return preferences.getBoolean(ERROR_NOW, false);
+	}
+	
+	public synchronized void setErrorNow(boolean error) {
+		this.editor.putBoolean(ERROR_NOW, error);
 	}
 }

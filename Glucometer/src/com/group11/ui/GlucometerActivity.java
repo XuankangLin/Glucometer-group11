@@ -60,6 +60,10 @@ public class GlucometerActivity extends Activity {
 	 * update the current time every ** milliseconds
 	 */
 	private static final int TIME_UPDATE_PERIOD = 1000;
+	/**
+	 * wait ** milliseconds to turn off
+	 */
+	private static final int ERROR_ENDING_TIME = 10000;
 
 	private ImageView glucometerImage;
 	private ImageView realButtonImage;
@@ -390,6 +394,11 @@ public class GlucometerActivity extends Activity {
 		// TODO fulfill this method
 	}
 	
+	/**
+	 * activate an error-beep, 
+	 * display error code and error symbol for 10 seconds, 
+	 * and then go through the Voluntary Ending procedure.
+	 */
 	private void doErrorEnding(Message msg) {
 		Beeper.get().doErrorBeep(this);
 		
@@ -398,7 +407,19 @@ public class GlucometerActivity extends Activity {
 		statusArea.setErroring(true);
 		resultArea.setVisible(true);
 		resultArea.displayError(errorCode);
-		//TODO
+		
+		CurrentStatus status = new CurrentStatus(preferences);
+		status.setErrorNow(true);
+		status.commit();
+		
+		new Timer().schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				Message message = Message.obtain(handler, Interrupt.POWER_OFF.ordinal());
+				message.sendToTarget();
+			}
+		}, ERROR_ENDING_TIME);
 	}
 
 	/**
@@ -412,6 +433,8 @@ public class GlucometerActivity extends Activity {
 		CurrentStatus status = new CurrentStatus(preferences);
 		status.setPowerOn(false);
 		status.setRefreshingTime(true);
+		status.setErrorNow(false);
+		
 		status.commit();
 	}
 	
