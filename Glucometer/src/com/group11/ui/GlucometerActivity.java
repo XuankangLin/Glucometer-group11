@@ -143,7 +143,7 @@ public class GlucometerActivity extends Activity {
 				(TextView) findViewById(R.id.minuteText1),
 				(TextView) findViewById(R.id.minuteText2));
 
-		this.updateGlobalImages();
+		this.updateTestStripImage();
 		this.setOnClickListeners();
 
 		Beeper.get().attachHandler(this.handler);
@@ -263,15 +263,41 @@ public class GlucometerActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				CurrentStatus status = new CurrentStatus(preferences);
-				if (status.isBloodFed()) {
-					Message message = Message.obtain(handler);
-					message.what = status.isBloodSufficient() ? Interrupt.BLOOD_SUFFICIENT
-							.ordinal() : Interrupt.BLOOD_INSUFFICIENT.ordinal();
-					message.sendToTarget();
+				if (status.isStripInserted()) {
+					//=====strip inserted=====
+					if (status.isBloodFed()) {
+						//=====blood fed, should pull out=====
+						Message message = Message.obtain(handler,
+								Interrupt.STRIP_PULLED_OUT.ordinal());
+						message.sendToTarget();
+
+						status.setStripInserted(false);
+						status.setBloodFed(false);
+						status.commit();
+					}
+					else {
+						//=====blood not fed, should feed blood=====
+						Message message = Message.obtain(handler);
+						message.what = status.isBloodSufficient() ? Interrupt.BLOOD_SUFFICIENT
+								.ordinal() : Interrupt.BLOOD_INSUFFICIENT.ordinal();
+						message.sendToTarget();
+						
+						status.setBloodFed(true);
+						status.setStripInserted(true);
+						status.commit();
+					}					
 				}
 				else {
-					//TODO
+					//=====strip not inserted, should insert=====
+					Message message = Message.obtain(handler,
+							Interrupt.STRIP_INSERTED.ordinal());
+					message.sendToTarget();
+					
+					status.setStripInserted(true);
+					status.setBloodFed(false);
+					status.commit();
 				}
+				updateTestStripImage();
 			}
 		});
 
@@ -324,17 +350,18 @@ public class GlucometerActivity extends Activity {
 		});
 	}
 	
-	private void updateGlobalImages() {
+	private void updateTestStripImage() {
+		//TODO
 		CurrentStatus status = new CurrentStatus(preferences);
-		if (status.isBloodFed()) {
+		if (status.isStripInserted()) {
 			testStripImage
 					.setImageResource(status.isBloodSufficient() ? R.drawable.test_strip_with_sufficient
 							: R.drawable.test_strip_with_insufficient);
 		}
 		else {
 			testStripImage
-			.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip
-					: R.drawable.invalid_test_strip);			
+					.setImageResource(status.isStripValid() ? R.drawable.valid_test_strip
+							: R.drawable.invalid_test_strip);
 		}
 	}
 	
@@ -706,7 +733,7 @@ public class GlucometerActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				status.commit();
-				updateGlobalImages();
+				updateTestStripImage();
 				dialog.dismiss();
 			}
 		});
