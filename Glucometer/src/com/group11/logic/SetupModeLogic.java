@@ -10,12 +10,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.util.Pair;
 
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.base.Unit;
+import com.group11.hardware.Beeper;
 import com.group11.hardware.CurrentStatus;
 import com.group11.ui.DateArea;
 import com.group11.ui.ProgressBarArea;
@@ -95,10 +95,14 @@ public class SetupModeLogic extends ModeLogic {
 			
 			@Override
 			public void run() {
-				Log.i("TESTING", "auto ending in SETUP MODE");
-				Message message = Message.obtain(handler,
-						Interrupt.VOLUNTARY_ENDING.ordinal());
-				message.sendToTarget();
+				if (checkMonth() && checkDay() && checkHour() && checkMinute()) {
+					saveAndExit();
+				}
+				else {
+					Message message = Message.obtain(handler,
+							Interrupt.VOLUNTARY_ENDING.ordinal());
+					message.sendToTarget();					
+				}
 			}
 		};
 		new Timer().schedule(autoEndingTask, AUTO_ENDING_TIME);
@@ -119,6 +123,8 @@ public class SetupModeLogic extends ModeLogic {
 		this.initStatus();
 		this.initSetupData();
 		this.restartAutoEnding();
+		
+		Beeper.get().doRemindBeep(context);
 		
 		statusArea.setVisible(true);
 		statusArea.setErroring(false);
@@ -337,6 +343,9 @@ public class SetupModeLogic extends ModeLogic {
 		case MONTH2: {
 			currentPosition = this.checkMonth() ? SetupPosition.DAY1
 					: SetupPosition.MONTH1;
+			if (currentPosition == SetupPosition.MONTH1) {
+				Beeper.get().doErrorBeep(context);
+			}
 			dateArea.setTextBlinking(currentPosition);				
 			break;			
 		}
@@ -348,6 +357,9 @@ public class SetupModeLogic extends ModeLogic {
 		case DAY2: {
 			currentPosition = this.checkDay() ? SetupPosition.YEAR1
 					: SetupPosition.DAY1;
+			if (currentPosition == SetupPosition.DAY1) {
+				Beeper.get().doErrorBeep(context);
+			}
 			dateArea.setTextBlinking(currentPosition);				
 			break;			
 		}
@@ -359,6 +371,9 @@ public class SetupModeLogic extends ModeLogic {
 		case YEAR2: {
 			currentPosition = this.checkDay() ? SetupPosition.HOUR1
 					: SetupPosition.DAY1;
+			if (currentPosition == SetupPosition.DAY1) {
+				Beeper.get().doErrorBeep(context);
+			}
 			dateArea.setTextBlinking(currentPosition);
 			break;			
 		}
@@ -370,6 +385,9 @@ public class SetupModeLogic extends ModeLogic {
 		case HOUR2: {
 			currentPosition = this.checkHour() ? SetupPosition.MINUTE1
 					: SetupPosition.HOUR1;
+			if (currentPosition == SetupPosition.HOUR1) {
+				Beeper.get().doErrorBeep(context);
+			}
 			dateArea.setTextBlinking(currentPosition);
 			break;			
 		}
@@ -385,6 +403,7 @@ public class SetupModeLogic extends ModeLogic {
 				this.saveAndExit();
 			}
 			else {
+				Beeper.get().doErrorBeep(context);
 				currentPosition = SetupPosition.MINUTE1;
 				dateArea.setTextBlinking(currentPosition);
 			}
