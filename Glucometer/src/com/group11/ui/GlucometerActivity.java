@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -167,6 +166,7 @@ public class GlucometerActivity extends Activity {
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.syncCurrentTime();
 
+		currentStatus.setErrorNow(false);
 		currentStatus.setPowerOn(false);
 		currentStatus.setCurrentMode(null);
 		currentStatus.setRefreshingTime(true);
@@ -175,7 +175,6 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setStripInserted(false);
 		currentStatus.setBloodFed(false);
 		currentStatus.setLastModeComplete(true);
-		// TODO add other status here!
 
 		currentStatus.commit();
 	}
@@ -417,8 +416,7 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doStripInserted() {
-		boolean error =new CurrentStatus(preferences).isErrorNow(); 
-		if (error) {
+		if (new CurrentStatus(preferences).isErrorNow()) {
 			return;
 		}
 
@@ -432,6 +430,10 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doStripPulledOut() {
+		if (new CurrentStatus(preferences).isErrorNow()) {
+			return;
+		}
+
 		if (currentModeLogic != null) {
 			currentModeLogic.onStripPulledOut();
 		}
@@ -447,6 +449,10 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doUSBConnected() {
+		if (new CurrentStatus(preferences).isErrorNow()) {
+			return;
+		}
+
 		if (currentModeLogic != null) {
 			currentModeLogic.onUSBConnected();
 		}
@@ -457,6 +463,10 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doUSBDisconnected() {
+		if (new CurrentStatus(preferences).isErrorNow()) {
+			return;
+		}
+
 		if (currentModeLogic != null) {
 			currentModeLogic.onUSBDisconnected();
 		}
@@ -518,41 +528,40 @@ public class GlucometerActivity extends Activity {
 		status.setPowerOn(false);
 		status.setRefreshingTime(true);
 		status.setErrorNow(false);
-		//TODO assuming that do not setCurrentMode(null) in your ModeLogic
+		status.commit();
+		
 		if (status.getCurrentMode() == null) {
-			Log.i("PREVIOUS", "current mode is null???");
+			throw new IllegalStateException("status.getCurrentMode() should not be null when doEnding()");
 		}
-		else {
-			switch (status.getCurrentMode()) {
-			case BROWSING:
-			case SETUP:
+
+		switch (status.getCurrentMode()) {
+		case BROWSING:
+		case SETUP:
+			status.setLastModeComplete(true);
+			status.setCurrentMode(null);
+			break;
+		case TESTING:
+			if (!status.isStripInserted()) {
 				status.setLastModeComplete(true);
 				status.setCurrentMode(null);
-				break;
-			case TESTING:
-				if (!status.isStripInserted()) {
-					status.setLastModeComplete(true);
-					status.setCurrentMode(null);
-				}
-				else {
-					status.setLastModeComplete(false);
-				}
-				break;
-			case UPLOADING:
-				if (!status.isUSBConnected()) {
-					status.setLastModeComplete(true);
-					status.setCurrentMode(null);
-				}
-				else {
-					status.setLastModeComplete(false);
-				}
-				break;
+			}
+			else {
+				status.setLastModeComplete(false);
+			}
+			break;
+		case UPLOADING:
+			if (!status.isUSBConnected()) {
+				status.setLastModeComplete(true);
+				status.setCurrentMode(null);
+			}
+			else {
+				status.setLastModeComplete(false);
+			}
+			break;
 
-			default:
-				break;
-			}			
-		}
-		
+		default:
+			break;
+		}			
 		status.commit();
 	}
 	
@@ -569,6 +578,10 @@ public class GlucometerActivity extends Activity {
 	}
 
 	private void doButtonClicked(Message msg) {
+		if (new CurrentStatus(preferences).isErrorNow()) {
+			return;
+		}
+
 		switch (ClickStyle.get(msg.arg1)) {
 		case SHORT_CLICK: {
 			if (currentModeLogic != null) {
@@ -607,7 +620,6 @@ public class GlucometerActivity extends Activity {
 		currentModeLogic = modeLogic;
 
 		this.enterXXMode(modeLogic);
-		//TODO else, error occurs, it may still feed the blood?
 	}
 	
 	private void enterBrowsingMode() {
@@ -870,8 +882,7 @@ public class GlucometerActivity extends Activity {
 	 */
 	private class GlucometerHandlerCallback implements Callback {
 
-		@Override
-		public boolean handleMessage(Message msg) {
+		private boolean handleTestingMode(Message msg) {
 			if (STRIP_INSERTED.ordinal() == msg.what) {
 				doStripInserted();					
 				return true;
@@ -880,43 +891,46 @@ public class GlucometerActivity extends Activity {
 				doStripPulledOut();
 				return true;
 			}
-
-			if (USB_CONNECTED.ordinal() == msg.what) {
-				doUSBConnected();
-				return true;
-			}
-			if (USB_DISCONNECTED.ordinal() == msg.what) {
-				doUSBDisconnected();
-				return true;
-			}
-
 			if (STRIP_VALID.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				if (currentModeLogic != null) {
 					((TestingModeLogic) currentModeLogic).onStripValid();
 				}
 				return true;
 			}
 			if (STRIP_INVALID.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				if (currentModeLogic != null) {
 					((TestingModeLogic) currentModeLogic).onStripInvalid();
 				}
 				return true;
-			}
-
+			}	
 			if (BLOOD_SUFFICIENT.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				if (currentModeLogic != null) {
 					((TestingModeLogic) currentModeLogic).onBloodSufficient();
 				}
 				return true;
 			}
 			if (BLOOD_INSUFFICIENT.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				if (currentModeLogic != null) {
 					((TestingModeLogic) currentModeLogic).onBloodInsufficient();
 				}
 				return true;
 			}
-
 			if (RESULT_READY.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				if (currentModeLogic != null) {
 					CurrentStatus status = new CurrentStatus(preferences);
 					Unit unit = status.getCurrentUnit();
@@ -928,12 +942,34 @@ public class GlucometerActivity extends Activity {
 				return true;
 			}
 			if (RESULT_TIMEOUT.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				if (currentModeLogic != null) {
 					((TestingModeLogic) currentModeLogic).onResultTimeout();					
 				}
 				return true;				
 			}
 
+			//=====Message not handled=====
+			return false;
+		}
+		
+		private boolean handleUploadingMessage(Message msg) {
+			if (USB_CONNECTED.ordinal() == msg.what) {
+				doUSBConnected();
+				return true;
+			}
+			if (USB_DISCONNECTED.ordinal() == msg.what) {
+				doUSBDisconnected();
+				return true;
+			}
+			
+			//=====Message not handled=====
+			return false;
+		}
+		
+		private boolean handleGlobalMessage(Message msg) {
 			if (AC_ON.ordinal() == msg.what) {
 				statusArea.setACing(true);
 				return true;
@@ -942,18 +978,15 @@ public class GlucometerActivity extends Activity {
 				statusArea.setACing(false);
 				return true;
 			}
-
 			if (TIME_TICK.ordinal() == msg.what) {
 				CurrentStatus status = new CurrentStatus(preferences);
 				dateArea.setDateTime(status.getCurrentTime());
 				return true;
 			}
-
 			if (BUTTON_CLICKED.ordinal() == msg.what) {
 				doButtonClicked(msg);
 				return true;
 			}
-
 			if (BEEP_START.ordinal() == msg.what) {
 				setBeeperImage(true);
 				return true;
@@ -962,19 +995,30 @@ public class GlucometerActivity extends Activity {
 				setBeeperImage(false);
 				return true;
 			}
-
 			if (ERROR_ENDING.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				doErrorEnding(msg);
 				return true;
-			}
-			
+			}		
 			if (VOLUNTARY_ENDING.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
 				Beeper.get().doTurnOffBeep(GlucometerActivity.this);
 				doEnding();
 				return true;
 			}
 			
+			//=====Message not handled=====
 			return false;
+		}
+		
+		@Override
+		public boolean handleMessage(Message msg) {
+			return this.handleGlobalMessage(msg) || this.handleTestingMode(msg)
+					|| this.handleUploadingMessage(msg);
 		}
 	}
 
