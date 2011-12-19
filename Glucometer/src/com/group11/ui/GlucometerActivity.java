@@ -151,6 +151,7 @@ public class GlucometerActivity extends Activity {
 		this.resetStatus();
 		this.updateTestStripImage();
 		this.updateUSBImage();
+		this.updateACPlugImage();
 
 		this.resetBatteryUpdaterTask();
 		this.resetTimeUpdaterTask();
@@ -351,6 +352,7 @@ public class GlucometerActivity extends Activity {
 				}
 				status.commit();
 				message.sendToTarget();
+				updateACPlugImage();
 			}
 		});
 	}
@@ -379,13 +381,27 @@ public class GlucometerActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * set the USB's image according to USB_CONNECTED?
+	 */
 	private void updateUSBImage() {
-		CurrentStatus status = new CurrentStatus(preferences);
-		if (status.isUSBConnected()) {
+		if (new CurrentStatus(preferences).isUSBConnected()) {
 			usbImage.setImageResource(R.drawable.usb);
 		}
 		else {
 			usbImage.setImageResource(R.drawable.usb_not_inserted);
+		}
+	}
+	
+	/**
+	 * set the AC_PLUG's image according to AC_PLUGGED?
+	 */
+	private void updateACPlugImage() {
+		if (new CurrentStatus(preferences).isACPlugged()) {
+			acPlugImage.setImageResource(R.drawable.ac_plug_inserted);
+		}
+		else {
+			acPlugImage.setImageResource(R.drawable.ac_plug);
 		}
 	}
 	
