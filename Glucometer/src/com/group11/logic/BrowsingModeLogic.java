@@ -1,8 +1,6 @@
 package com.group11.logic;
 
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.content.SharedPreferences;
 import android.content.Context;
@@ -83,7 +81,7 @@ public class BrowsingModeLogic extends ModeLogic {
 			dateArea.setColonBlinking(true);
 			
 			Message message = Message.obtain(handler, Interrupt.ERROR_ENDING.ordinal());
-			message.arg1 = ErrorCode.NO_TEST_RESULTS.getErrorCode();
+			message.arg1 = ErrorCode.B_NO_TEST_RESULTS.getErrorCode();
 			message.sendToTarget();
 		}
 	}
