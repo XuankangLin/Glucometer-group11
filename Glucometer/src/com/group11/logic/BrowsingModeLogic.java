@@ -1,6 +1,8 @@
 package com.group11.logic;
 
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.SharedPreferences;
 import android.content.Context;
@@ -64,10 +66,11 @@ public class BrowsingModeLogic extends ModeLogic {
 
 			statusArea.setCurrentMode(Mode.BROWSING);
 			statusArea.cancelBlinking();
+			resultArea.setUnitBlinking(false);
 			dateArea.setColonBlinking(false);
 			
 			this.displayTestResult(resultList.getLast());
-			
+			this.restartAutoEnding();
 		}
 		else {
 			//=====the meter shall blink symbol B and then go through Error Ending procedure=====
@@ -95,6 +98,8 @@ public class BrowsingModeLogic extends ModeLogic {
 	
 	@Override
 	public void onShortClick() {
+		this.restartAutoEnding();
+		
 		if (position > 0) {
 			position--;
 			this.displayTestResult(resultList.get(position));
@@ -114,12 +119,16 @@ public class BrowsingModeLogic extends ModeLogic {
 
 	@Override
 	public void onLongClick() {
+		this.clearAutoEndingTask();
+		
 		Message message = Message.obtain(handler, Interrupt.VOLUNTARY_ENDING.ordinal());
 		message.sendToTarget();
 	}
 
 	@Override
 	public void onDoubleClick() {
+		this.restartAutoEnding();
+		
 		if (position < resultList.size() - 1) {
 			position++;
 			this.displayTestResult(resultList.get(position));

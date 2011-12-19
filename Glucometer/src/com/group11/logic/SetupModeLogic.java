@@ -3,7 +3,6 @@ package com.group11.logic;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Timer;
 import java.util.TimerTask;
 
 import android.content.Context;
@@ -27,8 +26,6 @@ import com.group11.util.TimeFormatter;
  * the logical controller in Setup Mode, it judges what to do
  */
 public class SetupModeLogic extends ModeLogic {
-	
-	private static final int AUTO_ENDING_TIME = 10000;
 	
 	public static enum SetupPosition {
 		UNIT,
@@ -81,16 +78,9 @@ public class SetupModeLogic extends ModeLogic {
 	private SetupPosition currentPosition = null;
 	private final SetupData data = new SetupData();
 
-	private TimerTask autoEndingTask = null;
 	
-	/**
-	 * restart (postpone to now) the auto-ending time counting
-	 */
-	private void restartAutoEnding() {
-		if (autoEndingTask != null) {
-			autoEndingTask.cancel();
-			autoEndingTask = null;
-		}
+	@Override
+	protected void initAutoEndingTask() {
 		autoEndingTask = new TimerTask() {
 			
 			@Override
@@ -105,7 +95,6 @@ public class SetupModeLogic extends ModeLogic {
 				}
 			}
 		};
-		new Timer().schedule(autoEndingTask, AUTO_ENDING_TIME);
 	}
 	
 	/**
@@ -400,6 +389,7 @@ public class SetupModeLogic extends ModeLogic {
 			if (this.checkMinute()) {
 				currentPosition = null;
 				dateArea.cancelTextBlinking();
+				this.clearAutoEndingTask();
 				this.saveAndExit();
 			}
 			else {
