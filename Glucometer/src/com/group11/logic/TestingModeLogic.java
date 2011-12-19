@@ -129,9 +129,9 @@ public class TestingModeLogic extends ModeLogic {
 		Beeper.get().doRemindBeep(context);
 		
 		statusArea.setVisible(true);
-		statusArea.setCurrentMode(Mode.TESTING);
 		statusArea.setErroring(false);
 		statusArea.cancelBlinking();
+		statusArea.setCurrentMode(Mode.TESTING);
 
 		resultArea.setVisible(false);
 		progressBarArea.setVisible(false);

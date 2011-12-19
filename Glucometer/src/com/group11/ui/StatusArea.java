@@ -192,6 +192,7 @@ public class StatusArea extends UIArea {
 	
 	/**
 	 * cancel the current blinking no matter which mode's image it is.
+	 * ATTENTION: the blinking image will be VISIBLE after cancelBlinking()
 	 */
 	public void cancelBlinking() {
 		if (this.modeBlinkingImage != null) {
