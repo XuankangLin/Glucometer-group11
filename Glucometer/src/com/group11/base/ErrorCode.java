@@ -12,9 +12,13 @@ public enum ErrorCode {
 	TEST_TIMEOUT(103),
 	
 	//=====Browsing Mode=====
-	NO_TEST_RESULTS(201);
+	B_NO_TEST_RESULTS(201),
 	
 	//=====Uploading Mode=====
+	U_NO_TEST_RESULTS(301),
+	PC_NOT_READY(302),
+	SOFTWARE_NOT_READY(303);
+	
 	
 	//=====Setup Mode=====
 
