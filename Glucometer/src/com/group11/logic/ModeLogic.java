@@ -146,4 +146,11 @@ public abstract class ModeLogic {
 	 * when usb-disconnected, what should be done?
 	 */
 	public abstract void onUSBDisconnected();
+	
+	/**
+	 * clear all the timer tasks when exiting
+	 */
+	public void clearTimerTasks() {
+		this.clearAutoEndingTask();
+	}
 }

@@ -223,4 +223,11 @@ public class TestingModeLogic extends ModeLogic {
 		};
 	}
 
+	@Override
+	public void clearTimerTasks() {
+		super.clearTimerTasks();
+		this.clearWaitForBloodTask();
+		this.clearDisplayResultTask();
+	}
+
 }

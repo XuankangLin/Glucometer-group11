@@ -509,6 +509,9 @@ public class GlucometerActivity extends Activity {
 	 */
 	private void doEnding() {
 		setScreenInvisible();
+		if (currentModeLogic != null) {
+			currentModeLogic.clearTimerTasks();
+		}
 		currentModeLogic = null;
 		
 		CurrentStatus status = new CurrentStatus(preferences);
