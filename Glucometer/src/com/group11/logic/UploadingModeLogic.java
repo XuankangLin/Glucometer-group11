@@ -1,17 +1,13 @@
 package com.group11.logic;
 
-import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
+import com.group11.base.ErrorCode;
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
 import com.group11.hardware.Beeper;
@@ -36,64 +32,90 @@ public class UploadingModeLogic extends ModeLogic {
 	
 	private boolean BUTTONHASCLICKED = false;
 	private HistoryManager historyManager = new HistoryManager(context);
-	private TimerTask autoEndingTask = null;
-	private static final int AUTO_ENDING_TIME = 10000;
-	/**
-	 * restart (postpone to now) the auto-ending time counting
-	 */
-	private void restartAutoEnding() {
-		if (autoEndingTask != null) {
-			autoEndingTask.cancel();
-			autoEndingTask = null;
-		}
+
+	@Override
+	protected void initAutoEndingTask() {
 		autoEndingTask = new TimerTask() {
 			
 			@Override
 			public void run() {
-				Log.i("TESTING", "auto ending in UploadingMODE");
-				stopUploading();
+//				stopUploading();
 				Message message = Message.obtain(handler,
 						Interrupt.VOLUNTARY_ENDING.ordinal());
 				message.sendToTarget();
 			}
 		};
-		new Timer().schedule(autoEndingTask, AUTO_ENDING_TIME);
 	}
 
 	@Override
 	public void validateMode() {
 		super.validateMode();
+
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
-		if (historyManager.getTestResults().size() == 0||currentStatus.isPCReady()||currentStatus.isSoftwareReady()){
-			showBlinkingView();
+		currentStatus.setCurrentMode(Mode.UPLOADING);
+		currentStatus.setRefreshingTime(true);
+		currentStatus.commit();
+		
+		statusArea.setVisible(true);
+		resultArea.setVisible(false);
+		progressBarArea.setVisible(false);
+		dateArea.setVisible(true);
+
+		statusArea.setCurrentMode(Mode.UPLOADING);
+		statusArea.cancelBlinking();
+		dateArea.setColonBlinking(true);
+
+		if (historyManager.getTestResults().size() == 0
+				|| !currentStatus.isPCReady() || !currentStatus.isSoftwareReady()) {
+			// =====the meter shall blink symbol U and go through Error Ending
+			// procedure=====
+			statusArea.setModeBlinking(Mode.UPLOADING);
+			//showBlinkingView();
+
+			Message message = Message.obtain(handler,
+					Interrupt.ERROR_ENDING.ordinal());
+			if (historyManager.getTestResults().isEmpty()) {
+				message.arg1 = ErrorCode.U_NO_TEST_RESULTS.getErrorCode();
+			} else if (!currentStatus.isPCReady()) {
+				message.arg1 = ErrorCode.PC_NOT_READY.getErrorCode();
+			} else if (!currentStatus.isSoftwareReady()) {
+				message.arg1 = ErrorCode.SOFTWARE_NOT_READY.getErrorCode();
+			}
+			message.sendToTarget();
+
 			BUTTONHASCLICKED = true;
+		}
+		else {
+			// =====the meter should give a reminding beep, display symbol U,
+			// and enter the Uploading Mode.=====
+			Beeper.get().doRemindBeep(context);
 			this.restartAutoEnding();
 		}
 	}
 
 	@Override
 	public void onShortClick() {
-		// TODO Auto-generated method stub
 		if(!BUTTONHASCLICKED)
 		{
-			Beeper.get().doRemindBeep(context);
 			historyManager.deleteAllTestResults();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
 			showBlinkingView();
 			this.restartAutoEnding();
+			BUTTONHASCLICKED = true;
 		}
-		BUTTONHASCLICKED = true;
-		
 	}
 
 	@Override
 	public void onLongClick() {
-		// TODO Auto-generated method stub
+		//=====not handled=====
 	}
 
 	@Override
 	public void onDoubleClick() {
-		// TODO Auto-generated method stub
-
+		//=====not handled=====
 	}
 	
 	
@@ -101,21 +123,24 @@ public class UploadingModeLogic extends ModeLogic {
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		currentStatus.setPowerOn(true);
 		currentStatus.setCurrentMode(Mode.UPLOADING);
-		currentStatus.setUSBConnected(true);
+//		currentStatus.setUSBConnected(true); should not be set here
 		currentStatus.commit();
 		statusArea.setCurrentMode(Mode.UPLOADING);
 		statusArea.setVisible(true);
 		dateArea.setVisible(true);
 		BUTTONHASCLICKED = false;
+		
 		this.restartAutoEnding();
 	}
 	
 	public void stopUploading(){
 		 CurrentStatus currentStatus = new CurrentStatus(preferences);
-		 Beeper.get().doErrorBeep(context);
+		 
+		 //error beep???
+//		 Beeper.get().doErrorBeep(context);
 		 statusArea.setVisible(false);
 		 dateArea.setVisible(false);
-		 currentStatus.setUSBConnected(false);
+//		 currentStatus.setUSBConnected(false); should not be set here!
 //		 currentStatus.setCurrentMode(null); do not set currentMode(null) here!!!!!
 		 currentStatus.commit();
 		 Message message = Message.obtain(handler, Interrupt.VOLUNTARY_ENDING.ordinal());
@@ -139,15 +164,12 @@ public class UploadingModeLogic extends ModeLogic {
 
 	@Override
 	public void onUSBConnected() {
-		// TODO Auto-generated method stub	
 		startUploading();
-		}
+	}
 
 	@Override
 	public void onUSBDisconnected() {
-		autoEndingTask.cancel();
+		this.clearAutoEndingTask();
 		stopUploading();
 	}
-	
-
 }

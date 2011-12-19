@@ -145,13 +145,13 @@ public class GlucometerActivity extends Activity {
 				(TextView) findViewById(R.id.minuteText1),
 				(TextView) findViewById(R.id.minuteText2));
 
-		this.updateTestStripImage();
-		this.updateUSBImage();
 		this.setOnClickListeners();
 
 		Beeper.get().attachHandler(this.handler);
 
 		this.resetStatus();
+		this.updateTestStripImage();
+		this.updateUSBImage();
 
 		this.resetBatteryUpdaterTask();
 		this.resetTimeUpdaterTask();
@@ -622,8 +622,9 @@ public class GlucometerActivity extends Activity {
 				handler);
 		currentModeLogic = modeLogic;
 		
-		this.enterXXMode(modeLogic);
-		modeLogic.onUSBConnected();
+		if (this.enterXXMode(modeLogic)) {
+			modeLogic.onUSBConnected();			
+		}
 	}
 	
 	private void enterSetupMode() {
