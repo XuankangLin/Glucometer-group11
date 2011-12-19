@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.group11.base.Interrupt;
 import com.group11.base.Mode;
@@ -35,26 +36,29 @@ public class UploadingModeLogic extends ModeLogic {
 	
 	private boolean BUTTONHASCLICKED = false;
 	private HistoryManager historyManager = new HistoryManager(context);
-	private  ScheduledExecutorService scheduler =
-		     Executors.newScheduledThreadPool(1);
-	private Runnable runnable = new Runnable() {
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			stopUploading();
-			scheduler.shutdown();
+	private TimerTask autoEndingTask = null;
+	private static final int AUTO_ENDING_TIME = 10000;
+	/**
+	 * restart (postpone to now) the auto-ending time counting
+	 */
+	private void restartAutoEnding() {
+		if (autoEndingTask != null) {
+			autoEndingTask.cancel();
+			autoEndingTask = null;
 		}
-	};
-	private Timer timer = new Timer();
-	private TimerTask timerTask = new TimerTask() {
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			stopUploading();
-			//timerTask.cancel();
-		}
-	};
+		autoEndingTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				Log.i("TESTING", "auto ending in UploadingMODE");
+				stopUploading();
+				Message message = Message.obtain(handler,
+						Interrupt.VOLUNTARY_ENDING.ordinal());
+				message.sendToTarget();
+			}
+		};
+		new Timer().schedule(autoEndingTask, AUTO_ENDING_TIME);
+	}
 
 	@Override
 	public void validateMode() {
@@ -62,24 +66,23 @@ public class UploadingModeLogic extends ModeLogic {
 		CurrentStatus currentStatus = new CurrentStatus(preferences);
 		if (historyManager.getTestResults().size() == 0||currentStatus.isPCReady()||currentStatus.isSoftwareReady()){
 			showBlinkingView();
-			//timer.schedule(timerTask, 10000);
-			//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
+			BUTTONHASCLICKED = true;
+			this.restartAutoEnding();
 		}
 	}
 
 	@Override
 	public void onShortClick() {
 		// TODO Auto-generated method stub
-		if(!BUTTONHASCLICKED && historyManager.getTestResults().size()!=0)
+		if(!BUTTONHASCLICKED)
 		{
 			Beeper.get().doRemindBeep(context);
 			historyManager.deleteAllTestResults();
-			Beeper.get().doDoubleBeep(context);
 			showBlinkingView();
-			//timer.schedule(timerTask, 10000);
-			//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
+			this.restartAutoEnding();
 		}
 		BUTTONHASCLICKED = true;
+		
 	}
 
 	@Override
@@ -103,6 +106,8 @@ public class UploadingModeLogic extends ModeLogic {
 		statusArea.setCurrentMode(Mode.UPLOADING);
 		statusArea.setVisible(true);
 		dateArea.setVisible(true);
+		BUTTONHASCLICKED = false;
+		this.restartAutoEnding();
 	}
 	
 	public void stopUploading(){
@@ -136,15 +141,11 @@ public class UploadingModeLogic extends ModeLogic {
 	public void onUSBConnected() {
 		// TODO Auto-generated method stub	
 		startUploading();
-		//timer.schedule(timerTask, 5000);
-		//scheduler.schedule(runnable, 10, TimeUnit.SECONDS);
 		}
 
 	@Override
 	public void onUSBDisconnected() {
-		// TODO Auto-generated method stub
-		//timerTask.cancel();
-		//scheduler.shutdownNow();
+		autoEndingTask.cancel();
 		stopUploading();
 	}
 	
