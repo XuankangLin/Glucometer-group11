@@ -62,6 +62,14 @@ public class GlucometerActivity extends Activity {
 	 */
 	private static final int BATTERY_UPDATE_PERIOD = 1000;
 	/**
+	 * charge one unit of battery every ** milliseconds if charging
+	 */
+	private static final int BATTERY_CHARGE_PERIOD = 2000;
+	/**
+	 * consume one unit of battery every ** milliseconds if not charging
+	 */
+	private static final int BATTERY_CONSUME_PERIOD = 4000;
+	/**
 	 * update the current time every ** milliseconds
 	 */
 	private static final int TIME_UPDATE_PERIOD = 1000;
@@ -91,6 +99,8 @@ public class GlucometerActivity extends Activity {
 
 	private TimerTask batteryUpdaterTask = null;
 	private TimerTask timeUpdaterTask = null;
+	private TimerTask chargeTask = null;
+	private TimerTask consumeTask = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -157,6 +167,7 @@ public class GlucometerActivity extends Activity {
 
 		this.resetBatteryUpdaterTask();
 		this.resetTimeUpdaterTask();
+		this.resetConsumeTask();
 	}
 
 	/**
@@ -180,6 +191,53 @@ public class GlucometerActivity extends Activity {
 		currentStatus.setLastModeComplete(true);
 
 		currentStatus.commit();
+	}
+	
+	/**
+	 * clear charging's task
+	 */
+	private void clearChargeTask() {
+		if (chargeTask != null) {
+			chargeTask.cancel();
+			chargeTask = null;
+		}
+	}
+	
+	/**
+	 * periodically charge the battery
+	 */
+	private void resetChargeTask() {
+		this.clearChargeTask();
+		chargeTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				new CurrentStatus(preferences).batteryPlusPlus();
+			}
+		};
+		new Timer().scheduleAtFixedRate(chargeTask, 0, BATTERY_CHARGE_PERIOD);
+	}
+	
+	private void clearConsumeTask() {
+		if (consumeTask != null) {
+			consumeTask.cancel();
+			consumeTask = null;
+		}
+	}
+	
+	private void resetConsumeTask() {
+		this.clearConsumeTask();
+		consumeTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				CurrentStatus status = new CurrentStatus(preferences);
+				if (status.isPowerOn()) {
+					status.batteryMinusMinus();
+				}
+			}
+		};
+		new Timer().scheduleAtFixedRate(consumeTask, 0, BATTERY_CONSUME_PERIOD);
 	}
 	
 	/**
@@ -751,6 +809,8 @@ public class GlucometerActivity extends Activity {
 	public void onBackPressed() {
 		this.clearBatteryUpdaterTask();
 		this.clearTimeUpdaterTask();
+		this.clearChargeTask();
+		this.clearConsumeTask();
 		super.onBackPressed();
 	}
 
@@ -1026,10 +1086,14 @@ public class GlucometerActivity extends Activity {
 		private boolean handleGlobalMessage(Message msg) {
 			if (AC_ON.ordinal() == msg.what) {
 				statusArea.setACing(true);
+				clearConsumeTask();
+				resetChargeTask();
 				return true;
 			}
 			if (AC_OFF.ordinal() == msg.what) {
 				statusArea.setACing(false);
+				clearChargeTask();
+				resetConsumeTask();
 				return true;
 			}
 			if (TIME_TICK.ordinal() == msg.what) {

@@ -297,4 +297,35 @@ public class CurrentStatus {
 		this.editor.putBoolean(RESULT_TIMEOUT, timeout);
 	}
 
+	/**
+	 * increase the battery by 1 (100 of all)
+	 * no need to call commit() again
+	 */
+	public synchronized void batteryPlusPlus() {
+		int battery = preferences.getInt(BATTERY_LEVEL, 100);
+		Editor e = preferences.edit();
+		e.putInt(LAST_BATTERY_LEVEL, battery);
+		battery++;
+		if (battery > 100) {
+			battery = 100;
+		}
+		e.putInt(BATTERY_LEVEL, battery);
+		e.commit();
+	}
+	
+	/**
+	 * decrease the battery by 1 (100 of all)
+	 * no need to call commit() again
+	 */
+	public synchronized void batteryMinusMinus() {
+		int battery = preferences.getInt(BATTERY_LEVEL, 100);
+		Editor e = preferences.edit();
+		e.putInt(LAST_BATTERY_LEVEL, battery);
+		battery--;
+		if (battery <= 0) {
+			battery = 0;
+		}
+		e.putInt(BATTERY_LEVEL, battery);
+		e.commit();
+	}
 }
