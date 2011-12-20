@@ -181,16 +181,22 @@ public class GlucometerActivity extends Activity {
 
 		currentStatus.commit();
 	}
+	
+	/**
+	 * clear the running time updater task if it exists
+	 */
+	private void clearTimeUpdaterTask() {
+		if (timeUpdaterTask != null) {
+			timeUpdaterTask.cancel();
+			timeUpdaterTask = null;
+		}		
+	}
 
 	/**
 	 * periodically update the time according
 	 */
 	private void resetTimeUpdaterTask() {
-		if (timeUpdaterTask != null) {
-			timeUpdaterTask.cancel();
-			timeUpdaterTask = null;
-		}
-
+		this.clearTimeUpdaterTask();
 		timeUpdaterTask = new TimerTask() {
 
 			@Override
@@ -208,15 +214,21 @@ public class GlucometerActivity extends Activity {
 	}
 
 	/**
+	 * clear the battery updater task if it exists
+	 */
+	private void clearBatteryUpdaterTask() {
+		if (batteryUpdaterTask != null) {
+			batteryUpdaterTask.cancel();
+			batteryUpdaterTask = null;
+		}		
+	}
+	
+	/**
 	 * periodically update the battery level according to the status in
 	 * "hardware"
 	 */
 	private void resetBatteryUpdaterTask() {
-		if (batteryUpdaterTask != null) {
-			batteryUpdaterTask.cancel();
-			batteryUpdaterTask = null;
-		}
-
+		this.clearBatteryUpdaterTask();
 		batteryUpdaterTask = new TimerTask() {
 
 			@Override
@@ -736,6 +748,13 @@ public class GlucometerActivity extends Activity {
 	}
 
 	@Override
+	public void onBackPressed() {
+		this.clearBatteryUpdaterTask();
+		this.clearTimeUpdaterTask();
+		super.onBackPressed();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.option_menu, menu);
@@ -754,7 +773,7 @@ public class GlucometerActivity extends Activity {
 			return true;
 
 		case R.id.menu_exit:
-			this.finish();
+			this.onBackPressed();
 			return true;
 
 		default:
