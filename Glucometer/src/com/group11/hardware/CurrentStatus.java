@@ -50,6 +50,7 @@ public class CurrentStatus {
 	//=====should be set by Logic Controller itself=====
 	private static final String CURRENT_MODE = "currentMode";
 	private static final String LAST_MODE_COMPLETE = "lastModeComplete";
+	private static final String LAST_BATTERY_LEVEL = "lastBatteryLevel";
 
 	//=====should be reset every time this program starts=====
 	private static final String AC_PLUGGED = "acPlugged";
@@ -163,12 +164,18 @@ public class CurrentStatus {
 		return BatteryLevel.getByValue(preferences.getInt(BATTERY_LEVEL, 100));
 	}
 	
+	public BatteryLevel getLastBatteryLevel() {
+		int ordinal = preferences.getInt(LAST_BATTERY_LEVEL, -1);
+		return ordinal == -1 ? null : BatteryLevel.getByValue(ordinal);
+	}
+	
 	/**
 	 * call commit() to write in the changes
 	 * @param value
 	 */
 	public synchronized void setBatteryLevel(int value) {
 		value %= 101;
+		this.editor.putInt(LAST_BATTERY_LEVEL, preferences.getInt(BATTERY_LEVEL, 0));
 		this.editor.putInt(BATTERY_LEVEL, value);
 	}
 	
@@ -289,4 +296,5 @@ public class CurrentStatus {
 	public synchronized void setResultTimeout(boolean timeout) {
 		this.editor.putBoolean(RESULT_TIMEOUT, timeout);
 	}
+
 }

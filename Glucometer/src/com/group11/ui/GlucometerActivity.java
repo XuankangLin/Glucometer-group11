@@ -225,11 +225,17 @@ public class GlucometerActivity extends Activity {
 
 					@Override
 					public void run() {
-						BatteryLevel level = new CurrentStatus(preferences)
-								.getBatteryLevel();
-						statusArea.setBatteryLevel(level);
-						statusArea.setBatteryBlinking(level == BatteryLevel.ZERO_PERCENT
-										|| new CurrentStatus(preferences).isACPlugged());
+						CurrentStatus status = new CurrentStatus(preferences);
+						BatteryLevel currentLevel = status.getBatteryLevel();
+						statusArea.setBatteryLevel(currentLevel);
+						statusArea.setBatteryBlinking(currentLevel == BatteryLevel.ZERO_PERCENT
+										|| status.isACPlugged());
+						if (currentLevel == BatteryLevel.ZERO_PERCENT
+								&& status.getLastBatteryLevel() == BatteryLevel.TWENTY_FIVE_PERCENT) {
+							Beeper.get().doWarningBeep(GlucometerActivity.this);
+						}
+						status.setBatteryLevel(status.getBattery());
+						status.commit();
 					}
 				});
 			}
