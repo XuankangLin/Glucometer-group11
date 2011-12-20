@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +49,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
@@ -311,6 +313,8 @@ public class GlucometerActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				resetGlucometer();
+				Toast.makeText(GlucometerActivity.this,
+						"Reset Button clicked.", 200).show();
 			}
 		});
 
@@ -458,6 +462,7 @@ public class GlucometerActivity extends Activity {
 			CurrentStatus status = new CurrentStatus(preferences);
 			if (status.getCurrentMode() == Mode.TESTING) {
 				status.setLastModeComplete(true);
+				Log.i("NULLing~~~~~~~", "set null in doStripPulledOut(), finishing the last Testing Mode");
 				status.setCurrentMode(null);
 				status.commit();
 			}
@@ -510,10 +515,16 @@ public class GlucometerActivity extends Activity {
 		statusArea.setErroring(true);
 		resultArea.setVisible(true);
 		resultArea.displayError(errorCode);
+		progressBarArea.setVisible(false);
+		dateArea.setVisible(true);
 		
 		CurrentStatus status = new CurrentStatus(preferences);
 		status.setErrorNow(true);
 		status.commit();
+		Mode mode = status.getCurrentMode();
+		if (mode == null) {
+			Log.e("NULL...", "why here");
+		}
 		
 		new Timer().schedule(new TimerTask() {
 			
@@ -547,7 +558,9 @@ public class GlucometerActivity extends Activity {
 		status.commit();
 		
 		if (status.getCurrentMode() == null) {
-			throw new IllegalStateException("status.getCurrentMode() should not be null when doEnding()");
+			// =====could also come to here: if INITIALIZATION_ERROR,
+			// setCurrentMode(XX) hasn't work, it's still null=====
+			return;
 		}
 
 		switch (status.getCurrentMode()) {
