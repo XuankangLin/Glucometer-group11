@@ -590,6 +590,7 @@ public class GlucometerActivity extends Activity {
 		statusArea.setVisible(true);
 		statusArea.setErroring(true);
 		resultArea.setVisible(true);
+		resultArea.setUnitBlinking(false);
 		resultArea.displayError(errorCode);
 		progressBarArea.setVisible(false);
 		dateArea.setVisible(true);
@@ -632,6 +633,12 @@ public class GlucometerActivity extends Activity {
 		status.setRefreshingTime(true);
 		status.setErrorNow(false);
 		status.commit();
+
+		statusArea.cancelBlinking();
+		statusArea.setCurrentMode(null);
+		resultArea.setUnitBlinking(false);
+		dateArea.setColonBlinking(false);
+		dateArea.setTextBlinking(null);
 		
 		if (status.getCurrentMode() == null) {
 			// =====could also come to here: if INITIALIZATION_ERROR,

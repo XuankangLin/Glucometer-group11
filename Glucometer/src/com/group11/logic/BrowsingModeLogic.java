@@ -62,8 +62,8 @@ public class BrowsingModeLogic extends ModeLogic {
 			progressBarArea.setVisible(false);
 			dateArea.setVisible(true);
 
-			statusArea.setCurrentMode(Mode.BROWSING);
 			statusArea.cancelBlinking();
+			statusArea.setCurrentMode(Mode.BROWSING);
 			resultArea.setUnitBlinking(false);
 			dateArea.setColonBlinking(false);
 			
@@ -73,8 +73,8 @@ public class BrowsingModeLogic extends ModeLogic {
 		else {
 			//=====the meter shall blink symbol B and then go through Error Ending procedure=====
 			statusArea.setVisible(true);
-			statusArea.setCurrentMode(Mode.BROWSING);
 			statusArea.cancelBlinking();
+			statusArea.setCurrentMode(Mode.BROWSING);
 			statusArea.setModeBlinking(Mode.BROWSING);
 
 			dateArea.setVisible(true);
