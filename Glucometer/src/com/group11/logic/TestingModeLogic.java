@@ -204,6 +204,15 @@ public class TestingModeLogic extends ModeLogic {
 		message.sendToTarget();
 	}
 	
+	public void onResultOutOfRange() {
+		progressBarArea.setVisible(false);
+		
+		Message message = Message.obtain(handler,
+				Interrupt.ERROR_ENDING.ordinal());
+		message.arg1 = ErrorCode.RESULT_OUT_OF_RANGE.getErrorCode();
+		message.sendToTarget();
+	}
+	
 	private void clearDisplayResultTask() {
 		if (displayResultTask != null) {
 			displayResultTask.cancel();

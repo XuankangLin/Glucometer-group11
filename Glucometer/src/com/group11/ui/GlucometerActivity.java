@@ -953,6 +953,17 @@ public class GlucometerActivity extends Activity {
 					status.setResultTimeout(isChecked);
 				}
 			});
+		} {
+			CheckBox outOfRangeBox = (CheckBox) view
+					.findViewById(R.id.resultOutOfRangeCheckbox);
+			outOfRangeBox.setChecked(status.isResultOutOfRange());
+			outOfRangeBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					status.setResultOutOfRange(isChecked);
+				}
+			});
 		}
 
 		AlertDialog.Builder builder = new Builder(this);
@@ -1068,6 +1079,15 @@ public class GlucometerActivity extends Activity {
 				}
 				if (currentModeLogic != null) {
 					((TestingModeLogic) currentModeLogic).onResultTimeout();					
+				}
+				return true;				
+			}
+			if (RESULT_OUT_OF_RANGE.ordinal() == msg.what) {
+				if (new CurrentStatus(preferences).isErrorNow()) {
+					return true;
+				}
+				if (currentModeLogic != null) {
+					((TestingModeLogic) currentModeLogic).onResultOutOfRange();					
 				}
 				return true;				
 			}

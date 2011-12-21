@@ -70,6 +70,7 @@ public class CurrentStatus {
 	private static final String STRIP_VALID = "stripValid";
 	private static final String BLOOD_SUFFICIENT = "bloodSufficient";
 	private static final String RESULT_TIMEOUT = "resultTimeout";
+	private static final String RESULT_OUT_OF_RANGE = "resultOutOfRange";
 
 	/**
 	 * write in all the changes that have been made
@@ -327,5 +328,13 @@ public class CurrentStatus {
 		}
 		e.putInt(BATTERY_LEVEL, battery);
 		e.commit();
+	}
+	
+	public boolean isResultOutOfRange() {
+		return this.preferences.getBoolean(RESULT_OUT_OF_RANGE, false);
+	}
+	
+	public synchronized void setResultOutOfRange(boolean out) {
+		this.editor.putBoolean(RESULT_OUT_OF_RANGE, out);
 	}
 }

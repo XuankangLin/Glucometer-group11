@@ -17,6 +17,7 @@ public enum Interrupt {
 	BLOOD_INSUFFICIENT("If blood sample fed is insufficient"),
 	RESULT_READY("When the test result is ready for further processing"),
 	RESULT_TIMEOUT("timeout"),
+	RESULT_OUT_OF_RANGE("result is out of range in current unit"),
 
 //	BUTTON_DOWN("When the button is pushed down"),
 //	BUTTON_UP("When the button is released"),

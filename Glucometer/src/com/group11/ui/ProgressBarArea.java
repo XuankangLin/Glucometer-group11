@@ -86,9 +86,16 @@ public class ProgressBarArea extends UIArea {
 			public void run() {
 				if (progress > 9) {
 					Message message = Message.obtain(handler);
-					message.what = new CurrentStatus(preference)
-							.isResultTimeout() ? Interrupt.RESULT_TIMEOUT
-							.ordinal() : Interrupt.RESULT_READY.ordinal();
+					CurrentStatus status = new CurrentStatus(preference);
+					if (status.isResultTimeout()) {
+						message.what = Interrupt.RESULT_TIMEOUT.ordinal();
+					}
+					else if (status.isResultOutOfRange()) {
+						message.what = Interrupt.RESULT_OUT_OF_RANGE.ordinal();
+					}
+					else {
+						message.what = Interrupt.RESULT_READY.ordinal();
+					}
 					message.sendToTarget();
 					cancel();
 				}

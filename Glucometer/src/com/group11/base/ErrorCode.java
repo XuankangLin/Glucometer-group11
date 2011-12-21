@@ -10,6 +10,7 @@ public enum ErrorCode {
 	INVALID_STRIP(101),
 	INSUFFICIENT_BLOOD(102),
 	TEST_TIMEOUT(103),
+	RESULT_OUT_OF_RANGE(104),
 	
 	//=====Browsing Mode=====
 	B_NO_TEST_RESULTS(201),
